@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:my_doctor/root_page.dart';
+import 'package:my_doctor/pages/root_page.dart';
+
+import 'insta_clone.dart';
 
 void main() => runApp(MyApp());
 

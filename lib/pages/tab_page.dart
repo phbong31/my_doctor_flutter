@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'board_list.dart';
+import '../board_list.dart';
 import 'home_page.dart';
 
 class TabPage extends StatefulWidget {

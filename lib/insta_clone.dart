@@ -1,58 +1,21 @@
-import 'package:english_words/english_words.dart';
+import 'dart:ui';
+import 'dart:ui' as prefix0;
+
 import 'package:flutter/material.dart';
+import 'package:flutter/material.dart' as prefix1;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'itemList.dart';
-import 'package:flutter/material.dart' as prefix1;
-import 'dart:ui' as prefix0;
 
+// https://dribbble.com/shots/6151406-Instagram-Dark-or-Light
 
-class MainList extends StatefulWidget {
+class InstagramApp extends StatefulWidget {
   @override
-  _MainListState createState() => _MainListState();
+  _InstagramAppState createState() => _InstagramAppState();
 }
 
-class _MainListState extends State<MainList> {
-  final List<WordPair> _suggestions = <WordPair>[];
-  final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
-
-//   @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('리스트'),
-//      ),
-//      body: _buildSuggestions(),
-//    );
-//  }
-//
-//  Widget _buildSuggestions() {
-//    return ListView.builder(
-//        padding: const EdgeInsets.all(16.0),
-//        itemBuilder: (BuildContext _context, int i) {
-//          if (i.isOdd) {
-//            return Divider();
-//          }
-//
-//          final int index = i ~/ 2;
-//          if (index >= _suggestions.length) {
-//            _suggestions.addAll(generateWordPairs().take(10));
-//          }
-//          return _buildRow(_suggestions[index]);
-//        });
-//  }
-//
-//  Widget _buildRow(WordPair pair) {
-//    return ListTile(
-//      title: Text(
-//        pair.asPascalCase,
-//        style: _biggerFont,
-//      ),
-//    );
-//  }
-//}
-
-
+class _InstagramAppState extends State<InstagramApp> {
+  // bottomNavigation Index
   int _currentIndex = 0;
 
   List<Widget> pages;
@@ -89,47 +52,47 @@ class _MainListState extends State<MainList> {
       body: pages[_currentIndex],
 
       // bottomNavigator
-//      bottomNavigationBar: ClipRRect(
-//        borderRadius: BorderRadius.only(
-//            topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-//        child: BottomNavigationBar(
-//          backgroundColor: Colors.grey[300],
-//          showSelectedLabels: false,
-//          showUnselectedLabels: false,
-//          currentIndex: _currentIndex,
-//          onTap: (int selectedIndex) {
-//            setState(() {
-//              _currentIndex = selectedIndex;
-//            });
-//          },
-//          selectedItemColor: Colors.black,
-//          selectedIconTheme: IconThemeData(size: 32.0),
-//          unselectedItemColor: Colors.grey,
-//          unselectedIconTheme: IconThemeData(size: 32.0),
-//          items: [
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.home),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.search),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(FontAwesomeIcons.instagram),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.favorite_border),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.person_outline),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//          ],
-//        ),
-//      ),
+      bottomNavigationBar: ClipRRect(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
+        child: BottomNavigationBar(
+          backgroundColor: Colors.grey[300],
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
+          currentIndex: _currentIndex,
+          onTap: (int selectedIndex) {
+            setState(() {
+              _currentIndex = selectedIndex;
+            });
+          },
+          selectedItemColor: Colors.black,
+          selectedIconTheme: IconThemeData(size: 32.0),
+          unselectedItemColor: Colors.grey,
+          unselectedIconTheme: IconThemeData(size: 32.0),
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                title: Text(""),
+                backgroundColor: Colors.grey[300]),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.search),
+                title: Text(""),
+                backgroundColor: Colors.grey[300]),
+            BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.instagram),
+                title: Text(""),
+                backgroundColor: Colors.grey[300]),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.favorite_border),
+                title: Text(""),
+                backgroundColor: Colors.grey[300]),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline),
+                title: Text(""),
+                backgroundColor: Colors.grey[300]),
+          ],
+        ),
+      ),
     );
   }
 
@@ -348,11 +311,7 @@ class _MainListState extends State<MainList> {
                           gradient: LinearGradient(
                             colors: darkMode
                                 ? [Colors.black, Colors.grey[700], Colors.black]
-                                : [
-                              Colors.white,
-                              Colors.grey[300],
-                              Colors.white
-                            ],
+                                : [Colors.white, Colors.grey[300], Colors.white],
                             begin: Alignment.centerLeft,
                             end: Alignment.centerRight,
                           )),
@@ -386,8 +345,7 @@ class _MainListState extends State<MainList> {
                                               borderRadius:
                                               BorderRadius.circular(16.0),
                                               image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      _postImage),
+                                                  image: NetworkImage(_postImage),
                                                   fit: BoxFit.fill),
                                             ),
                                             child: BackdropFilter(
@@ -396,8 +354,7 @@ class _MainListState extends State<MainList> {
                                               child: Container(
                                                 color: darkMode
                                                     ? Colors.black
-                                                    : Colors.white.withOpacity(
-                                                    0.8),
+                                                    : Colors.white.withOpacity(0.8),
                                               ),
                                             ),
                                           ),
@@ -416,8 +373,7 @@ class _MainListState extends State<MainList> {
                                               borderRadius:
                                               BorderRadius.circular(16.0),
                                               image: DecorationImage(
-                                                  image: NetworkImage(
-                                                      _postImage),
+                                                  image: NetworkImage(_postImage),
                                                   fit: BoxFit.fill)),
                                           child: Column(
                                             children: <Widget>[
@@ -440,8 +396,7 @@ class _MainListState extends State<MainList> {
                                                             end: Alignment
                                                                 .bottomCenter)),
                                                     child: Container(
-                                                      margin: EdgeInsets.all(
-                                                          2.0),
+                                                      margin: EdgeInsets.all(2.0),
                                                       decoration: BoxDecoration(
                                                         shape: BoxShape.circle,
                                                         border: Border.all(
@@ -449,8 +404,7 @@ class _MainListState extends State<MainList> {
                                                             width: 1.0),
                                                         image: DecorationImage(
                                                             image: NetworkImage(
-                                                                itemList[0]
-                                                                    .image),
+                                                                itemList[0].image),
                                                             fit: BoxFit.fill),
                                                       ),
                                                     ),
@@ -484,8 +438,7 @@ class _MainListState extends State<MainList> {
                                   color: _backgroundColor,
                                   height: 100.0,
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment
-                                        .start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
                                     children: <Widget>[
                                       // icon
                                       Container(
@@ -655,10 +608,7 @@ class _MainListState extends State<MainList> {
                                   padding:
                                   EdgeInsets.only(right: 32.0, bottom: 4.0),
                                   width:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 104.0,
+                                  MediaQuery.of(context).size.width - 104.0,
                                   child: Column(
                                     children: <Widget>[
                                       Flexible(
@@ -1091,8 +1041,7 @@ class _MainListState extends State<MainList> {
                           return Container(
                             decoration: BoxDecoration(
                                 image: DecorationImage(
-                                    image: NetworkImage(
-                                        itemList[index % 5].image),
+                                    image: NetworkImage(itemList[index % 5].image),
                                     fit: BoxFit.fill)),
                           );
                         }),

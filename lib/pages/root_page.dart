@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_doctor/tab_page.dart';
+import 'package:my_doctor/pages/tab_page.dart';
 
 class RootPage extends StatelessWidget {
   @override
