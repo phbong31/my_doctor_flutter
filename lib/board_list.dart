@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:english_words/english_words.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -13,56 +16,21 @@ class MainList extends StatefulWidget {
 }
 
 class _MainListState extends State<MainList> {
+
   final List<WordPair> _suggestions = <WordPair>[];
   final TextStyle _biggerFont = const TextStyle(fontSize: 18.0);
-
-//   @override
-//  Widget build(BuildContext context) {
-//    return Scaffold(
-//      appBar: AppBar(
-//        title: Text('리스트'),
-//      ),
-//      body: _buildSuggestions(),
-//    );
-//  }
-//
-//  Widget _buildSuggestions() {
-//    return ListView.builder(
-//        padding: const EdgeInsets.all(16.0),
-//        itemBuilder: (BuildContext _context, int i) {
-//          if (i.isOdd) {
-//            return Divider();
-//          }
-//
-//          final int index = i ~/ 2;
-//          if (index >= _suggestions.length) {
-//            _suggestions.addAll(generateWordPairs().take(10));
-//          }
-//          return _buildRow(_suggestions[index]);
-//        });
-//  }
-//
-//  Widget _buildRow(WordPair pair) {
-//    return ListTile(
-//      title: Text(
-//        pair.asPascalCase,
-//        style: _biggerFont,
-//      ),
-//    );
-//  }
-//}
 
 
   int _currentIndex = 0;
 
   List<Widget> pages;
 
-  String title = "Instagram";
+  String title = "어디아포?";
 
   // about post
   String _postImage =
       "https://cdn.pixabay.com/photo/2019/10/25/06/07/sky-4576072_960_720.jpg";
-  String username = "denil.d";
+  String username = "전주 수병원 봉황세";
 
   PageController pageController;
 
@@ -75,6 +43,7 @@ class _MainListState extends State<MainList> {
   // color
   Color _backgroundColor = Colors.white;
   Color _widgetColor = Colors.black;
+  Color _cardBackgroundColor = Colors.black12;
 
   @override
   void initState() {
@@ -88,48 +57,6 @@ class _MainListState extends State<MainList> {
     return Scaffold(
       body: pages[_currentIndex],
 
-      // bottomNavigator
-//      bottomNavigationBar: ClipRRect(
-//        borderRadius: BorderRadius.only(
-//            topLeft: Radius.circular(16.0), topRight: Radius.circular(16.0)),
-//        child: BottomNavigationBar(
-//          backgroundColor: Colors.grey[300],
-//          showSelectedLabels: false,
-//          showUnselectedLabels: false,
-//          currentIndex: _currentIndex,
-//          onTap: (int selectedIndex) {
-//            setState(() {
-//              _currentIndex = selectedIndex;
-//            });
-//          },
-//          selectedItemColor: Colors.black,
-//          selectedIconTheme: IconThemeData(size: 32.0),
-//          unselectedItemColor: Colors.grey,
-//          unselectedIconTheme: IconThemeData(size: 32.0),
-//          items: [
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.home),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.search),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(FontAwesomeIcons.instagram),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.favorite_border),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//            BottomNavigationBarItem(
-//                icon: Icon(Icons.person_outline),
-//                title: Text(""),
-//                backgroundColor: Colors.grey[300]),
-//          ],
-//        ),
-//      ),
     );
   }
 
@@ -138,7 +65,7 @@ class _MainListState extends State<MainList> {
       // first page
       Container(
         child: PageView(
-//          physics: NeverScrollableScrollPhysics(),
+          physics: NeverScrollableScrollPhysics(),
           scrollDirection: Axis.horizontal,
           controller: pageController,
           children: <Widget>[
@@ -162,7 +89,7 @@ class _MainListState extends State<MainList> {
                     title: Text(
                       title,
                       style: TextStyle(
-                          fontSize: 32.0,
+                          fontSize: 24.0,
                           color: _widgetColor,
                           fontWeight: FontWeight.bold,
                           fontFamily: "BeautyMountainsPersonalUse"),
@@ -190,90 +117,46 @@ class _MainListState extends State<MainList> {
                     ],
                   ),
 
-                  // story
-                  SliverToBoxAdapter(
-                    child: Container(
-                      color: _backgroundColor,
-                      margin: EdgeInsets.only(top: 16.0),
-                      height: 100.0,
-                      child: Column(
-                        children: <Widget>[
-                          //
-                          Row(
-                            children: <Widget>[
-                              Text(
-                                "Stories",
-                                style: TextStyle(
-                                    fontSize: 12.0,
-                                    color: _widgetColor,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                              Spacer(),
-                              Icon(
-                                Icons.arrow_right,
-                                size: 20.0,
-                                color: _widgetColor,
-                              ),
-                              Text(
-                                "Watch all",
-                                style: TextStyle(
-                                    fontSize: 12.0,
-                                    color: _widgetColor,
-                                    fontWeight: FontWeight.w600),
-                              ),
-                            ],
-                          ),
 
-                          Container(
-                            color: _backgroundColor,
-                            height: 76.0,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
-                              itemCount: itemList.length,
-                              physics: BouncingScrollPhysics(),
-                              shrinkWrap: true,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Container(
-                                  margin: EdgeInsets.only(right: 16.0),
-                                  height: 76.0,
-                                  width: 64.0,
+
+                  // main
+                  SliverList(
+                    delegate: SliverChildBuilderDelegate(
+                            (BuildContext context, int idx) {
+                          return Container(
+
+                            margin: EdgeInsets.only(top: 12.0, bottom: 16.0),
+                            height: 470.0,
+                            child: Column(
+
+                              children: <Widget>[
+
+                                //writer info
+                                Container(
+                                  margin: EdgeInsets.all(8.0),
                                   child: Column(
                                     children: <Widget>[
-                                      Container(
-                                        height: 56.0,
-                                        width: 56.0,
-                                        child: Stack(
-                                          children: <Widget>[
-                                            itemList[index].isSelected
-                                                ? Container(
-                                              decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  gradient: LinearGradient(
-                                                      colors: [
-                                                        Colors.pink,
-                                                        Colors.deepOrange
-                                                      ],
-                                                      begin: Alignment
-                                                          .topCenter,
-                                                      end: Alignment
-                                                          .bottomCenter)),
-                                              child: Container(
-                                                margin:
-                                                EdgeInsets.all(2.0),
-                                                decoration: BoxDecoration(
-                                                  shape: BoxShape.circle,
-                                                  border: Border.all(
-                                                      color: Colors.white,
-                                                      width: 1.0),
-                                                  image: DecorationImage(
-                                                      image: NetworkImage(
-                                                          itemList[index]
-                                                              .image),
-                                                      fit: BoxFit.fill),
-                                                ),
-                                              ),
-                                            )
-                                                : Container(
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            margin:
+                                            EdgeInsets.only(right: 8.0),
+                                            height: 40.0,
+                                            width: 40.0,
+                                            decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                gradient: LinearGradient(
+                                                    colors: [
+                                                      Colors.pink,
+                                                      Colors.deepOrange
+                                                    ],
+                                                    begin:
+                                                    Alignment.topCenter,
+                                                    end: Alignment
+                                                        .bottomCenter)),
+                                            child: Container(
+                                              margin: EdgeInsets.all(
+                                                  2.0),
                                               decoration: BoxDecoration(
                                                 shape: BoxShape.circle,
                                                 border: Border.all(
@@ -281,97 +164,36 @@ class _MainListState extends State<MainList> {
                                                     width: 1.0),
                                                 image: DecorationImage(
                                                     image: NetworkImage(
-                                                        itemList[index]
+                                                        itemList[0]
                                                             .image),
                                                     fit: BoxFit.fill),
                                               ),
                                             ),
-                                            index == 0
-                                                ? Positioned(
-                                              right: 0,
-                                              bottom: 0,
-                                              child: Container(
-                                                height: 16.0,
-                                                width: 16.0,
-                                                decoration: BoxDecoration(
-                                                    shape:
-                                                    BoxShape.circle,
-                                                    color: _widgetColor,
-                                                    border: Border.all(
-                                                        color:
-                                                        Colors.white,
-                                                        width: 1.0)),
-                                                child: Center(
-                                                    child: Icon(
-                                                      Icons.add,
-                                                      size: 12.0,
-                                                      color: _backgroundColor,
-                                                    )),
-                                              ),
-                                            )
-                                                : Container(),
-                                          ],
-                                        ),
-                                      ),
-
-                                      SizedBox(
-                                        height: 4.0,
-                                      ),
-
-                                      // user name clicked
-                                      Text(
-                                        itemList[index].name,
-                                        style: TextStyle(
-                                            fontSize: 10.0,
-                                            color: index == 0
-                                                ? Colors.grey
-                                                : _widgetColor,
-                                            fontWeight: FontWeight.w600),
+                                          ),
+                                          Text(
+                                            username,
+                                            style: TextStyle(
+                                                fontSize: 15.0,
+                                                color: _widgetColor,
+                                                fontWeight:
+                                                FontWeight.w600),
+                                          ),
+                                          Spacer(),
+                                          Icon(
+                                            Icons.more_horiz,
+                                            size: 24.0,
+                                            color: _widgetColor,
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                );
-                              },
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                                ),
 
-                  // divider
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 16.0),
-                      height: 2.0,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: darkMode
-                                ? [Colors.black, Colors.grey[700], Colors.black]
-                                : [
-                              Colors.white,
-                              Colors.grey[300],
-                              Colors.white
-                            ],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          )),
-                    ),
-                  ),
-
-                  // main
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int idx) {
-                          return Container(
-                            margin: EdgeInsets.only(bottom: 24.0),
-                            height: 500.0,
-                            child: Column(
-                              children: <Widget>[
                                 // image
                                 Container(
-                                  margin: EdgeInsets.only(bottom: 8.0),
-                                  height: 392.0,
+                                  margin: EdgeInsets.only(top:0, bottom: 8.0),
+                                  height: 292.0,
                                   child: Stack(
                                     children: <Widget>[
                                       // shadow image
@@ -388,10 +210,10 @@ class _MainListState extends State<MainList> {
                                               image: DecorationImage(
                                                   image: NetworkImage(
                                                       _postImage),
-                                                  fit: BoxFit.fill),
+                                                  fit: BoxFit.cover),
                                             ),
                                             child: BackdropFilter(
-                                              filter: prefix0.ImageFilter.blur(
+                                              filter: ImageFilter.blur(
                                                   sigmaX: 5.0, sigmaY: 5.0),
                                               child: Container(
                                                 color: darkMode
@@ -411,68 +233,15 @@ class _MainListState extends State<MainList> {
                                         right: 0,
                                         bottom: 16.0,
                                         child: Container(
-                                          padding: EdgeInsets.all(16.0),
+                                          padding: EdgeInsets.only(top:16.0, left:16.0, right:16.0, bottom:16.0),
                                           decoration: BoxDecoration(
                                               borderRadius:
                                               BorderRadius.circular(16.0),
                                               image: DecorationImage(
                                                   image: NetworkImage(
                                                       _postImage),
-                                                  fit: BoxFit.fill)),
-                                          child: Column(
-                                            children: <Widget>[
-                                              Row(
-                                                children: <Widget>[
-                                                  Container(
-                                                    margin:
-                                                    EdgeInsets.only(right: 8.0),
-                                                    height: 40.0,
-                                                    width: 40.0,
-                                                    decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        gradient: LinearGradient(
-                                                            colors: [
-                                                              Colors.pink,
-                                                              Colors.deepOrange
-                                                            ],
-                                                            begin:
-                                                            Alignment.topCenter,
-                                                            end: Alignment
-                                                                .bottomCenter)),
-                                                    child: Container(
-                                                      margin: EdgeInsets.all(
-                                                          2.0),
-                                                      decoration: BoxDecoration(
-                                                        shape: BoxShape.circle,
-                                                        border: Border.all(
-                                                            color: Colors.white,
-                                                            width: 1.0),
-                                                        image: DecorationImage(
-                                                            image: NetworkImage(
-                                                                itemList[0]
-                                                                    .image),
-                                                            fit: BoxFit.fill),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    username,
-                                                    style: TextStyle(
-                                                        fontSize: 12.0,
-                                                        color: _widgetColor,
-                                                        fontWeight:
-                                                        FontWeight.w600),
-                                                  ),
-                                                  Spacer(),
-                                                  Icon(
-                                                    Icons.more_horiz,
-                                                    size: 24.0,
-                                                    color: _widgetColor,
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
+                                                  fit: BoxFit.cover)),
+
                                         ),
                                       ),
                                     ],
@@ -572,534 +341,7 @@ class _MainListState extends State<MainList> {
             ),
 
             // second page
-            Container(
-              color: _backgroundColor,
-              child: CustomScrollView(
-                shrinkWrap: true,
-                scrollDirection: Axis.vertical,
-                slivers: <Widget>[
-                  // appbar
-                  SliverAppBar(
-                    backgroundColor: _backgroundColor,
-                    leading: Icon(
-                      Icons.arrow_back_ios,
-                      size: 24.0,
-                      color: _widgetColor,
-                    ),
-                    title: Text(
-                      "Velo.sid",
-                      style: prefix1.TextStyle(
-                          fontSize: 32.0,
-                          color: _widgetColor,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    actions: <Widget>[
-                      Icon(
-                        Icons.more_vert,
-                        size: 24.0,
-                        color: _widgetColor,
-                      ),
-                    ],
-                  ),
-
-                  // divider
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 16.0),
-                      height: 2.0,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                              colors: darkMode
-                                  ? [
-                                Colors.black,
-                                Colors.grey[700],
-                                Colors.black
-                              ]
-                                  : [
-                                Colors.white,
-                                Colors.grey[300],
-                                Colors.white
-                              ],
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight)),
-                    ),
-                  ),
-
-                  // profile
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 300.0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // posts & follower
-                          Container(
-                            height: 80.0,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                // profile image
-                                Container(
-                                  margin: EdgeInsets.only(right: 32.0),
-                                  height: 72.0,
-                                  width: 72.0,
-                                  decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      image: DecorationImage(
-                                          image:
-                                          NetworkImage(itemList[0].image),
-                                          fit: BoxFit.fill)),
-                                ),
-
-                                Container(
-                                  padding:
-                                  EdgeInsets.only(right: 32.0, bottom: 4.0),
-                                  width:
-                                  MediaQuery
-                                      .of(context)
-                                      .size
-                                      .width - 104.0,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Flexible(
-                                        flex: 2,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Flexible(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "11.8K",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: _widgetColor,
-                                                        fontWeight:
-                                                        FontWeight.w600),
-                                                  ),
-                                                  Text(
-                                                    "posts",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                        FontWeight.w400),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "198K",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: _widgetColor,
-                                                        fontWeight:
-                                                        FontWeight.w600),
-                                                  ),
-                                                  Text(
-                                                    "Follwers",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                        FontWeight.w400),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Flexible(
-                                              child: Column(
-                                                children: <Widget>[
-                                                  Text(
-                                                    "1309",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: _widgetColor,
-                                                        fontWeight:
-                                                        FontWeight.w600),
-                                                  ),
-                                                  Text(
-                                                    "Followers",
-                                                    style: prefix1.TextStyle(
-                                                        fontSize: 16.0,
-                                                        color: Colors.grey,
-                                                        fontWeight:
-                                                        FontWeight.w400),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Flexible(
-                                        flex: 1,
-                                        child: Row(
-                                          children: <Widget>[
-                                            // 3 btns
-                                            // message btn
-                                            Flexible(
-                                              flex: 5,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.only(
-                                                      topLeft:
-                                                      Radius.circular(
-                                                          48.0),
-                                                      bottomLeft:
-                                                      Radius.circular(
-                                                          48.0)),
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1.0),
-                                                ),
-                                                child: Center(
-                                                    child: Text(
-                                                      "Message",
-                                                      style: prefix1.TextStyle(
-                                                          fontSize: 12.0,
-                                                          color: _widgetColor,
-                                                          fontWeight:
-                                                          FontWeight.w600),
-                                                    )),
-                                              ),
-                                            ),
-
-                                            SizedBox(
-                                              width: 4.0,
-                                            ),
-
-                                            // user btn
-                                            Flexible(
-                                              flex: 1,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1.0),
-                                                ),
-                                                child: Center(
-                                                  child: Row(
-                                                    children: <Widget>[
-                                                      Icon(
-                                                        Icons.check,
-                                                        size: 16.0,
-                                                        color: Colors.grey,
-                                                      ),
-                                                      Icon(
-                                                        Icons.person_outline,
-                                                        size: 16.0,
-                                                        color: Colors.grey,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                            SizedBox(
-                                              width: 4.0,
-                                            ),
-
-                                            // arrow btn
-                                            Flexible(
-                                              flex: 1,
-                                              child: Container(
-                                                decoration: BoxDecoration(
-                                                  borderRadius:
-                                                  BorderRadius.only(
-                                                      topRight:
-                                                      Radius.circular(
-                                                          48.0),
-                                                      bottomRight:
-                                                      Radius.circular(
-                                                          48.0)),
-                                                  border: Border.all(
-                                                      color: Colors.grey,
-                                                      width: 1.0),
-                                                ),
-                                                child: Center(
-                                                  child: Icon(
-                                                    Icons.arrow_drop_down,
-                                                    size: 16.0,
-                                                    color: Colors.grey,
-                                                  ),
-                                                ),
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // text
-                          Container(
-                            padding: EdgeInsets.all(12.0),
-                            height: 150.0,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: <Widget>[
-                                Text(
-                                  "International Photograph 🌎",
-                                  style: prefix1.TextStyle(
-                                      fontSize: 14.0,
-                                      color: _widgetColor,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  "Personal Blog",
-                                  style: prefix1.TextStyle(
-                                      fontSize: 12.0,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w600),
-                                ),
-                                Text(
-                                  "Valentina sidious".toUpperCase(),
-                                  style: prefix1.TextStyle(
-                                      fontSize: 14.0,
-                                      color: _widgetColor,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      width: 220.0,
-                                      child: Text(
-                                        "🧡 France, Paris / 💛 USA, California"
-                                            .toUpperCase(),
-                                        style: prefix1.TextStyle(
-                                            fontSize: 14.0,
-                                            color: _widgetColor,
-                                            fontWeight: FontWeight.w400),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ),
-                                    Text(
-                                      "more",
-                                      style: prefix1.TextStyle(
-                                          fontSize: 14.0,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w400),
-                                    ),
-                                  ],
-                                ),
-                                Text(
-                                  "See translation".toUpperCase(),
-                                  style: prefix1.TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.grey,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                Text(
-                                  "instagram.com/p/BjaCQ3qh9WQ/",
-                                  style: prefix1.TextStyle(
-                                      fontSize: 14.0,
-                                      color: Colors.lightBlueAccent,
-                                      fontWeight: FontWeight.w400),
-                                ),
-                                RichText(
-                                  text: TextSpan(children: [
-                                    TextSpan(
-                                      text: "Followed by ",
-                                      style: prefix1.TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    TextSpan(
-                                      text: "jerreny.kimmell, jimmy.callens ",
-                                      style: prefix1.TextStyle(
-                                          fontSize: 12.0,
-                                          color: _widgetColor,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    TextSpan(
-                                      text: "and ",
-                                      style: prefix1.TextStyle(
-                                          fontSize: 12.0,
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                    TextSpan(
-                                      text: "robert_downney.jr",
-                                      style: prefix1.TextStyle(
-                                          fontSize: 12.0,
-                                          color: _widgetColor,
-                                          fontWeight: FontWeight.w600),
-                                    ),
-                                  ]),
-                                ),
-                              ],
-                            ),
-                          ),
-
-                          // saved story
-                          Container(
-                            margin: EdgeInsets.only(left: 24.0),
-                            height: 70.0,
-                            child: ListView(
-                              scrollDirection: Axis.horizontal,
-                              children: <Widget>[
-                                Container(
-                                  margin: EdgeInsets.only(right: 24.0),
-                                  height: 70.0,
-                                  width: 50.0,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 50.0,
-                                        width: 50.0,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    itemList[1].image),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      Text(
-                                        "#pro...",
-                                        style: prefix1.TextStyle(
-                                            fontSize: 14.0,
-                                            color: _widgetColor,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(right: 24.0),
-                                  height: 70.0,
-                                  width: 50.0,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 50.0,
-                                        width: 50.0,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    itemList[2].image),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      Text(
-                                        "💘💡",
-                                        style: prefix1.TextStyle(
-                                            fontSize: 14.0,
-                                            color: _widgetColor,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  margin: EdgeInsets.only(right: 24.0),
-                                  height: 70.0,
-                                  width: 50.0,
-                                  child: Column(
-                                    children: <Widget>[
-                                      Container(
-                                        height: 50.0,
-                                        width: 50.0,
-                                        decoration: BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            image: DecorationImage(
-                                                image: NetworkImage(
-                                                    itemList[3].image),
-                                                fit: BoxFit.fill)),
-                                      ),
-                                      Text(
-                                        "⚽🏀",
-                                        style: prefix1.TextStyle(
-                                            fontSize: 14.0,
-                                            color: _widgetColor,
-                                            fontWeight: FontWeight.w600),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // tabbar
-                  SliverToBoxAdapter(
-                    child: Container(
-                      height: 64.0,
-                      color: darkMode ? Colors.black12 : Colors.grey[100],
-                      child: Row(
-                        children: <Widget>[
-                          Flexible(
-                            child: Center(
-                                child: Icon(
-                                  Icons.dialpad,
-                                  size: 24.0,
-                                  color: Colors.lightBlueAccent,
-                                )),
-                          ),
-                          Flexible(
-                            child: Center(
-                                child: Icon(
-                                  Icons.menu,
-                                  size: 24.0,
-                                  color: Colors.grey,
-                                )),
-                          ),
-                          Flexible(
-                            child: Center(
-                                child: Icon(
-                                  Icons.remove_circle_outline,
-                                  size: 24.0,
-                                  color: Colors.grey,
-                                )),
-                          ),
-                          Flexible(
-                            child: Center(
-                                child: Icon(
-                                  Icons.crop_square,
-                                  size: 24.0,
-                                  color: Colors.grey,
-                                )),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // gridview
-                  SliverGrid(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 2.0,
-                        crossAxisSpacing: 2.0),
-                    delegate: SliverChildBuilderDelegate(
-                            (BuildContext context, int index) {
-                          return Container(
-                            decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: NetworkImage(
-                                        itemList[index % 5].image),
-                                    fit: BoxFit.fill)),
-                          );
-                        }),
-                  )
-                ],
-              ),
-            ),
+            Container(), //삭제
           ],
         ),
       ),
