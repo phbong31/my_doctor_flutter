@@ -12,7 +12,7 @@ class TabPage extends StatefulWidget {
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [MainList(), HomePage(), ProfilePage()];
+  List _pages = [MainList(), HomePage(), MainList()];
 
   @override
   Widget build(BuildContext context) {

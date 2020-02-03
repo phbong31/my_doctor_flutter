@@ -1,3 +1,8 @@
+import 'dart:convert';
+
+import 'package:my_doctor/service/webservice.dart';
+import 'package:my_doctor/utils/constants.dart';
+
 class BoardBase {
   final int id;
   final int creatorId;
@@ -17,24 +22,43 @@ class BoardBase {
   final int groupId;
   final int userId;
 
-  BoardBase(
-      this.id,
-      this.creatorId,
-      this.writerName,
-      this.writerUserId,
-      this.profileUrl,
-      this.kImageUrl,
-      this.patientId,
-      this.status,
-      this.text,
-      this.type,
-      this.replyCount,
-      this.userType,
-      this.userLevel,
-      this.accessLevel,
-      this.position,
-      this.groupId,
-      this.userId);
+  BoardBase({
+    this.id,
+    this.creatorId,
+    this.writerName,
+    this.writerUserId,
+    this.profileUrl,
+    this.kImageUrl,
+    this.patientId,
+    this.status,
+    this.text,
+    this.type,
+    this.replyCount,
+    this.userType,
+    this.userLevel,
+    this.accessLevel,
+    this.position,
+    this.groupId,
+    this.userId});
 
+  factory BoardBase.fromJson(Map<String, dynamic> json) {
+    return BoardBase(
+      id: json['id'],
+      creatorId: json['creatorId'],
+      writerName: json['writerName'],
+      text: json['text'],
+        urlToImage: json['urlToImage'] ?? Constants.LIST_PLACEHOLDER_IMAGE_ASSET_URL
+    );
+  }
 
+  static Resource<List<BoardBase>> get all {
+    return Resource(
+        url: Constants.BOARD_LIST_URL,
+        parse: (response) {
+          final result = json.decode(response.body);
+          Iterable list = result['list'];
+          return list.map((model) => BoardBase.fromJson(model)).toList();
+        }
+    );
+  }
 }
