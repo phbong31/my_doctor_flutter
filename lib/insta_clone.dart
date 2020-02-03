@@ -4,6 +4,7 @@ import 'dart:ui' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix1;
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:my_doctor/utils/constants.dart';
 
 import 'itemList.dart';
 
@@ -25,6 +26,10 @@ class _InstagramAppState extends State<InstagramApp> {
   // about post
   String _postImage =
       "https://cdn.pixabay.com/photo/2019/10/25/06/07/sky-4576072_960_720.jpg";
+
+  String _postImage2 =
+    Constants.PHOTO_VIEW_URL + "129542" + "?token="+Constants.TOKEN;
+
   String username = "denil.d";
 
   PageController pageController;
@@ -345,7 +350,7 @@ class _InstagramAppState extends State<InstagramApp> {
                                               borderRadius:
                                               BorderRadius.circular(16.0),
                                               image: DecorationImage(
-                                                  image: NetworkImage(_postImage),
+                                                  image: NetworkImage(_postImage2),
                                                   fit: BoxFit.fill),
                                             ),
                                             child: BackdropFilter(
@@ -373,7 +378,7 @@ class _InstagramAppState extends State<InstagramApp> {
                                               borderRadius:
                                               BorderRadius.circular(16.0),
                                               image: DecorationImage(
-                                                  image: NetworkImage(_postImage),
+                                                  image: NetworkImage(_postImage2),
                                                   fit: BoxFit.fill)),
                                           child: Column(
                                             children: <Widget>[

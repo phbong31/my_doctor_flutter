@@ -10,12 +10,17 @@ class Resource<T> {
 
 class Webservice {
 
-  static final String token = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHNib25nLnN5bm9sb2d5Lm1lIiwic3ViIjoiUGhvdG9Ub2tlbiIsImV4cCI6MTU3OTQyMjcxMiwianRpIjoiRDAwMDciLCJzY29wZSI6InBob3RvIiwicm9sZSI6MH0.EhHPN-tTc9iPjw8M7qb6r7X1H9iXRRF7_E_fAYeEKmg";
+  static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHNib25nLnN5bm9sb2d5Lm1lIiwic3ViIjoiUGhvdG9Ub2tlbiIsImV4cCI6MTU4MDgyMDU2MywianRpIjoiRDAwMDciLCJzY29wZSI6InBob3RvIiwicm9sZSI6MH0.lGK9cQa9fXKZ3Y7NmJSdF1pdbmwjurWQwjaVc7h648I";
 
 
   Future<T> load<T>(Resource<T> resource) async {
 
-    final response = await http.get(resource.url);
+    final response = await http.get(resource.url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': '$TOKEN',
+    });
+    print("http:statusCode="+response.statusCode.toString());
     if(response.statusCode == 200) {
       return resource.parse(response);
     } else {

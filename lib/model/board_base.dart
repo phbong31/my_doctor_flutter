@@ -46,8 +46,7 @@ class BoardBase {
       id: json['id'],
       creatorId: json['creatorId'],
       writerName: json['writerName'],
-      text: json['text'],
-        urlToImage: json['urlToImage'] ?? Constants.LIST_PLACEHOLDER_IMAGE_ASSET_URL
+      text: json['text']
     );
   }
 
