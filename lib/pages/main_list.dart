@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:my_doctor/model/photo.dart';
@@ -36,7 +38,7 @@ class BoardListState extends State<BoardList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: typing ? TextBox() : Text("Title"),
+          title: typing ? TextBox() : Text("환자 사진 조회"),
           leading: IconButton(
             icon: Icon(typing ? Icons.done : Icons.search),
             onPressed: () {
@@ -65,6 +67,8 @@ class BoardList extends StatefulWidget {
 class TextBox extends StatelessWidget {
   final TextEditingController _textController = new TextEditingController();
 
+
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -82,5 +86,6 @@ class TextBox extends StatelessWidget {
   void _handleSubmitted(String text) {
     _textController.clear();
     print(text);
+
   }
 }
