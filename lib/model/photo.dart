@@ -12,7 +12,7 @@ class Photo {
   final String date;
   final String photoUrl;
   final String sync;
-  final String comment;
+  final String caption;
   final String name;
   final String thumbnailFilename;
   final String newFilename;
@@ -24,17 +24,22 @@ class Photo {
   final String search;
   final String captureDate;
   final String range;
+  final int boardId;
+  final int photoId;
 
   Photo({this.id, this.patientId, this.doctor, this.uploader,
-      this.classification, this.date, this.photoUrl, this.sync, this.comment,
+      this.classification, this.date, this.photoUrl, this.sync, this.caption,
       this.name, this.thumbnailFilename, this.newFilename, this.size,
       this.thumbnailSize, this.url, this.thumbnailUrl, this.contentType,
-      this.search, this.captureDate, this.range});
+      this.search, this.captureDate, this.range, this.boardId, this.photoId});
 
   factory Photo.fromJson(Map<String, dynamic> json) {
     return Photo(
-        id: json['id'],
-        patientId: json['patientId'],
+        id: json['id'] as int,
+        photoId: json['photoId'] as int,
+        photoUrl: json['photoUrl'] as String,
+        caption: json['caption'] as String,
+        boardId: json['boardId'] as int
     );
   }
 
@@ -43,7 +48,7 @@ class Photo {
         url: Constants.PHOTO_LIST_URL,
         parse: (response) {
           final result = json.decode(response.body);
-          Iterable list = result['list'];
+          Iterable list = result[''];
           return list.map((model) => Photo.fromJson(model)).toList();
         }
     );

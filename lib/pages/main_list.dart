@@ -1,36 +1,74 @@
-import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
+import 'package:my_doctor/model/user.dart';
+import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
+import 'package:my_doctor/utils/ui_utils.dart';
 
+class MainPage extends StatefulWidget {
+  @override
+  _MainPageState createState() => _MainPageState();
+}
 
-class BoardListState extends State<BoardList> {
-  bool typing = false;
-  List<Photo> _boardList = List<Photo>();
+class _MainPageState extends State<MainPage> {
+  List<BoardBase> _boardBase = List<BoardBase>();
 
   @override
   void initState() {
     super.initState();
-    _populateNewsArticles();
+    _populateNewBoard();
   }
 
-  void _populateNewsArticles() {
+  void _populateNewBoard() {
+    Webservice().load(BoardBase.all).then((boardBase) => {
+          setState(() => {_boardBase = boardBase})
+        });
+  }
+  List<Photo> parsePhotos(String responseBody) {
+    if(responseBody != null && responseBody.length > 0) {
+      final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
 
-    Webservice().load(Photo.all).then((newsArticles) => {
-      setState(() => {
-        _boardList = newsArticles
-      })
-    });
-
+      return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+    } else {
+      return null;
+    }
   }
 
   ListTile _buildItemsForListView(BuildContext context, int index) {
     return ListTile(
-      title: Image.network(Constants.PHOTO_VIEW_URL + _boardList[index].id.toString() + "?token="+Constants.TOKEN),
-      subtitle: Text(_boardList[index].patientId.toString(), style: TextStyle(fontSize: 18)),
+      isThreeLine: true,
+      title: Row(
+        children: <Widget>[
+          Text(_boardBase[index].writerName, style: TextStyle(fontSize: 16)),
+          Text("(" + _boardBase[index].position + ")",
+              style: TextStyle(fontSize: 14)),
+        ],
+      ),
+      subtitle: Column(
+        children: <Widget>[
+          Text(_boardBase[index].createdTime),
+          Text(
+            _boardBase[index].text,
+            overflow: TextOverflow.ellipsis,
+            maxLines: 5,
+          ),
+          _boardBase[index].photoList != null
+              ? Text(_boardBase[index].photoList)
+              : Container(),
+          Text("답글 " + _boardBase[index].replyCount.toString() + "개"),
+        ],
+      ),
+//      trailing: Icon(Icons.home),
+//      leading: Icon(Icons.alarm),
+      contentPadding: EdgeInsets.all(36.0),
+      onTap: () {
+        showSnackbar(context, "index:" + index.toString());
+        print("On tap : " + index.toString());
+      },
     );
   }
 
@@ -38,54 +76,26 @@ class BoardListState extends State<BoardList> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: typing ? TextBox() : Text("환자 사진 조회"),
-          leading: IconButton(
-            icon: Icon(typing ? Icons.done : Icons.search),
-            onPressed: () {
-              setState(() {
-                typing = !typing;
-
-              });
-            },
-          ),
+          title: Text('어디아포?'),
         ),
         body: ListView.builder(
+          itemBuilder: (ctx, i) {
+            if (i == 0) {
+              return Center(child: Container(child: Text('1st tile')));
+            }
+//            return _buildItemsForListView(context, i - 1);
+            User user = User(_boardBase[i-1].creatorId, _boardBase[i-1].writerName, _boardBase[i-1].position, _boardBase[i-1].profileUrl);
+            user.position = _boardBase[i-1].position;
+            user.profileUrl = _boardBase[i-1].profileUrl;
+            print(_boardBase[i-1].photoList);
+            return _boardBase[i-1].photoList == null ? PostWidget(_boardBase[i-1],user,null) : PostWidget(_boardBase[i-1],user,parsePhotos(_boardBase[i-1].photoList));
+          },
 
-          itemCount: _boardList.length,
-          itemBuilder: _buildItemsForListView,
-        )
-    );
-  }
-}
-
-class BoardList extends StatefulWidget {
-
-  @override
-  createState() => BoardListState();
-}
-
-class TextBox extends StatelessWidget {
-  final TextEditingController _textController = new TextEditingController();
-
-
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.centerLeft,
-      color: Colors.white,
-      child: TextField(
-        controller: _textController,
-        onSubmitted: _handleSubmitted,
-        decoration:
-        InputDecoration(border: InputBorder.none, hintText: 'Search'),
-      ),
-    );
+          itemCount: _boardBase.length,
+//          itemBuilder: _buildItemsForListView,
+        ));
   }
 
-  void _handleSubmitted(String text) {
-    _textController.clear();
-    print(text);
 
-  }
+
 }

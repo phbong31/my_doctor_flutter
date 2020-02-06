@@ -7,7 +7,7 @@ class BoardBase {
   final int id;
   final int creatorId;
   final String writerName;
-  final String writerUserId;
+  final int writerUserId;
   final String profileUrl;
   final String kImageUrl;
   final int patientId;
@@ -21,6 +21,11 @@ class BoardBase {
   final String position;
   final int groupId;
   final int userId;
+  final String photoList;
+  final String createdTime;
+  final String updatedTime;
+
+//  final photos = <Photo>[];
 
   BoardBase({
     this.id,
@@ -39,23 +44,45 @@ class BoardBase {
     this.accessLevel,
     this.position,
     this.groupId,
-    this.userId});
+    this.userId,
+    this.photoList,
+    this.createdTime,
+    this.updatedTime});
+
+
 
   factory BoardBase.fromJson(Map<String, dynamic> json) {
     return BoardBase(
       id: json['id'],
       creatorId: json['creatorId'],
       writerName: json['writerName'],
-      text: json['text']
+      profileUrl: json['profileUrl'],
+      kImageUrl: json['kImageUrl'],
+      patientId: json['patientId'],
+      status: json['status'],
+        text: json['text'],
+        type: json['type'],
+        replyCount: json['replyCount'],
+        userType: json['userType'],
+        userLevel: json['userLevel'],
+        accessLevel: json['accessLevel'],
+        position: json['position'],
+        groupId: json['groupId'],
+        userId: json['userId'],
+        photoList: json['photoList'],
+      createdTime: json['createdTime'],
+      updatedTime: json['updatedTIme']
     );
   }
+
 
   static Resource<List<BoardBase>> get all {
     return Resource(
         url: Constants.BOARD_LIST_URL,
         parse: (response) {
+
           final result = json.decode(response.body);
-          Iterable list = result['list'];
+          Iterable list = result;
           return list.map((model) => BoardBase.fromJson(model)).toList();
         }
     );

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_doctor/pages/main_list.dart';
+import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
 
 import '../board_list.dart';
@@ -13,7 +14,7 @@ class TabPage extends StatefulWidget {
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [MainList(), HomePage(), BoardList()];
+  List _pages = [MainPage(), HomePage(), BoardList()];
 
   @override
   Widget build(BuildContext context) {
