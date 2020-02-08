@@ -6,5 +6,5 @@ class Constants {
 
   static final String LIST_PLACEHOLDER_IMAGE_ASSET_URL = 'assets/soo_logo.jpg';
 
-  static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHNib25nLnN5bm9sb2d5Lm1lIiwic3ViIjoiUGhvdG9Ub2tlbiIsImV4cCI6MTU4MTA3OTc2NSwianRpIjoiRDAwMDciLCJzY29wZSI6InBob3RvIiwicm9sZSI6MH0.cu8bNNhyNnf78TZNkRJtM2ewSkDc5YeL9V5ztY3Av7k";
+  static final String TOKEN = "eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vaHNib25nLnN5bm9sb2d5Lm1lIiwic3ViIjoiUGhvdG9Ub2tlbiIsImV4cCI6MTU4MTI1MjU2NiwianRpIjoiRDAwMDciLCJzY29wZSI6InBob3RvIiwicm9sZSI6MH0.0GCBQsSFIEOQ4RtAgGfGG9hfrgkVWWfc3MncHqGcwaI";
 }

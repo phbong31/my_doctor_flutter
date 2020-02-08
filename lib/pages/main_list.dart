@@ -8,6 +8,7 @@ import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -16,11 +17,23 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   List<BoardBase> _boardBase = List<BoardBase>();
+  YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
     _populateNewBoard();
+
+    _controller = YoutubePlayerController(
+      initialVideoId: 'CSa6Ocyog4U',
+      flags: YoutubePlayerFlags(
+        mute: false,
+        autoPlay: false,
+        forceHideAnnotation: true,
+        captionLanguage: 'kr',
+      ),
+    );
+
   }
 
   void _populateNewBoard() {
@@ -28,10 +41,11 @@ class _MainPageState extends State<MainPage> {
           setState(() => {_boardBase = boardBase})
         });
   }
+
+  //photoList(json) parse to List
   List<Photo> parsePhotos(String responseBody) {
     if(responseBody != null && responseBody.length > 0) {
       final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
-
       return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
     } else {
       return null;
@@ -78,10 +92,28 @@ class _MainPageState extends State<MainPage> {
         appBar: AppBar(
           title: Text('어디아포?'),
         ),
-        body: ListView.builder(
+        body: ListView.separated(
+          separatorBuilder: (context, index) => Divider(
+            color: Colors.brown[50],
+            height: 24.0,
+            thickness: 12.0,
+//            indent: 4.0,
+//            endIndent: 4.0,
+          ),
           itemBuilder: (ctx, i) {
             if (i == 0) {
-              return Center(child: Container(child: Text('1st tile')));
+              return YoutubePlayer(
+                controller: _controller,
+                showVideoProgressIndicator: true,
+                progressIndicatorColor: Colors.amber,
+//                progressColors: ProgressColors(
+//                  playedColor: Colors.amber,
+//                  handleColor: Colors.amberAccent,
+//                ),
+                onReady: () {
+                  print('Player is ready.');
+                },
+              );
             }
 //            return _buildItemsForListView(context, i - 1);
             User user = User(_boardBase[i-1].creatorId, _boardBase[i-1].writerName, _boardBase[i-1].position, _boardBase[i-1].profileUrl);

@@ -43,7 +43,7 @@ class AvatarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final radius = isLarge ? 28.0 : 14.0;
+    final radius = isLarge ? 28.0 : 18.0;
     final avatar = Column(
       mainAxisSize: MainAxisSize.min,
       children: <Widget>[

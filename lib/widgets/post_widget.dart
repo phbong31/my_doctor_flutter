@@ -85,6 +85,7 @@ class _PostWidgetState extends State<PostWidget> {
 //    List<Photo> photoObjs = photoObjsJson.map((photoJson) => Photo.fromJson(photoJson)).toList();
 
     return Column(
+
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         // User Details
@@ -107,6 +108,15 @@ class _PostWidgetState extends State<PostWidget> {
           ],
         ),
 
+        //text
+        Padding(
+          padding: const EdgeInsets.only(left:12.0, top:8.0, right:8.0, bottom:12.0),
+          child: Column(
+            children: <Widget>[
+              Text(widget.post.text),
+            ],
+          ),
+        ),
 //         Photo Carosuel
 
         GestureDetector(
@@ -120,6 +130,7 @@ class _PostWidgetState extends State<PostWidget> {
                   return Image.network(
                     Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+Constants.TOKEN,
                     fit: BoxFit.fitWidth,
+//                    fit: BoxFit.fitWidth,
                     width: MediaQuery.of(context).size.width,
                   );
                 }).toList(),
@@ -175,14 +186,7 @@ class _PostWidgetState extends State<PostWidget> {
             )
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(left:12.0, top:8.0, right:8.0, bottom:12.0),
-          child: Column(
-              children: <Widget>[
-                Text(widget.post.text),
-              ],
-            ),
-        ),
+
 
         Padding(
           padding: const EdgeInsets.only(left: 8.0, bottom: 16.0),
