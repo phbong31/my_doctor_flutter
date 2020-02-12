@@ -327,6 +327,7 @@ class _InstagramAppState extends State<InstagramApp> {
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
                             (BuildContext context, int idx) {
+
                           return Container(
                             margin: EdgeInsets.only(bottom: 24.0),
                             height: 500.0,

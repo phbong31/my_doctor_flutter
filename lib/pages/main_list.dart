@@ -33,7 +33,6 @@ class _MainPageState extends State<MainPage> {
         captionLanguage: 'kr',
       ),
     );
-
   }
 
   void _populateNewBoard() {
@@ -44,7 +43,7 @@ class _MainPageState extends State<MainPage> {
 
   //photoList(json) parse to List
   List<Photo> parsePhotos(String responseBody) {
-    if(responseBody != null && responseBody.length > 0) {
+    if (responseBody != null && responseBody.length > 0) {
       final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
       return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
     } else {
@@ -89,45 +88,129 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text('어디아포?'),
-        ),
-        body: ListView.separated(
-          separatorBuilder: (context, index) => Divider(
-            color: Colors.brown[50],
-            height: 24.0,
-            thickness: 12.0,
-//            indent: 4.0,
-//            endIndent: 4.0,
+
+        body: Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      child: CustomScrollView(
+        scrollDirection: Axis.vertical,
+        slivers: <Widget>[
+          SliverAppBar(
+            title: Image(image: AssetImage('assets/images/logo.png'),),
+
+            floating: true,
+            flexibleSpace: Padding(
+
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                alignment: Alignment.bottomLeft,
+                child: Text('안녕하세요'),
+              ),
+            ),
+            expandedHeight: 100,
           ),
-          itemBuilder: (ctx, i) {
-            if (i == 0) {
-              return YoutubePlayer(
-                controller: _controller,
-                showVideoProgressIndicator: true,
-                progressIndicatorColor: Colors.amber,
+
+          // divider
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 16.0),
+              height: 2.0,
+              decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                colors: [Colors.white, Colors.grey[300], Colors.white],
+                begin: Alignment.centerLeft,
+                end: Alignment.centerRight,
+              )),
+            ),
+          ),
+
+          SliverList(
+            delegate:
+                SliverChildBuilderDelegate((BuildContext context, int idx) {
+              if (idx == 0) {
+                return Container(
+                    margin: EdgeInsets.only(bottom: 24.0),
+                    child: YouTubePost());
+              } else {
+                return Container(
+                    margin: EdgeInsets.only(bottom: 24.0),
+                    child: MainPost(idx));
+              }
+            }, childCount: _boardBase.length),
+          ),
+        ],
+      ),
+    ));
+  }
+
+  Widget YouTubePost() {
+    return YoutubePlayer(
+      controller: _controller,
+      showVideoProgressIndicator: true,
+      progressIndicatorColor: Colors.amber,
 //                progressColors: ProgressColors(
 //                  playedColor: Colors.amber,
 //                  handleColor: Colors.amberAccent,
 //                ),
-                onReady: () {
-                  print('Player is ready.');
-                },
-              );
-            }
-//            return _buildItemsForListView(context, i - 1);
-            User user = User(_boardBase[i-1].creatorId, _boardBase[i-1].writerName, _boardBase[i-1].position, _boardBase[i-1].profileUrl);
-            user.position = _boardBase[i-1].position;
-            user.profileUrl = _boardBase[i-1].profileUrl;
-            print(_boardBase[i-1].photoList);
-            return _boardBase[i-1].photoList == null ? PostWidget(_boardBase[i-1],user,null) : PostWidget(_boardBase[i-1],user,parsePhotos(_boardBase[i-1].photoList));
-          },
-
-          itemCount: _boardBase.length,
-//          itemBuilder: _buildItemsForListView,
-        ));
+      onReady: () {
+        print('Player is ready.');
+      },
+    );
   }
 
+  Widget MainPost(int i) {
+    User user = User(_boardBase[i - 1].creatorId, _boardBase[i - 1].writerName,
+        _boardBase[i - 1].position, _boardBase[i - 1].profileUrl);
+    user.position = _boardBase[i - 1].position;
+    user.profileUrl = _boardBase[i - 1].profileUrl;
+    print(_boardBase[i - 1].photoList);
+    return _boardBase[i - 1].photoList == null
+        ? PostWidget(_boardBase[i - 1], user, null)
+        : PostWidget(
+            _boardBase[i - 1], user, parsePhotos(_boardBase[i - 1].photoList));
+  }
 
+  Widget ListViewWidget() {
+    return Container(
+        child: ListView.separated(
+      separatorBuilder: (context, index) => Divider(
+        color: Colors.brown[50],
+        height: 24.0,
+        thickness: 12.0,
+//            indent: 4.0,
+//            endIndent: 4.0,
+      ),
+      itemBuilder: (ctx, i) {
+        if (i == 0) {
+          return YoutubePlayer(
+            controller: _controller,
+            showVideoProgressIndicator: true,
+            progressIndicatorColor: Colors.amber,
+//                progressColors: ProgressColors(
+//                  playedColor: Colors.amber,
+//                  handleColor: Colors.amberAccent,
+//                ),
+            onReady: () {
+              print('Player is ready.');
+            },
+          );
+        }
+//            return _buildItemsForListView(context, i - 1);
+        User user = User(
+            _boardBase[i - 1].creatorId,
+            _boardBase[i - 1].writerName,
+            _boardBase[i - 1].position,
+            _boardBase[i - 1].profileUrl);
+        user.position = _boardBase[i - 1].position;
+        user.profileUrl = _boardBase[i - 1].profileUrl;
+        print(_boardBase[i - 1].photoList);
+        return _boardBase[i - 1].photoList == null
+            ? PostWidget(_boardBase[i - 1], user, null)
+            : PostWidget(_boardBase[i - 1], user,
+                parsePhotos(_boardBase[i - 1].photoList));
+      },
 
+      itemCount: _boardBase.length,
+//          itemBuilder: _buildItemsForListView,
+    ));
+  }
 }
