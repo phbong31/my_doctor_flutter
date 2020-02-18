@@ -31,6 +31,9 @@ dependencies:
   timeago: ^2.0.14
   carousel_slider: ^1.3.0
   youtube_player_flutter: ^6.0.3+2
+  firebase_auth: ^0.15.4
+  google_sign_in: ^4.1.1
+  kakao_flutter_sdk: ^0.4.2
 
 dev_dependencies:
   flutter_test:

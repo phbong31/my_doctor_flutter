@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:my_doctor/pages/login_page.dart';
+import 'package:my_doctor/pages/login_page_kakao.dart';
 import 'package:my_doctor/pages/main_list.dart';
 import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
@@ -14,7 +16,7 @@ class TabPage extends StatefulWidget {
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [MainPage(), HomePage(), BoardList()];
+  List _pages = [MainPage(), LoginScreen(), LoginPage()];
 
   @override
   Widget build(BuildContext context) {
