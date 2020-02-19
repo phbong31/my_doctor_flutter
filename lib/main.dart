@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_doctor/pages/root_page.dart';
 
-import 'insta_clone.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:kakao_flutter_sdk/common.dart';
 void main() {
