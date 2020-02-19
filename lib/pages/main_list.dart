@@ -45,45 +45,46 @@ class _MainPageState extends State<MainPage> {
   List<Photo> parsePhotos(String responseBody) {
     if (responseBody != null && responseBody.length > 0) {
       final parsed = json.decode(responseBody).cast<Map<String, dynamic>>();
+
       return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
     } else {
       return null;
     }
   }
 
-  ListTile _buildItemsForListView(BuildContext context, int index) {
-    return ListTile(
-      isThreeLine: true,
-      title: Row(
-        children: <Widget>[
-          Text(_boardBase[index].writerName, style: TextStyle(fontSize: 16)),
-          Text("(" + _boardBase[index].position + ")",
-              style: TextStyle(fontSize: 14)),
-        ],
-      ),
-      subtitle: Column(
-        children: <Widget>[
-          Text(_boardBase[index].createdTime),
-          Text(
-            _boardBase[index].text,
-            overflow: TextOverflow.ellipsis,
-            maxLines: 5,
-          ),
-          _boardBase[index].photoList != null
-              ? Text(_boardBase[index].photoList)
-              : Container(),
-          Text("답글 " + _boardBase[index].replyCount.toString() + "개"),
-        ],
-      ),
-//      trailing: Icon(Icons.home),
-//      leading: Icon(Icons.alarm),
-      contentPadding: EdgeInsets.all(36.0),
-      onTap: () {
-        showSnackbar(context, "index:" + index.toString());
-        print("On tap : " + index.toString());
-      },
-    );
-  }
+//  ListTile _buildItemsForListView(BuildContext context, int index) {
+//    return ListTile(
+//      isThreeLine: true,
+//      title: Row(
+//        children: <Widget>[
+//          Text(_boardBase[index].writerName, style: TextStyle(fontSize: 16)),
+//          Text("(" + _boardBase[index].position + ")",
+//              style: TextStyle(fontSize: 14)),
+//        ],
+//      ),
+//      subtitle: Column(
+//        children: <Widget>[
+//          Text(_boardBase[index].createdTime),
+//          Text(
+//            _boardBase[index].text,
+//            overflow: TextOverflow.ellipsis,
+//            maxLines: 5,
+//          ),
+//          _boardBase[index].photoList != null
+//              ? Text(_boardBase[index].photoList)
+//              : Container(),
+//          Text("답글 " + _boardBase[index].replyCount.toString() + "개"),
+//        ],
+//      ),
+////      trailing: Icon(Icons.home),
+////      leading: Icon(Icons.alarm),
+//      contentPadding: EdgeInsets.all(36.0),
+//      onTap: () {
+//        showSnackbar(context, "index:" + index.toString());
+//        print("On tap : " + index.toString());
+//      },
+//    );
+//  }
 
   @override
   Widget build(BuildContext context) {

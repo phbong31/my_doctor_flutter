@@ -6,164 +6,82 @@ import 'package:firebase_auth/firebase_auth.dart';
 import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:my_doctor/utils/sign_in.dart';
 
-class AppState {
-  bool loading;
-  FirebaseUser user;
-  AppState(this.loading, this.user);
-}
+import 'first_screen.dart';
+import 'main_list.dart';
+
 
 class LoginPage extends StatefulWidget {
-  @override
-  _HomeWidgetState createState() => _HomeWidgetState();
+@override
+_LoginPageState createState() => _LoginPageState();
 }
 
-class _HomeWidgetState extends State<LoginPage> {
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn();
-  final app = AppState(false, null);
+class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    if (app.loading) return _loading();
-    if (app.user == null) return _loginPage();
-    return _main();
-  }
-  Widget _loading () {
     return Scaffold(
-        appBar: AppBar(title: Text('loading...')),
-        body: Center(child: CircularProgressIndicator())
-    );
-  }
-  Widget _loginPage () {
-    return Scaffold(
-        appBar: AppBar(
-            title: Text('login page')
+      body: Container(
+        color: Colors.white,
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              FlutterLogo(size: 150),
+              SizedBox(height: 50),
+              _signInButton(),
+            ],
+          ),
         ),
-        body: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text('id'), Text('pass'),
-                RaisedButton(
-                    child: Text('login'),
-                    onPressed: () {
-                      _signIn();
-                    }
-                )
-              ],
-            )
-        )
-
+      ),
     );
   }
-  Widget _main () {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text('app.user'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.add),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => WriteDoc()),
-                );
+
+  Widget _signInButton() {
+    return OutlineButton(
+      splashColor: Colors.grey,
+      onPressed: () {
+        signInWithGoogle().whenComplete(() {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) {
+                return FirstScreen();
               },
             ),
-            IconButton(
-              icon: Icon(Icons.account_circle),
-              onPressed: () {
-                _signOut();
-              },
+          );
+        });
+      },
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
+      highlightElevation: 0,
+      borderSide: BorderSide(color: Colors.grey),
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Image(image: AssetImage("assets/images/google_logo.png"), height: 35.0),
+            Padding(
+              padding: const EdgeInsets.only(left: 10),
+              child: Text(
+                'Google로 로그인하기',
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.grey,
+                ),
+              ),
             )
           ],
         ),
-        body: _list()
-    );
-  }
-
-  Widget _list () {
-    return StreamBuilder<QuerySnapshot>(
-        stream: Firestore.instance.collection('test').snapshots(),
-        builder: (context, snapshot) {
-          final items = snapshot.data.documents;
-          return ListView.builder(
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return ListTile(
-                  title: Text(item['title']),
-                  subtitle: Text(item['subtitle'])
-              );
-            },
-          );
-        }
-    );
-  }
-
-  Future<String> _signIn () async {
-    setState(() => app.loading = true);
-    final GoogleSignInAccount googleUser = await _googleSignIn.signIn();
-    final GoogleSignInAuthentication googleAuth =
-    await googleUser.authentication;
-    final AuthCredential credential = GoogleAuthProvider.getCredential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    final AuthResult authResult = await _auth.signInWithCredential(credential);
-    final FirebaseUser user = authResult.user;
-
-    setState(() {
-      app.loading = false;
-      app.user = user;
-    });
-    print(user);
-    return 'success';
-
-  }
-  _signOut () async {
-    await _googleSignIn.signOut();
-    setState(() => app.user = null);
-  }
-}
-
-class WriteDoc extends StatelessWidget {
-  var title, subtitle;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Second Route"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.save),
-            onPressed: () async {
-              await Firestore.instance.collection('test').add({ 'title': title, 'subtitle': subtitle });
-              Navigator.pop(context);
-            },
-          )
-        ],
-      ),
-      body: Container(
-          padding: EdgeInsets.all(20),
-          child: Column(
-            children: <Widget>[
-              TextField(
-                onChanged: (text) => title = text,
-              ),
-              TextField(
-                onChanged: (text) => subtitle = text,
-              )
-            ],
-          )
-
       ),
     );
   }
 }
 
 
+
+//
 //class LoginPage extends StatefulWidget {
 //  @override
 //  State createState() => SignInDemoState();
@@ -176,7 +94,7 @@ class WriteDoc extends StatelessWidget {
 //  GoogleSignIn _googleSignIn = GoogleSignIn(
 //    scopes: <String>[
 //      'email',
-////      'https://www.googleapis.com/auth/contacts.readonly',
+//      'https://www.googleapis.com/auth/contacts.readonly',
 //    ],
 //  );
 //
@@ -244,7 +162,7 @@ class WriteDoc extends StatelessWidget {
 //    try {
 //      await _googleSignIn.signIn();
 //    } catch (error) {
-//      print(error);
+//      print("_handleSignIn():"+error.toString());
 //    }
 //  }
 //
