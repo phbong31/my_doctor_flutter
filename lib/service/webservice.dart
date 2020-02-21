@@ -1,3 +1,4 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
 import 'package:my_doctor/utils/constants.dart';
@@ -10,10 +11,17 @@ class Resource<T> {
 }
 
 class Webservice {
+  FlutterSecureStorage storage = FlutterSecureStorage();
 
-  String tokenString = Constants.TOKEN;
+  Future<String> getToken() async {
+    String aToken = await storage.read(key:"aToken");
+    return aToken;
+  }
+
+
+  //String tokenString = Constants.TOKEN;
   Future<T> load<T>(Resource<T> resource) async {
-
+    final String tokenString = await getToken();
     final response = await http.get(resource.url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
