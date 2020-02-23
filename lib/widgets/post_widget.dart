@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
@@ -17,8 +18,10 @@ class PostWidget extends StatefulWidget {
   final BoardBase post;
   final User userInfo;
   final List<Photo> photos;
+  final String token;
 
-  PostWidget(this.post, this.userInfo, this.photos);
+  PostWidget(this.post, this.userInfo, this.photos, this.token);
+
 
   @override
   _PostWidgetState createState() => _PostWidgetState();
@@ -29,6 +32,7 @@ class _PostWidgetState extends State<PostWidget> {
   StreamController.broadcast();
   bool _isSaved = false;
   int _currentImageIndex = 0;
+
 
   @override
   void dispose() {
@@ -83,7 +87,7 @@ class _PostWidgetState extends State<PostWidget> {
   Widget build(BuildContext context) {
 //    var photoObjsJson = jsonDecode(widget.post.photoList)['photos'] as List;
 //    List<Photo> photoObjs = photoObjsJson.map((photoJson) => Photo.fromJson(photoJson)).toList();
-
+//    print(widget.token);
     return Column(
 
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -127,12 +131,27 @@ class _PostWidgetState extends State<PostWidget> {
               CarouselSlider(
 
                 items: widget.photos.map((json) {
-                  return Image.network(
-                    Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+Constants.TOKEN,
-                    fit: BoxFit.fitWidth,
+//                  return CachedNetworkImage(
+//                    imageUrl: Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token+"/",
 //                    fit: BoxFit.fitWidth,
+//                    width: MediaQuery.of(context).size.width,
+//                  );
+//                try {
+//                print(Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token);
+                  return CachedNetworkImage(
+                    imageUrl:Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token,
+                    fit: BoxFit.fitWidth,
                     width: MediaQuery.of(context).size.width,
+                    placeholder: (context, url) => CircularProgressIndicator(),
+                    errorWidget: (context, url, error) => Icon(Icons.error),
                   );
+//                } catch (e) {
+//                  print('ShowImage - _renderImage()] - caught exception $e');
+//                  return Center(
+//                    child: Text('Image Format Can Not Be Rendered'),
+//                  );
+//                }
+
                 }).toList(),
                 viewportFraction: 1.0,
                 enableInfiniteScroll: false,

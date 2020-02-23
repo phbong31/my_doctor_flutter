@@ -11,22 +11,31 @@ class Resource<T> {
 }
 
 class Webservice {
-  FlutterSecureStorage storage = FlutterSecureStorage();
+  final storage = FlutterSecureStorage();
+  String tokenString = "";
 
-  Future<String> getToken() async {
-    String aToken = await storage.read(key:"aToken");
-    return aToken;
-  }
-
-
-  //String tokenString = Constants.TOKEN;
   Future<T> load<T>(Resource<T> resource) async {
-    final String tokenString = await getToken();
+//    String tokenString = await getToken();
+   // bool isEmpty(tokenString) => tokenString == "" || tokenString.isEmpty;
+//    print("tokenString:"+tokenString);
+//    if(tokenString.isEmpty || tokenString == null) {
+//      tokenString = "test";
+//    }
+
+    void getAToken() async {
+      tokenString = await storage.read(key: "aToken");
+   //   print("Webservice.getAToken():"+tokenString);
+    }
+
+    getAToken();
+
     final response = await http.get(resource.url, headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
       'Authorization': '$tokenString',
     });
+    //tokenString = Constants.TOKEN;
+   // print("token:"+tokenString);
     print("http:statusCode="+response.statusCode.toString());
     if(response.statusCode == 200) {
       return resource.parse(response);

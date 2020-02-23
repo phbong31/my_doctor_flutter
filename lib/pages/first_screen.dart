@@ -19,12 +19,15 @@
 // SOFTWARE.
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_doctor/service/token_service.dart';
 import 'package:my_doctor/utils/sign_in.dart';
 
 import 'login_page.dart';
 
 
 class FirstScreen extends StatelessWidget {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,6 +81,7 @@ class FirstScreen extends StatelessWidget {
                     color: Colors.deepPurple,
                     fontWeight: FontWeight.bold),
               ),
+//              Text("token:"+tokenString),
               SizedBox(height: 40),
               RaisedButton(
                 onPressed: () {

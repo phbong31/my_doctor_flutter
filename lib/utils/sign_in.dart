@@ -62,7 +62,7 @@ Future<String> signInWithGoogle() async {
   assert(user.uid == currentUser.uid);
 
   print(user.uid+"//"+user.email);
-  return 'signInWithGoogle succeeded: $user';
+  return user.uid;
 }
 
 void signOutGoogle() async {

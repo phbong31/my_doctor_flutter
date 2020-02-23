@@ -9,6 +9,8 @@ import '../board_list.dart';
 import 'home_page.dart';
 
 class TabPage extends StatefulWidget {
+  static final String routeName = 'tab_page';
+
   @override
   _TabPageState createState() => _TabPageState();
 }
@@ -16,7 +18,7 @@ class TabPage extends StatefulWidget {
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
 
-  List _pages = [MainPage(), LoginScreen(), LoginPage()];
+  List _pages = [MainPage(), LoginScreen(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {

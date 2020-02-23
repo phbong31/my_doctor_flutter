@@ -1,9 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+//import 'package:kakao_flutter_sdk/all.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
+import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
@@ -18,11 +21,25 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<BoardBase> _boardBase = List<BoardBase>();
   YoutubePlayerController _controller;
+  final storage = FlutterSecureStorage();
+
+  String tokenString = "";
+  String token = "";
+
+
+  void getAToken() async {
+    tokenString = await storage.read(key: "aToken");
+    print("getAToken():"+tokenString);
+    setState(() {
+      token = tokenString;
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _populateNewBoard();
+    getAToken();
 
     _controller = YoutubePlayerController(
       initialVideoId: 'CSa6Ocyog4U',
@@ -104,7 +121,13 @@ class _MainPageState extends State<MainPage> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 alignment: Alignment.bottomLeft,
-                child: Text('안녕하세요'),
+                child: FlatButton(
+                  onPressed: () {
+                    NetworkUtils.logoutUser(context);
+//                    Navigator.pushNamed(context, "YourRoute");
+                  },
+                  child: Text("로그아웃"),
+                )
               ),
             ),
             expandedHeight: 100,
@@ -165,9 +188,9 @@ class _MainPageState extends State<MainPage> {
     user.profileUrl = _boardBase[i - 1].profileUrl;
     print(_boardBase[i - 1].photoList);
     return _boardBase[i - 1].photoList == null
-        ? PostWidget(_boardBase[i - 1], user, null)
+        ? PostWidget(_boardBase[i - 1], user, null,token)
         : PostWidget(
-            _boardBase[i - 1], user, parsePhotos(_boardBase[i - 1].photoList));
+            _boardBase[i - 1], user, parsePhotos(_boardBase[i - 1].photoList),token);
   }
 
   Widget ListViewWidget() {
@@ -205,9 +228,9 @@ class _MainPageState extends State<MainPage> {
         user.profileUrl = _boardBase[i - 1].profileUrl;
         print(_boardBase[i - 1].photoList);
         return _boardBase[i - 1].photoList == null
-            ? PostWidget(_boardBase[i - 1], user, null)
+            ? PostWidget(_boardBase[i - 1], user, null,token)
             : PostWidget(_boardBase[i - 1], user,
-                parsePhotos(_boardBase[i - 1].photoList));
+                parsePhotos(_boardBase[i - 1].photoList),token);
       },
 
       itemCount: _boardBase.length,
