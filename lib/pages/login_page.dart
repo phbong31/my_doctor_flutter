@@ -8,6 +8,7 @@ import "package:http/http.dart" as http;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_doctor/pages/tab_page.dart';
+import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
 import 'package:my_doctor/utils/auth_utils.dart';
 import 'package:my_doctor/utils/constants.dart';
@@ -54,9 +55,10 @@ class LoginPageState extends State<LoginPage> {
   }
 
   _fetchSessionAndNavigate() async {
-    _sharedPreferences = await _prefs;
-    String authToken = AuthUtils.getToken(_sharedPreferences);
+//    _sharedPreferences = await _prefs;
+    var authToken = await Token.getToken();
     if (authToken != null) {
+      print("fetchSession token not null!!");
       Navigator.of(_scaffoldKey.currentContext)
           .pushReplacementNamed(TabPage.routeName);
     }
@@ -110,16 +112,7 @@ class LoginPageState extends State<LoginPage> {
   _authenticateGoogleUser() async {
     _showLoading();
 
-    signInWithGoogle().whenComplete(() {
-    //  setToken();
-//      Navigator.of(context).push(
-//        MaterialPageRoute(
-//          builder: (context) {
-//            return TabPage();
-//          },
-//        ),
-//      );
-    }).then((value) async {
+    signInWithGoogle().then((value) async {
       print("google login return :"+value);
 
     var responseJson = await NetworkUtils.authenticateSNSUser(
@@ -128,7 +121,8 @@ class LoginPageState extends State<LoginPage> {
     print(responseJson);
 
     if (responseJson == null) {
-      NetworkUtils.showSnackBar(_scaffoldKey, 'Something went wrong!');
+      NetworkUtils.showSnackBar(_scaffoldKey, '등록되지 않은 사용자입니다.');
+      signOutGoogle();
     } else if (responseJson == 'NetworkError') {
       NetworkUtils.showSnackBar(_scaffoldKey, null);
     } else if (responseJson['errors'] != null) {
@@ -140,7 +134,8 @@ class LoginPageState extends State<LoginPage> {
        * In this case on press back on HomePage app will exit.
        * **/
 //      print(responseJson['aToken']);
-      Token.writeToken(responseJson['aToken']);
+//      Token.writeToken(responseJson['aToken']);
+      SecureStorage.writeJson(responseJson);
 
       Navigator.of(_scaffoldKey.currentContext)
           .pushReplacementNamed(TabPage.routeName);

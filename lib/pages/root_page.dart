@@ -15,8 +15,10 @@ class RootPage extends StatelessWidget {
           accentColor: Colors.green.shade500,
           bottomAppBarColor: Colors.white
       ),
-      home: LoginPage(),
+//      home: LoginPage(),
+      initialRoute: '/',
       routes: {
+        '/': (context) => LoginPage(),
         TabPage.routeName: (BuildContext context) => TabPage()
       },
     );

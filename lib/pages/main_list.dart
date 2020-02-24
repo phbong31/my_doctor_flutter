@@ -35,11 +35,24 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
+  String userName;
+  String position;
+  void getUserInfo() async {
+    String _userName = await storage.read(key: "name");
+    String _position = await storage.read(key: "position");
+    setState(() {
+      userName = _userName;
+      position = _position;
+    });
+  }
+
   @override
   void initState() {
     super.initState();
-    _populateNewBoard();
     getAToken();
+    getUserInfo();
+    _populateNewBoard();
+
 
     _controller = YoutubePlayerController(
       initialVideoId: 'CSa6Ocyog4U',
@@ -121,12 +134,18 @@ class _MainPageState extends State<MainPage> {
               padding: const EdgeInsets.all(8.0),
               child: Container(
                 alignment: Alignment.bottomLeft,
-                child: FlatButton(
-                  onPressed: () {
-                    NetworkUtils.logoutUser(context);
+                child: Row(
+                  children: <Widget>[
+                    Text('$userName'),
+                    Text('($position)'),
+                    FlatButton(
+                      onPressed: () {
+                        NetworkUtils.logoutUser(context);
 //                    Navigator.pushNamed(context, "YourRoute");
-                  },
-                  child: Text("로그아웃"),
+                      },
+                      child: Text("로그아웃"),
+                    ),
+                  ],
                 )
               ),
             ),

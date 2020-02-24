@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:my_doctor/pages/login_page.dart';
+import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
 import 'package:my_doctor/utils/sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -66,9 +68,13 @@ class NetworkUtils {
 //    prefs.setInt(AuthUtils.userIdKey, null);
 //    prefs.setString(AuthUtils.nameKey, null);
     signOutGoogle();
-    Token.writeToken("");
+    SecureStorage.deleteStorage();
 
-    Navigator.of(context).pushReplacementNamed('/');
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+      ModalRoute.withName('/'),
+    );
   }
 
   static showSnackBar(GlobalKey<ScaffoldState> scaffoldKey, String message) {
