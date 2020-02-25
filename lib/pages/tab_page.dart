@@ -6,6 +6,7 @@ import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
 
 import '../board_list.dart';
+import 'camera_page.dart';
 import 'home_page.dart';
 
 class TabPage extends StatefulWidget {
@@ -17,8 +18,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-
-  List _pages = [MainPage(), LoginScreen(), ProfilePage()];
+  List _pages = [MainPage(), LoginScreen(), CameraPage()];
 
   @override
   Widget build(BuildContext context) {
