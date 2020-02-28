@@ -1,19 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:kakao_flutter_sdk/common.dart';
-//import 'search_bloc/bloc.dart';
-//import 'package:bloc/bloc.dart';
+
 
 class LoginScreen extends StatefulWidget {
+
   @override
   State<StatefulWidget> createState() {
+    KakaoContext.clientId = "0fe74bc1afa0a00174cf4bda8a7e5fda";
+    //KakaoContext.javascriptClientId = "a527841dd8ee52cb4318f6e389f28c9e";
     return _LoginState();
   }
 }
 
 class _LoginState extends State<LoginScreen> {
+
+
   @override
   void initState() {
     super.initState();

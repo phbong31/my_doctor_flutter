@@ -47,6 +47,7 @@ dependencies:
   video_player:
   esys_flutter_share:
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
