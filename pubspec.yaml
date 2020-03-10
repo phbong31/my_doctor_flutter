@@ -46,7 +46,8 @@ dependencies:
       url: https://github.com/divyanshub024/Flutter_Thumbnails.git
   video_player:
   esys_flutter_share:
-
+  provider: ^4.0.4
+  validators:
 
 dev_dependencies:
   flutter_test:

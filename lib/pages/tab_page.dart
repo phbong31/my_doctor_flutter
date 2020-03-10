@@ -4,6 +4,7 @@ import 'package:my_doctor/pages/login_page_kakao.dart';
 import 'package:my_doctor/pages/main_list.dart';
 import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
+import 'package:my_doctor/signup/input_data.dart';
 
 import '../board_list.dart';
 import 'camera_page.dart';
@@ -23,19 +24,19 @@ class _TabPageState extends State<TabPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(child: _pages[_selectedIndex]),
-      bottomNavigationBar: BottomNavigationBar(
-          fixedColor: Colors.black,
-          onTap: _onItemTapped,
-          currentIndex: _selectedIndex,
-          items: <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('홈')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.group), title: Text('내그룹')),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.account_circle), title: Text('내계정')),
-          ]),
-    );
+        body: Center(child: _pages[_selectedIndex]),
+        bottomNavigationBar: BottomNavigationBar(
+            fixedColor: Colors.black,
+            onTap: _onItemTapped,
+            currentIndex: _selectedIndex,
+            items: <BottomNavigationBarItem>[
+              BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('홈')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.group), title: Text('내그룹')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.account_circle), title: Text('내계정')),
+            ]),
+      );
   }
 
   void _onItemTapped(int index) {
