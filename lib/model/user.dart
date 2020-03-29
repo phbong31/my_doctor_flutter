@@ -15,8 +15,8 @@ class User {
   String profileUrl;
   String kImageUrl;
   String position;
+  String token;
 
   User(this.id, this.name, this.position, this.profileUrl);
-
 
 }

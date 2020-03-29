@@ -2,15 +2,18 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 //import 'package:kakao_flutter_sdk/all.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
+import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
+import 'package:provider/provider.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class MainPage extends StatefulWidget {
@@ -21,38 +24,11 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   List<BoardBase> _boardBase = List<BoardBase>();
   YoutubePlayerController _controller;
-  final storage = FlutterSecureStorage();
-
-  String tokenString = "";
-  String token = "";
-
-
-  void getAToken() async {
-    tokenString = await storage.read(key: "aToken");
-    print("getAToken():"+tokenString);
-    setState(() {
-      token = tokenString;
-    });
-  }
-
-  String userName;
-  String position;
-  void getUserInfo() async {
-    String _userName = await storage.read(key: "name");
-    String _position = await storage.read(key: "position");
-    setState(() {
-      userName = _userName;
-      position = _position;
-    });
-  }
 
   @override
   void initState() {
     super.initState();
-    getAToken();
-    getUserInfo();
     _populateNewBoard();
-
 
     _controller = YoutubePlayerController(
       initialVideoId: 'CSa6Ocyog4U',
@@ -118,36 +94,36 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
+    final inputData = Provider.of<InputData>(context);
+    inputData.updateInfo();
     return Scaffold(
-
         body: Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0),
       child: CustomScrollView(
         scrollDirection: Axis.vertical,
         slivers: <Widget>[
           SliverAppBar(
-            title: Image(image: AssetImage('assets/images/logo.png'),),
-
+            title: Image(
+              image: AssetImage('assets/images/logo.png'),
+            ),
             floating: true,
             flexibleSpace: Padding(
-
               padding: const EdgeInsets.all(8.0),
               child: Container(
-                alignment: Alignment.bottomLeft,
-                child: Row(
-                  children: <Widget>[
-                    Text('$userName'),
-                    Text('($position)'),
-                    FlatButton(
-                      onPressed: () {
-                        NetworkUtils.logoutUser(context);
+                  alignment: Alignment.bottomLeft,
+                  child: Row(
+                    children: <Widget>[
+                      Text('${inputData.name}'),
+                      Text('${inputData.position}'),
+                      FlatButton(
+                        onPressed: () {
+                          NetworkUtils.logoutUser(context);
 //                    Navigator.pushNamed(context, "YourRoute");
-                      },
-                      child: Text("로그아웃"),
-                    ),
-                  ],
-                )
-              ),
+                        },
+                        child: Text("로그아웃"),
+                      ),
+                    ],
+                  )),
             ),
             expandedHeight: 100,
           ),
@@ -176,7 +152,7 @@ class _MainPageState extends State<MainPage> {
               } else {
                 return Container(
                     margin: EdgeInsets.only(bottom: 24.0),
-                    child: MainPost(idx));
+                    child: MainPost(idx, inputData.token));
               }
             }, childCount: _boardBase.length),
           ),
@@ -200,60 +176,61 @@ class _MainPageState extends State<MainPage> {
     );
   }
 
-  Widget MainPost(int i) {
+  Widget MainPost(int i, String token) {
     User user = User(_boardBase[i - 1].creatorId, _boardBase[i - 1].writerName,
         _boardBase[i - 1].position, _boardBase[i - 1].profileUrl);
     user.position = _boardBase[i - 1].position;
     user.profileUrl = _boardBase[i - 1].profileUrl;
     print(_boardBase[i - 1].photoList);
     return _boardBase[i - 1].photoList == null
-        ? PostWidget(_boardBase[i - 1], user, null,token)
-        : PostWidget(
-            _boardBase[i - 1], user, parsePhotos(_boardBase[i - 1].photoList),token);
+        ? PostWidget(_boardBase[i - 1], user, null, token)
+        : PostWidget(_boardBase[i - 1], user,
+            parsePhotos(_boardBase[i - 1].photoList), token);
   }
 
-  Widget ListViewWidget() {
-    return Container(
-        child: ListView.separated(
-      separatorBuilder: (context, index) => Divider(
-        color: Colors.brown[50],
-        height: 24.0,
-        thickness: 12.0,
-//            indent: 4.0,
-//            endIndent: 4.0,
-      ),
-      itemBuilder: (ctx, i) {
-        if (i == 0) {
-          return YoutubePlayer(
-            controller: _controller,
-            showVideoProgressIndicator: true,
-            progressIndicatorColor: Colors.amber,
-//                progressColors: ProgressColors(
-//                  playedColor: Colors.amber,
-//                  handleColor: Colors.amberAccent,
-//                ),
-            onReady: () {
-              print('Player is ready.');
-            },
-          );
-        }
-//            return _buildItemsForListView(context, i - 1);
-        User user = User(
-            _boardBase[i - 1].creatorId,
-            _boardBase[i - 1].writerName,
-            _boardBase[i - 1].position,
-            _boardBase[i - 1].profileUrl);
-        user.position = _boardBase[i - 1].position;
-        user.profileUrl = _boardBase[i - 1].profileUrl;
-        print(_boardBase[i - 1].photoList);
-        return _boardBase[i - 1].photoList == null
-            ? PostWidget(_boardBase[i - 1], user, null,token)
-            : PostWidget(_boardBase[i - 1], user,
-                parsePhotos(_boardBase[i - 1].photoList),token);
-      },
-
-      itemCount: _boardBase.length,
-//          itemBuilder: _buildItemsForListView,
-    ));
-  }
+//  Widget ListViewWidget() {
+//    final inputData = Provider.of<InputData>(context);
+//    return Container(
+//        child: ListView.separated(
+//      separatorBuilder: (context, index) => Divider(
+//        color: Colors.brown[50],
+//        height: 24.0,
+//        thickness: 12.0,
+////            indent: 4.0,
+////            endIndent: 4.0,
+//      ),
+//      itemBuilder: (ctx, i) {
+//        if (i == 0) {
+//          return YoutubePlayer(
+//            controller: _controller,
+//            showVideoProgressIndicator: true,
+//            progressIndicatorColor: Colors.amber,
+////                progressColors: ProgressColors(
+////                  playedColor: Colors.amber,
+////                  handleColor: Colors.amberAccent,
+////                ),
+//            onReady: () {
+//              print('Player is ready.');
+//            },
+//          );
+//        }
+////            return _buildItemsForListView(context, i - 1);
+//        User user = User(
+//            _boardBase[i - 1].creatorId,
+//            _boardBase[i - 1].writerName,
+//            _boardBase[i - 1].position,
+//            _boardBase[i - 1].profileUrl);
+//        user.position = _boardBase[i - 1].position;
+//        user.profileUrl = _boardBase[i - 1].profileUrl;
+//        print(_boardBase[i - 1].photoList);
+//        return _boardBase[i - 1].photoList == null
+//            ? PostWidget(_boardBase[i - 1], user, null, inputData.token)
+//            : PostWidget(_boardBase[i - 1], user,
+//                parsePhotos(_boardBase[i - 1].photoList), inputData.token);
+//      },
+//
+//      itemCount: _boardBase.length,
+////          itemBuilder: _buildItemsForListView,
+//    ));
+//  }
 }

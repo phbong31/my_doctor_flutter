@@ -10,6 +10,8 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
+import 'package:my_doctor/signup/input_data.dart';
+import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/signup/signup_page.dart';
 import 'package:my_doctor/utils/auth_utils.dart';
 import 'package:my_doctor/utils/constants.dart';
@@ -20,6 +22,7 @@ import 'package:my_doctor/widgets/email_field.dart';
 import 'package:my_doctor/widgets/error_box.dart';
 import 'package:my_doctor/widgets/google_login_button.dart';
 import 'package:my_doctor/widgets/password_field.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'first_screen.dart';
@@ -32,20 +35,21 @@ class LoginPage extends StatefulWidget {
 
 class LoginPageState extends State<LoginPage> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
-  SharedPreferences _sharedPreferences;
+//  Future<SharedPreferences> _prefs = SharedPreferences.getInstance();
+//  SharedPreferences _sharedPreferences;
   bool _isError = false;
   bool _obscureText = true;
   bool _isLoading = false;
   TextEditingController _emailController, _passwordController;
   String _errorText, _emailError, _passwordError;
 
-  //flutter_secure_storage
-  final storage = new FlutterSecureStorage();
-  void setToken() async {
-    await storage.write(key: "aToken", value: Constants.TOKEN);
-    print("SET TOKEN################# ");
-  }
+//  //flutter_secure_storage
+//  final storage = new FlutterSecureStorage();
+//  void setToken() async {
+//    await storage.write(key: "aToken", value: Constants.TOKEN);
+//    print("SET TOKEN################# ");
+//  }
+
 
   @override
   void initState() {
@@ -92,7 +96,7 @@ class LoginPageState extends State<LoginPage> {
       } else if (responseJson['errors'] != null) {
         NetworkUtils.showSnackBar(_scaffoldKey, 'Invalid Email/Password');
       } else {
-        AuthUtils.insertDetails(_sharedPreferences, responseJson);
+//        AuthUtils.insertDetails(_sharedPreferences, responseJson);
         /**
          * Removes stack and start with the new page.
          * In this case on press back on HomePage app will exit.
@@ -139,6 +143,9 @@ class LoginPageState extends State<LoginPage> {
 //      print(responseJson['aToken']);
 //      Token.writeToken(responseJson['aToken']);
       SecureStorage.writeJson(responseJson);
+      InputData inputData = new InputData();
+//      inputData.writeJson(responseJson);
+      inputData.getUserInfo();
 
       Navigator.of(_scaffoldKey.currentContext)
           .pushReplacementNamed(TabPage.routeName);
