@@ -95,7 +95,7 @@ class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
     final inputData = Provider.of<InputData>(context);
-    inputData.updateInfo();
+//    inputData.updateInfo();
     return Scaffold(
         body: Container(
       padding: EdgeInsets.symmetric(horizontal: 8.0),

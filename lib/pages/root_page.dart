@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_doctor/pages/splash_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/signup/signup_page.dart';
@@ -26,7 +27,7 @@ class RootPage extends StatelessWidget {
 //      home: LoginPage(),
         initialRoute: '/',
         routes: {
-          '/': (context) => LoginPage(),
+          '/': (context) => SplashScreen(),
           TabPage.routeName: (BuildContext context) => TabPage(),
           SignUpPage.routeName: (BuildContext context) => SignUpPage()
         },

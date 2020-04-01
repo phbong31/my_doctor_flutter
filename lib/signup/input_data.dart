@@ -35,7 +35,7 @@ class InputData with ChangeNotifier {
     userData.token = await storage.read(key: "aToken");
     print("...");
     return Future.delayed(
-        Duration(seconds: 3), () => userData);
+        Duration(seconds: 1), () => userData);
   }
 
   void updateInfo() async {
@@ -43,9 +43,10 @@ class InputData with ChangeNotifier {
       'before delay'
     );
     final userData = await getUserData();
+    token = userData.token;
     name = userData.name;
     position = userData.position;
-    token = userData.token;
+
 
     print("udateInfo : notifyListeners");
 //    notifyListeners();
