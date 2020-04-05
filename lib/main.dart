@@ -9,7 +9,7 @@ import 'package:provider/provider.dart';
 
 void main() {
   KakaoContext.clientId = "0fe74bc1afa0a00174cf4bda8a7e5fda";
-  KakaoContext.javascriptClientId = "a527841dd8ee52cb4318f6e389f28c9e";
+//  KakaoContext.javascriptClientId = "a527841dd8ee52cb4318f6e389f28c9e";
 
 //  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]).then((_) {
 //    runApp(RootPage());

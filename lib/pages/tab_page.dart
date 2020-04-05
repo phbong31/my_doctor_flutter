@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:my_doctor/pages/login_page.dart';
 import 'package:my_doctor/pages/login_page_kakao.dart';
 import 'package:my_doctor/pages/main_list.dart';
@@ -25,6 +26,7 @@ class _TabPageState extends State<TabPage> {
 
   @override
   Widget build(BuildContext context) {
+
 //    final inputData = Provider.of<InputData>(context);
 //    inputData.getUserInfo();
 //    inputData.updateInfo();

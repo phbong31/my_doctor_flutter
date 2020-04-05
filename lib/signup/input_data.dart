@@ -20,6 +20,8 @@ class InputData with ChangeNotifier {
     token = await storage.read(key: "aToken");
     name = await storage.read(key: "name");
     position = await storage.read(key: "position");
+    profileUrl = await storage.read(key: "profileUrl");
+
 //    print("token:" + token);
 //    print("name:" + name);
 //    print("position:" + position);
@@ -33,9 +35,10 @@ class InputData with ChangeNotifier {
     userData.name = await storage.read(key: "name");
     userData.position = await storage.read(key: "position");
     userData.token = await storage.read(key: "aToken");
+    userData.profileUrl = await storage.read(key: "profileUrl");
     print("...");
     return Future.delayed(
-        Duration(seconds: 1), () => userData);
+        Duration(seconds: 3), () => userData);
   }
 
   void updateInfo() async {
@@ -46,6 +49,7 @@ class InputData with ChangeNotifier {
     token = userData.token;
     name = userData.name;
     position = userData.position;
+    profileUrl = userData.profileUrl;
 
 
     print("udateInfo : notifyListeners");

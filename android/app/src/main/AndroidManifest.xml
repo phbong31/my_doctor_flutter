@@ -21,6 +21,14 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity android:name="com.kakao.sdk.flutter.AuthCodeCustomTabsActivity">
+            <intent-filter android:label="flutter_web_auth">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT"/>
+                <category android:name="android.intent.category.BROWSABLE"/>
+                <data android:scheme="kakao0fe74bc1afa0a00174cf4bda8a7e5fda" android:host="oauth"/>
+            </intent-filter>
+        </activity>
 
         <activity
             android:name="com.yalantis.ucrop.UCropActivity"

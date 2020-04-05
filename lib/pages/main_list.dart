@@ -112,16 +112,28 @@ class _MainPageState extends State<MainPage> {
               child: Container(
                   alignment: Alignment.bottomLeft,
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
                     children: <Widget>[
-                      Text('${inputData.name}'),
-                      Text('${inputData.position}'),
-                      FlatButton(
-                        onPressed: () {
+                      Text('${inputData.name} 님!'),
+                      SizedBox(width: 10.0),
+                      GestureDetector(
+                        onTap: () {
                           NetworkUtils.logoutUser(context);
-//                    Navigator.pushNamed(context, "YourRoute");
                         },
-                        child: Text("로그아웃"),
+                        child: CircleAvatar(
+                          radius: 14.0,
+                          backgroundImage: NetworkImage('${inputData.profileUrl}'),
+
+                        ),
                       ),
+                      SizedBox(width: 20.0)
+//                      FlatButton(
+//                        onPressed: () {
+//                          NetworkUtils.logoutUser(context);
+////                    Navigator.pushNamed(context, "YourRoute");
+//                        },
+//                        child: Text("로그아웃"),
+//                      ),
                     ],
                   )),
             ),
