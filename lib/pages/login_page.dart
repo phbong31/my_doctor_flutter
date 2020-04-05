@@ -142,13 +142,16 @@ class LoginPageState extends State<LoginPage> {
        * **/
 //      print(responseJson['aToken']);
 //      Token.writeToken(responseJson['aToken']);
-      SecureStorage.writeJson(responseJson);
+      SecureStorage.writeJson(responseJson).whenComplete(() {
+          Navigator.of(_scaffoldKey.currentContext)
+              .pushReplacementNamed('/');
+      });
+
 //      InputData inputData = new InputData();
 ////      inputData.writeJson(responseJson);
 //      inputData.updateInfo();
 
-      Navigator.of(_scaffoldKey.currentContext)
-          .pushReplacementNamed('/');
+
     }
     });
 

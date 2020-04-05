@@ -41,16 +41,16 @@ class InputData with ChangeNotifier {
         Duration(seconds: 3), () => userData);
   }
 
-  void updateInfo() async {
+  Future<void> updateInfo() async {
     print(
       'before delay'
     );
-    final userData = await getUserData();
-    token = userData.token;
-    name = userData.name;
-    position = userData.position;
-    profileUrl = userData.profileUrl;
+    final storage = FlutterSecureStorage();
 
+    name = await storage.read(key: "name");
+    position = await storage.read(key: "position");
+    token = await storage.read(key: "aToken");
+    profileUrl = await storage.read(key: "profileUrl");
 
     print("udateInfo : notifyListeners");
 //    notifyListeners();

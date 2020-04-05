@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SecureStorage {
 
-  static void writeJson(var jsonString) async {
+  static Future<void> writeJson(var jsonString) async {
     final storage = FlutterSecureStorage();
     Map<String, dynamic> jsonToMap = jsonString;
 
