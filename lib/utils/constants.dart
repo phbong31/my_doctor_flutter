@@ -1,6 +1,8 @@
 class Constants {
 
   static final String BOARD_LIST_URL = 'http://hsbong.synology.me:8080/PatientPhoto/api/list';
+  static final String GROUP_LIST_URL = 'http://hsbong.synology.me:8080/PatientPhoto/api/groupListAll';
+
   static final String PHOTO_LIST_URL = 'http://hsbong.synology.me:8080/pps/getPhoto.jsp?patientId=220836';
   static final String PHOTO_VIEW_URL = 'http://hsbong.synology.me:8080/PatientPhoto/picture/';
 
