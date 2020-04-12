@@ -89,18 +89,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                         SizedBox(width: 20.0)
-
                       ],
                     )),
               ),
               expandedHeight: 100,
             ),
 
-
             SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(20,20,0,5),
-                  child: Text('전체 그룹 목록'),
+              padding: EdgeInsets.fromLTRB(20, 20, 0, 5),
+              child: Text('전체 그룹 목록'),
             )),
 
             //그룹 카드 리스트
@@ -108,7 +106,7 @@ class _HomePageState extends State<HomePage> {
               child: Padding(
                 padding: const EdgeInsets.all(12.0),
                 child: Container(
-                  height: 150.0,
+                  height: 170.0,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: _group.length,
@@ -122,9 +120,9 @@ class _HomePageState extends State<HomePage> {
 
             SliverToBoxAdapter(
                 child: Padding(
-                  padding: EdgeInsets.fromLTRB(10,30,0,5),
-                  child: Text('최신 글'),
-                )),
+              padding: EdgeInsets.fromLTRB(10, 30, 0, 5),
+              child: Text('최신 글'),
+            )),
 
             //게시글
             SliverPadding(
@@ -149,7 +147,9 @@ class _HomePageState extends State<HomePage> {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 4.0),
       width: 170.0,
-      child: _group[i].groupIconUrl == null ? groupCardNoIcon(i): groupCardIcon(i),
+      child: _group[i].groupIconUrl == null
+          ? groupCardNoIcon(i)
+          : groupCardIcon(i),
     );
   }
 
@@ -158,8 +158,18 @@ class _HomePageState extends State<HomePage> {
       elevation: 5,
       child: Column(
         children: <Widget>[
+          _group[i].joinCount == 0 ?
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: Text('가입하기'),
+          ) : Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: Text('가입중'),
+          ),
           CachedNetworkImage(
-            imageUrl: _group[i].groupIconUrl == null ? 'http://hsbong.synology.me:8080/profile/logo.png' : _group[i].groupIconUrl,
+            imageUrl: _group[i].groupIconUrl == null
+                ? 'http://hsbong.synology.me:8080/profile/logo.png'
+                : _group[i].groupIconUrl,
             fit: BoxFit.fill,
             height: 110,
 //              width: BoxFit.contain,
@@ -181,8 +191,16 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          Center(
-              child: Text(_group[i].groupName)),
+          _group[i].joinCount == 0 ?
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: Text('가입하기'),
+          ) : Container(
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: Text('가입중'),
+          ),
+
+          Center(child: Text(_group[i].groupName)),
         ],
       ),
     );

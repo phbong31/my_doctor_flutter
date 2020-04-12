@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
 
@@ -23,13 +24,15 @@ class Group {
   final int groupId;
   final int userId;
   final int userLevel;
-  final String jointDate;
+  final String joinDate;
+  final int joinCount;
 
   Group({this.id, this.groupType, this.parentGroupId, this.parentGroupName, this.parentGroupIconUrl, this.groupName, this.groupText,
       this.groupIconUrl, this.groupDetailPhotoUrl1,this.groupDetailPhotoUrl2,this.groupDetailPhotoUrl3, this.adminUserId,
       this.presidentUserId, this.secret, this.createdTime,
       this.defaultUserLevel, this.accessLevel, this.groupId, this.userId,
-      this.userLevel, this.jointDate});
+      this.userLevel, this.joinDate, this.joinCount});
+
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
@@ -53,13 +56,23 @@ class Group {
         groupId: json['groupId'],
         userId: json['userId'],
         userLevel: json['userLevel'],
-        jointDate: json['jointDate']
+        joinDate: json['joinDate'],
+        joinCount: json['joinCount']
     );
   }
 
   static Resource<List<Group>> get all {
+//    final storage = FlutterSecureStorage();
+  //  String tokenString = "";
+
+//    Future<String> getAToken() async {
+//      return await storage.read(key: "aToken");
+//      //   print("Webservice.getAToken():"+tokenString);
+//    }
+
     return Resource(
         url: Constants.GROUP_LIST_URL,
+
         parse: (response) {
           print(response.body.toString());
           final result = json.decode(response.body);

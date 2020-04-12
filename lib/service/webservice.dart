@@ -1,3 +1,4 @@
+
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
@@ -5,37 +6,40 @@ import 'package:my_doctor/utils/constants.dart';
 
 class Resource<T> {
   final String url;
+  final String token;
   T Function(Response response) parse;
 
-  Resource({this.url,this.parse});
+  Resource({this.url,this.token,this.parse});
 }
 
 class Webservice {
   final storage = FlutterSecureStorage();
   String tokenString = "";
 
+  Future<String> getAToken() async {
+    return tokenString = await storage.read(key: "aToken");
+    //   print("Webservice.getAToken():"+tokenString);
+  }
+
+
+  getToken() {
+    getAToken().then((token) {
+      print("!@#!@#!@#!@#!"+token);
+    });
+  }
+
+
+
   Future<T> load<T>(Resource<T> resource) async {
-//    String tokenString = await getToken();
-   // bool isEmpty(tokenString) => tokenString == "" || tokenString.isEmpty;
-//    print("tokenString:"+tokenString);
-//    if(tokenString.isEmpty || tokenString == null) {
-//      tokenString = "test";
-//    }
 
-    Future<String> getAToken() async {
-      return await storage.read(key: "aToken");
-   //   print("Webservice.getAToken():"+tokenString);
-    }
-
-    tokenString = await getAToken();
-
-    final response = await http.get(resource.url, headers: {
+    await getAToken();
+    final response = await http.get(resource.url+'?token='+tokenString, headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json',
-      'Authorization': '$tokenString',
+      'Accept': 'application/json'
     });
     //tokenString = Constants.TOKEN;
    // print("token:"+tokenString);
+    print(resource.url+'?token='+tokenString);
     print("http:statusCode="+response.statusCode.toString());
     if(response.statusCode == 200) {
       return resource.parse(response);
