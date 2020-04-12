@@ -22,12 +22,12 @@ class Webservice {
 //      tokenString = "test";
 //    }
 
-    void getAToken() async {
-      tokenString = await storage.read(key: "aToken");
+    Future<String> getAToken() async {
+      return await storage.read(key: "aToken");
    //   print("Webservice.getAToken():"+tokenString);
     }
 
-    getAToken();
+    tokenString = await getAToken();
 
     final response = await http.get(resource.url, headers: {
       'Content-Type': 'application/json',

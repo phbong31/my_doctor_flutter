@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -32,16 +33,15 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     _populateNewBoard();
-
   }
 
   void _populateNewBoard() {
     Webservice().load(Group.all).then((group) => {
-      setState(() => {_group = group})
-    });
+          setState(() => {_group = group})
+        });
     Webservice().load(BoardBase.all).then((boardBase) => {
-      setState(() => {_boardBase = boardBase})
-    });
+          setState(() => {_boardBase = boardBase})
+        });
   }
 
   //photoList(json) parse to List
@@ -55,171 +55,148 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     final inputData = Provider.of<InputData>(context);
-//    inputData.updateInfo();
+
     return Scaffold(
-        body: Row(
-          children: <Widget>[
+      body: Container(
+        padding: EdgeInsets.symmetric(horizontal: 8.0),
+        child: CustomScrollView(
+          slivers: <Widget>[
+            SliverAppBar(
+              title: Image(
+                image: AssetImage('assets/images/logo.png'),
+              ),
+              floating: true,
+              flexibleSpace: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Container(
+                    alignment: Alignment.bottomLeft,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text('${inputData.name} 님!'),
+                        SizedBox(width: 10.0),
+                        GestureDetector(
+                          onTap: () {
+                            NetworkUtils.logoutUser(context);
+                          },
+                          child: CircleAvatar(
+                            radius: 14.0,
+                            backgroundImage:
+                                NetworkImage('${inputData.profileUrl}'),
+                          ),
+                        ),
+                        SizedBox(width: 20.0)
 
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: CustomScrollView(
-                scrollDirection: Axis.vertical,
-                slivers: <Widget>[
-                  SliverAppBar(
-                    title: Image(
-                      image: AssetImage('assets/images/logo.png'),
-                    ),
-                    floating: true,
-                    flexibleSpace: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                          alignment: Alignment.bottomLeft,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: <Widget>[
-                              Text('${inputData.name} 님!'),
-                              SizedBox(width: 10.0),
-                              GestureDetector(
-                                onTap: () {
-                                  NetworkUtils.logoutUser(context);
-                                },
-                                child: CircleAvatar(
-                                  radius: 14.0,
-                                  backgroundImage: NetworkImage('${inputData.profileUrl}'),
+                      ],
+                    )),
+              ),
+              expandedHeight: 100,
+            ),
 
-                                ),
-                              ),
-                              SizedBox(width: 20.0)
-//                      FlatButton(
-//                        onPressed: () {
-//                          NetworkUtils.logoutUser(context);
-////                    Navigator.pushNamed(context, "YourRoute");
-//                        },
-//                        child: Text("로그아웃"),
-//                      ),
-                            ],
-                          )),
-                    ),
-                    expandedHeight: 100,
+
+            SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20,20,0,5),
+                  child: Text('전체 그룹 목록'),
+            )),
+
+            //그룹 카드 리스트
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Container(
+                  height: 150.0,
+                  child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _group.length,
+                    itemBuilder: (context, index) {
+                      return groupPost(index);
+                    },
                   ),
-                ],
+                ),
               ),
             ),
 
-            //group view
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: CustomScrollView(
-                scrollDirection: Axis.horizontal,
-                slivers: <Widget>[
-                  //group List
-                  SliverList(
-                    delegate:
+            SliverToBoxAdapter(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(10,30,0,5),
+                  child: Text('최신 글'),
+                )),
+
+            //게시글
+            SliverPadding(
+              padding: EdgeInsets.all(3.0),
+              sliver: SliverList(
+                delegate:
                     SliverChildBuilderDelegate((BuildContext context, int idx) {
-                      return Container(
-                          margin: EdgeInsets.only(bottom: 24.0),
-                          child: MainPost(idx, inputData.token));
-
-                    }, childCount: _boardBase.length),
-                  ),
-                ],
-              ),
-            ),
-
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
-              child: CustomScrollView(
-                scrollDirection: Axis.vertical,
-                slivers: <Widget>[
-                  // divider
-                  SliverToBoxAdapter(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 16.0),
-                      height: 2.0,
-                      decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.white, Colors.grey[300], Colors.white],
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                          )),
-                    ),
-                  ),
-                  SliverList(
-                    delegate:
-                    SliverChildBuilderDelegate((BuildContext context, int idx) {
-                        return Container(
-                            margin: EdgeInsets.only(bottom: 24.0),
-                            child: MainPost(idx, inputData.token));
-
-                    }, childCount: _boardBase.length),
-                  ),
-                ],
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 1.0),
+                      child: Card(
+                          elevation: 2, child: mainPost(idx, inputData.token)));
+                }, childCount: _boardBase.length),
               ),
             ),
           ],
-        ));
+        ),
+      ),
+    );
   }
 
-
-  Widget MainPost(int i, String token) {
-    User user = User(_boardBase[i - 1].creatorId, _boardBase[i - 1].writerName,
-        _boardBase[i - 1].position, _boardBase[i - 1].profileUrl);
-    user.position = _boardBase[i - 1].position;
-    user.profileUrl = _boardBase[i - 1].profileUrl;
-    print(_boardBase[i - 1].photoList);
-    return _boardBase[i - 1].photoList == null
-        ? PostWidget(_boardBase[i - 1], user, null, token)
-        : PostWidget(_boardBase[i - 1], user,
-        parsePhotos(_boardBase[i - 1].photoList), token);
+  Widget groupPost(int i) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 4.0),
+      width: 170.0,
+      child: _group[i].groupIconUrl == null ? groupCardNoIcon(i): groupCardIcon(i),
+    );
   }
 
-//  Widget ListViewWidget() {
-//    final inputData = Provider.of<InputData>(context);
-//    return Container(
-//        child: ListView.separated(
-//      separatorBuilder: (context, index) => Divider(
-//        color: Colors.brown[50],
-//        height: 24.0,
-//        thickness: 12.0,
-////            indent: 4.0,
-////            endIndent: 4.0,
-//      ),
-//      itemBuilder: (ctx, i) {
-//        if (i == 0) {
-//          return YoutubePlayer(
-//            controller: _controller,
-//            showVideoProgressIndicator: true,
-//            progressIndicatorColor: Colors.amber,
-////                progressColors: ProgressColors(
-////                  playedColor: Colors.amber,
-////                  handleColor: Colors.amberAccent,
-////                ),
-//            onReady: () {
-//              print('Player is ready.');
-//            },
-//          );
-//        }
-////            return _buildItemsForListView(context, i - 1);
-//        User user = User(
-//            _boardBase[i - 1].creatorId,
-//            _boardBase[i - 1].writerName,
-//            _boardBase[i - 1].position,
-//            _boardBase[i - 1].profileUrl);
-//        user.position = _boardBase[i - 1].position;
-//        user.profileUrl = _boardBase[i - 1].profileUrl;
-//        print(_boardBase[i - 1].photoList);
-//        return _boardBase[i - 1].photoList == null
-//            ? PostWidget(_boardBase[i - 1], user, null, inputData.token)
-//            : PostWidget(_boardBase[i - 1], user,
-//                parsePhotos(_boardBase[i - 1].photoList), inputData.token);
-//      },
-//
-//      itemCount: _boardBase.length,
-////          itemBuilder: _buildItemsForListView,
-//    ));
-//  }
+  Widget groupCardIcon(int i) {
+    return Card(
+      elevation: 5,
+      child: Column(
+        children: <Widget>[
+          CachedNetworkImage(
+            imageUrl: _group[i].groupIconUrl == null ? 'http://hsbong.synology.me:8080/profile/logo.png' : _group[i].groupIconUrl,
+            fit: BoxFit.fill,
+            height: 110,
+//              width: BoxFit.contain,
+//              width: MediaQuery.of(context).size.width,
+            placeholder: (context, url) => CircularProgressIndicator(),
+            errorWidget: (context, url, error) => Icon(Icons.error),
+          ),
+          Container(
+              padding: EdgeInsets.symmetric(horizontal: 4.0),
+              child: Text(_group[i].groupName)),
+        ],
+      ),
+    );
+  }
+
+  Widget groupCardNoIcon(int i) {
+    return Card(
+      elevation: 5,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          Center(
+              child: Text(_group[i].groupName)),
+        ],
+      ),
+    );
+  }
+
+  Widget mainPost(int i, String token) {
+    User user = User(_boardBase[i].creatorId, _boardBase[i].writerName,
+        _boardBase[i].position, _boardBase[i].profileUrl);
+    user.position = _boardBase[i].position;
+    user.profileUrl = _boardBase[i].profileUrl;
+    print(_boardBase[i].photoList);
+    return _boardBase[i].photoList == null
+        ? PostWidget(_boardBase[i], user, null, token)
+        : PostWidget(
+            _boardBase[i], user, parsePhotos(_boardBase[i].photoList), token);
+  }
 }

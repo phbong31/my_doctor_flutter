@@ -61,7 +61,7 @@ class Group {
     return Resource(
         url: Constants.GROUP_LIST_URL,
         parse: (response) {
-
+          print(response.body.toString());
           final result = json.decode(response.body);
           Iterable list = result;
           return list.map((model) => Group.fromJson(model)).toList();

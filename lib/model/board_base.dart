@@ -20,6 +20,7 @@ class BoardBase {
   final int accessLevel;
   final String position;
   final int groupId;
+//  final String groupName;
   final int userId;
   final String photoList;
   final String createdTime;
@@ -44,6 +45,7 @@ class BoardBase {
     this.accessLevel,
     this.position,
     this.groupId,
+//    this.groupName,
     this.userId,
     this.photoList,
     this.createdTime,
@@ -68,6 +70,7 @@ class BoardBase {
         accessLevel: json['accessLevel'],
         position: json['position'],
         groupId: json['groupId'],
+//        groupName: json['groupName'],
         userId: json['userId'],
         photoList: json['photoList'],
       createdTime: json['createdTime'],

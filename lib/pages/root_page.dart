@@ -18,6 +18,7 @@ class RootPage extends StatelessWidget {
       create: (_) => InputData(),
 
       child: MaterialApp(
+        debugShowCheckedModeBanner: false,
         title: 'Authentication Flow',
         theme: ThemeData(
             primaryColor: Colors.green.shade500,
