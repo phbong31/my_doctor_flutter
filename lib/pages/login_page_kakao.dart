@@ -11,8 +11,6 @@ import 'package:my_doctor/utils/network_utils.dart';
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key, this.title}) : super(key: key);
-  static final String routeName = 'login_screen';
-
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -23,6 +21,7 @@ class LoginScreen extends StatefulWidget {
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
 
+  static final String routeName = 'login_screen';
   final String title;
 
   @override
