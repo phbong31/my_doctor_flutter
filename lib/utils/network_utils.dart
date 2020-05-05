@@ -83,7 +83,8 @@ class NetworkUtils {
 
   static logOutTalk() async {
     try {
-      var code = await UserApi.instance.logout();
+//      var code = await UserApi.instance.logout();
+      var code = await UserApi.instance.unlink();
     } catch (e) {
       print(e);
     }
