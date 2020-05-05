@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:kakao_flutter_sdk/user.dart';
 import 'package:my_doctor/pages/login_page.dart';
+import 'package:my_doctor/pages/login_page_kakao.dart';
 import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
 import 'package:my_doctor/utils/sign_in.dart';
@@ -40,7 +42,7 @@ class NetworkUtils {
 
   static dynamic authenticateSNSUser(String from, String uuid) async {
     var uri = host + AuthUtils.endPoint;
-    print("URI:"+uri);
+//    print("URI:"+uri);
     try {
       final response = await http.post(
           uri,
@@ -67,14 +69,24 @@ class NetworkUtils {
 //    prefs.setString(AuthUtils.authTokenKey, null);
 //    prefs.setInt(AuthUtils.userIdKey, null);
 //    prefs.setString(AuthUtils.nameKey, null);
-    signOutGoogle();
+//    signOutGoogle();
+    logOutTalk();
+
     SecureStorage.deleteStorage();
 
     Navigator.pushAndRemoveUntil(
       context,
-      MaterialPageRoute(builder: (BuildContext context) => LoginPage()),
+      MaterialPageRoute(builder: (BuildContext context) => LoginScreen()),
       ModalRoute.withName('/'),
     );
+  }
+
+  static logOutTalk() async {
+    try {
+      var code = await UserApi.instance.logout();
+    } catch (e) {
+      print(e);
+    }
   }
 
   static showSnackBar(GlobalKey<ScaffoldState> scaffoldKey, String message) {

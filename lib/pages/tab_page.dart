@@ -26,6 +26,7 @@ class _TabPageState extends State<TabPage> {
 
   @override
   Widget build(BuildContext context) {
+//    KakaoContext.clientId = "0fe74bc1afa0a00174cf4bda8a7e5fda";
 
 //    final inputData = Provider.of<InputData>(context);
 //    inputData.getUserInfo();

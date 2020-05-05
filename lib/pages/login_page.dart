@@ -145,6 +145,7 @@ class LoginPageState extends State<LoginPage> {
       SecureStorage.writeJson(responseJson).whenComplete(() {
           Navigator.of(_scaffoldKey.currentContext)
               .pushReplacementNamed('/');
+
       });
 
 //      InputData inputData = new InputData();
