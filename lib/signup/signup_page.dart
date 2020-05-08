@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 
 class SignUpPage extends StatefulWidget {
-  static final String routeName = 'signup_page';
+  static final String routeName = 'signup_page_test';
   SignUpPage({Key key}) : super(key: key);
 
   @override

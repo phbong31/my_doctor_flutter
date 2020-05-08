@@ -5,8 +5,10 @@ import 'package:my_doctor/pages/login_page_kakao.dart';
 import 'package:my_doctor/pages/main_list.dart';
 import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
+import 'package:my_doctor/pages/signup_page.dart';
 import 'package:my_doctor/service/user_service.dart';
 import 'package:my_doctor/signup/input_data.dart';
+import 'package:my_doctor/signup/signup_page.dart';
 import 'package:provider/provider.dart';
 
 import '../board_list.dart';
@@ -22,7 +24,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-  List _pages = [MainPage(), LoginScreen(), HomePage()];
+  List _pages = [MainPage(), SignUpScreen(), HomePage()];
 
   @override
   Widget build(BuildContext context) {
