@@ -4,8 +4,6 @@ import 'package:my_doctor/pages/root_page.dart';
 
 import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:kakao_flutter_sdk/common.dart';
-import 'package:my_doctor/signup/input_data.dart';
-import 'package:provider/provider.dart';
 
 void main() {
   KakaoContext.clientId = "0fe74bc1afa0a00174cf4bda8a7e5fda";

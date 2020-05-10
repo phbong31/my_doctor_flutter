@@ -25,8 +25,6 @@ class InputData with ChangeNotifier {
 //    print("token:" + token);
 //    print("name:" + name);
 //    print("position:" + position);
-
-//    notifyListeners();
   }
 
   Future<UserData> getUserData() async {
@@ -42,9 +40,9 @@ class InputData with ChangeNotifier {
   }
 
   Future<void> updateInfo() async {
-    print(
-      'before delay'
-    );
+//    print(
+//      'before delay'
+//    );
     final storage = FlutterSecureStorage();
 
     name = await storage.read(key: "name");
@@ -52,7 +50,7 @@ class InputData with ChangeNotifier {
     token = await storage.read(key: "aToken");
     profileUrl = await storage.read(key: "profileUrl");
 
-    print("udateInfo : notifyListeners");
+//    print("udateInfo : notifyListeners");
 //    notifyListeners();
   }
 

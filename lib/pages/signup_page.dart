@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:my_doctor/pages/splash_page.dart';
 import 'dart:convert';
 
 import 'package:my_doctor/pages/tab_page.dart';
@@ -16,24 +17,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   bool _isLoading = false;
 
-  signUp(String name, phone, birth, sex, address) async {
+  signUp(String name, phone, birth, sex, uuid) async {
     Map data = {
       'name': name,
       'phone': phone,
       'birth' : birth,
       'sex' : sex,
-      'address' : address
+      'uuid' : uuid
     };
 
     var jsonResponse = null;
     var response = await http.post(Constants.SIGNUP_URL, body: data);
     if(response.statusCode == 200) {
+      print('200');
+      print(response.body);
       jsonResponse = json.decode(response.body);
-      if(jsonResponse != null) {
+      print(jsonResponse["result"]);
+      int result = jsonResponse["result"];
+      if(jsonResponse != null && result > 0) {
+        print('navigator');
         setState(() {
           _isLoading = false;
         });
-        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => TabPage()), (Route<dynamic> route) => false);
+        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => SplashScreen()), (Route<dynamic> route) => false);
       }
     }
     else {
@@ -72,11 +78,12 @@ class _SignUpScreenState extends State<SignUpScreen> {
       padding: EdgeInsets.symmetric(horizontal: 15.0),
       margin: EdgeInsets.only(top: 15.0),
       child: RaisedButton(
-        onPressed: emailController.text == "" || passwordController.text == "" ? printLog : () {
+        onPressed: () {
           setState(() {
             _isLoading = true;
           });
-          signUp(emailController.text, passwordController.text, '', '', '');
+          signUp('봉황세', '01026079765', '19821003', '', '1351218327');
+//          signUp(emailController.text, passwordController.text, '', '', '1351218327');
           print('signUp submit');
         },
         elevation: 3.0,

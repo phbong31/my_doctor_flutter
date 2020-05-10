@@ -170,10 +170,23 @@ class _LoginScreenState extends State<LoginScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-          RaisedButton(
-                child: Text("카카오톡으로 로그인하기"),
-                onPressed:
-                _isKakaoTalkInstalled ? _loginWithTalk : _loginWithKakao),
+            GestureDetector(
+                child: Container(
+                    width:200,
+                    height: 40,
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        image: DecorationImage(
+                            image:AssetImage("assets/images/kakao_login_btn.png"),
+                            fit:BoxFit.cover
+                        ),
+                    )
+                ),onTap:(){
+                  print(_isKakaoTalkInstalled);
+              _isKakaoTalkInstalled ? _loginWithTalk() : _loginWithKakao();
+            }
+            )
+
 //            RaisedButton(
 //              child: Text("Logout"),
 //              onPressed: logOutTalk,
