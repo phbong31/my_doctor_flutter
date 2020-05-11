@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:kakao_flutter_sdk/user.dart';
@@ -47,7 +49,6 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _fetchSessionAndNavigate() async {
-//    _sharedPreferences = await _prefs;
     var authToken = await Token.getToken();
     if (authToken != null) {
       print("fetchSession token not null!!");
@@ -106,6 +107,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
       print('######Kakao User Info');
       print(user.toString());
+//      var userDecode = json.decode(user.toString());
+//      print(userDecode["id"]);
+//      print(userDecode["connected_at"]);
+      print(user.kakaoAccount.toString());
+      print(user.connectedAt.toString());
 
       var responseJson = await NetworkUtils.authenticateSNSUser(
             "kakao", user.id.toString());

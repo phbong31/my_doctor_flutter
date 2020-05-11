@@ -60,7 +60,6 @@ class LoginPageState extends State<LoginPage> {
   }
 
   _fetchSessionAndNavigate() async {
-//    _sharedPreferences = await _prefs;
     var authToken = await Token.getToken();
     if (authToken != null) {
       print("fetchSession token not null!!");
