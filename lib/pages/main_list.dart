@@ -35,7 +35,6 @@ class _MainPageState extends State<MainPage> {
       flags: YoutubePlayerFlags(
         mute: false,
         autoPlay: false,
-        forceHideAnnotation: true,
         captionLanguage: 'kr',
       ),
     );
