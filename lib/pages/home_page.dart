@@ -69,7 +69,7 @@ class _HomePageState extends State<HomePage> {
                 image: AssetImage('assets/images/logo.png'),
               ),
               floating: true,
-              backgroundColor: Colors.white,
+              backgroundColor: Colors.transparent,
               flexibleSpace: Container(
                 child: Container(
                     decoration: BoxDecoration(
