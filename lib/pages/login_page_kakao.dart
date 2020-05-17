@@ -4,13 +4,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/auth.dart';
 import 'package:kakao_flutter_sdk/user.dart';
+import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
 import 'package:my_doctor/signup/signup_page.dart';
 import 'package:my_doctor/utils/network_utils.dart';
-
-
 
 class LoginScreen extends StatefulWidget {
   LoginScreen({Key key, this.title}) : super(key: key);
@@ -46,15 +45,13 @@ class _LoginScreenState extends State<LoginScreen> {
     super.initState();
     _fetchSessionAndNavigate();
     _initKakaoTalkInstalled();
-
   }
 
   _fetchSessionAndNavigate() async {
     var authToken = await Token.getToken();
     if (authToken != null) {
       print("fetchSession token not null!!");
-      Navigator.of(context)
-          .pushReplacementNamed(TabPage.routeName);
+      Navigator.of(context).pushReplacementNamed(TabPage.routeName);
     }
   }
 
@@ -114,32 +111,38 @@ class _LoginScreenState extends State<LoginScreen> {
       print(user.kakaoAccount.toString());
       print(user.connectedAt.toString());
 
-      var responseJson = await NetworkUtils.authenticateSNSUser(
-            "kakao", user.id.toString());
+      var responseJson =
+          await NetworkUtils.authenticateSNSUser("kakao", user.id.toString());
 
-        print(responseJson);
+      print('response:');
+      print(responseJson);
 
-        if (responseJson == null) {
-          NetworkUtils.showSnackBar(_scaffoldKey, '등록되지 않은 사용자입니다.');
-          Navigator.of(_scaffoldKey.currentContext)
-              .pushNamed(SignUpPage.routeName);
-          unlinkTalk();
-        } else if (responseJson == 'NetworkError') {
-          NetworkUtils.showSnackBar(_scaffoldKey, null);
-        } else {
+      if (responseJson == null) {
+        NetworkUtils.showSnackBar(_scaffoldKey, '등록되지 않은 사용자입니다.');
+
+//          Navigator.of(_scaffoldKey.currentContext)
+//              .pushNamed(RegisterScreen.routeName);
+        Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(
+                builder: (context) =>
+                    RegisterScreen(arguments: user.id.toString())),
+            (Route<dynamic> route) => false);
+
+//        unlinkTalk();
+      } else if (responseJson == 'NetworkError') {
+        NetworkUtils.showSnackBar(_scaffoldKey, null);
+      } else {
 //      AuthUtils.insertDetails(_sharedPreferences, responseJson);
-          /**
-           * Removes stack and start with the new page.
-           * In this case on press back on HomePage app will exit.
-           * **/
+        /**
+         * Removes stack and start with the new page.
+         * In this case on press back on HomePage app will exit.
+         * **/
 //      print(responseJson['aToken']);
 //      Token.writeToken(responseJson['aToken']);
-          SecureStorage.writeJson(responseJson).whenComplete(() {
-            Navigator.of(context)
-                .pushReplacementNamed('/');
-          });
-        }
-
+        SecureStorage.writeJson(responseJson).whenComplete(() {
+          Navigator.of(context).pushReplacementNamed('/');
+        });
+      }
     } catch (e) {
       print(e);
     }
@@ -164,7 +167,6 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-
   Widget _loginScreen() {
     return Scaffold(
       appBar: AppBar(
@@ -172,41 +174,50 @@ class _LoginScreenState extends State<LoginScreen> {
         actions: [],
       ),
       body: Center(
-
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             GestureDetector(
                 child: Container(
-                    width:250,
-                    height: 60,
-
-                    padding: EdgeInsets.only(left: 20.0),
-                    decoration: BoxDecoration(
-                        color: Colors.yellow,
-                        image: DecorationImage(
-                            image:AssetImage("assets/images/kakao_login_btn.png"),
-                            fit:BoxFit.contain,
-                            alignment: Alignment.centerLeft
-
-                        ),
-                        borderRadius: BorderRadius.all( Radius.circular(30), ),
-                        boxShadow: [ BoxShadow( color: Colors.grey[500], offset: Offset(4.0, 4.0), blurRadius: 15.0, spreadRadius: 1.0, ), BoxShadow( color: Colors.white, offset: Offset(-4.0, -4.0), blurRadius: 15.0, spreadRadius: 1.0, ), ],
-
+                  width: 250,
+                  height: 60,
+                  padding: EdgeInsets.only(left: 20.0),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow,
+                    image: DecorationImage(
+                        image: AssetImage("assets/images/kakao_login_btn.png"),
+                        fit: BoxFit.contain,
+                        alignment: Alignment.centerLeft),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(30),
                     ),
-                  child: Center(
-
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(22.0, 0, 0, 0),
-                        child: Text('카카오톡으로 로그인하기', style: TextStyle(fontWeight: FontWeight.bold)),
-                      )
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey[500],
+                        offset: Offset(4.0, 4.0),
+                        blurRadius: 15.0,
+                        spreadRadius: 1.0,
+                      ),
+                      BoxShadow(
+                        color: Colors.white,
+                        offset: Offset(-4.0, -4.0),
+                        blurRadius: 15.0,
+                        spreadRadius: 1.0,
+                      ),
+                    ],
                   ),
-                ),onTap:(){
-                 print(_isKakaoTalkInstalled);
-              _isKakaoTalkInstalled ? _loginWithTalk() : _loginWithKakao();
-            }
-            )
+                  child: Center(
+                      child: Padding(
+                    padding: const EdgeInsets.fromLTRB(22.0, 0, 0, 0),
+                    child: Text('카카오톡으로 로그인하기',
+                        style: TextStyle(fontWeight: FontWeight.bold)),
+                  )),
+                ),
+                onTap: () {
+                  print(_isKakaoTalkInstalled);
+                  _isKakaoTalkInstalled ? _loginWithTalk() : _loginWithKakao();
+                })
 
 //            RaisedButton(
 //              child: Text("Logout"),
@@ -218,27 +229,24 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-
   Widget _loadingScreen() {
     return Container(
-
         margin: const EdgeInsets.only(top: 100.0),
         child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                CircularProgressIndicator(strokeWidth: 4.0),
-                Container(
-                  padding: const EdgeInsets.all(8.0),
-                  child: new Text(
-                    'Please Wait',
-                    style:
-                    TextStyle(color: Colors.grey.shade500, fontSize: 16.0),
-                  ),
-                )
-              ],
-            )));
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            CircularProgressIndicator(strokeWidth: 4.0),
+            Container(
+              padding: const EdgeInsets.all(8.0),
+              child: new Text(
+                'Please Wait',
+                style: TextStyle(color: Colors.grey.shade500, fontSize: 16.0),
+              ),
+            )
+          ],
+        )));
   }
 
   @override
@@ -255,9 +263,7 @@ class LoginDone extends StatelessWidget {
     try {
       User user = await UserApi.instance.me();
       print(user.toString());
-    } on KakaoAuthException catch (e) {
-    } catch (e) {
-    }
+    } on KakaoAuthException catch (e) {} catch (e) {}
   }
 
   @override

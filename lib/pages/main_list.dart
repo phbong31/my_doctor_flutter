@@ -106,26 +106,37 @@ class _MainPageState extends State<MainPage> {
               image: AssetImage('assets/images/logo.png'),
             ),
             floating: true,
-            flexibleSpace: Padding(
-              padding: const EdgeInsets.all(8.0),
+            backgroundColor: Colors.white,
+            flexibleSpace: Container(
               child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top:Radius.circular(0), bottom: Radius.circular(25.0)),
+                  gradient: LinearGradient(
+                    colors: [
+                      Colors.blueAccent,
+                      Colors.purple,
+                    ],
+                  )
+                ),
                   alignment: Alignment.bottomLeft,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: <Widget>[
-                      Text('${inputData.name} 님!'),
-                      SizedBox(width: 10.0),
-                      GestureDetector(
-                        onTap: () {
-                          NetworkUtils.logoutUser(context);
-                        },
-                        child: CircleAvatar(
-                          radius: 14.0,
-                          backgroundImage: NetworkImage('${inputData.profileUrl}'),
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text('${inputData.name} 님!'),
+                        SizedBox(width: 10.0),
+                        GestureDetector(
+                          onTap: () {
+                            NetworkUtils.logoutUser(context);
+                          },
+                          child: CircleAvatar(
+                            radius: 14.0,
+                            backgroundImage: NetworkImage('${inputData.profileUrl}'),
 
+                          ),
                         ),
-                      ),
-                      SizedBox(width: 20.0)
+                        SizedBox(width: 20.0)
 //                      FlatButton(
 //                        onPressed: () {
 //                          NetworkUtils.logoutUser(context);
@@ -133,10 +144,11 @@ class _MainPageState extends State<MainPage> {
 //                        },
 //                        child: Text("로그아웃"),
 //                      ),
-                    ],
+                      ],
+                    ),
                   )),
             ),
-            expandedHeight: 100,
+            expandedHeight: 150,
           ),
 
           // divider

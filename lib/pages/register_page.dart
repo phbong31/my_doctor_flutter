@@ -1,10 +1,18 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:kakao_flutter_sdk/user.dart';
 import 'package:my_doctor/pages/splash_page.dart';
 import 'dart:convert';
 import 'package:my_doctor/utils/constants.dart';
 
+
 class RegisterScreen extends StatefulWidget {
+  static final String routeName = 'register_page';
+
+  final String arguments;
+  RegisterScreen({Key key, @required this.arguments}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() {
     return RegisterScreenState();
@@ -12,7 +20,6 @@ class RegisterScreen extends StatefulWidget {
 }
 
 class RegisterScreenState extends State<RegisterScreen> {
-  static final String routeName = 'register_page';
   String _name;
   String _email;
   String _password;
@@ -22,20 +29,30 @@ class RegisterScreenState extends State<RegisterScreen> {
   String _birth;
   String _uuid;
 
+
+
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
   Future<void> signUp(String name, phone, birth, uuid) async {
+
     Map data = {
       'name': name,
       'phone': phone,
       'birth' : birth,
-      'sex' : '',
+      'sex' : 'M',
       'uuid' : uuid
     };
+    var body = json.encode(data);
 
-    var jsonResponse = null;
-    var response = await http.post(Constants.SIGNUP_URL, body: data);
+    Map<String, String> headers = {"Content-type": "application/json"};
+    String jsonData = '{"name": "$name", "phone": "$phone", "birth": "$birth","sex": "","uuid": "$uuid"}';
+    print(jsonData);
+
+    var jsonResponse;
+    var response = await http.post(Constants.SIGNUP_URL, headers: headers, body: jsonData);
+
     if(response.statusCode == 200) {
       print('200');
       print(response.body);
@@ -55,6 +72,14 @@ class RegisterScreenState extends State<RegisterScreen> {
         _isLoading = false;
       });
       print(response.body);
+
+      //실패시 카카오 로그아웃
+      try {
+        var code = await UserApi.instance.unlink();
+        print(code.toJson());
+      } catch (e) {
+        print(e);
+      }
     }
   }
 
@@ -65,7 +90,7 @@ class RegisterScreenState extends State<RegisterScreen> {
       maxLength: 10,
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Name is Required';
+          return '이름을 입력하세요';
         }
 
         return null;
@@ -138,32 +163,32 @@ class RegisterScreenState extends State<RegisterScreen> {
       keyboardType: TextInputType.phone,
       validator: (String value) {
         if (value.isEmpty) {
-          return 'Phone number is Required';
+          return '핸드폰 번호를 입력하세요';
         }
 
         return null;
       },
       onSaved: (String value) {
-        _url = value;
+        _phoneNumber = value;
       },
     );
   }
 
   Widget _buildBirth() {
     return TextFormField(
-      decoration: InputDecoration(labelText: '생년월일 (YYMMDD)'),
+      decoration: InputDecoration(labelText: '생년월일 (YYYYMMDD)'),
       keyboardType: TextInputType.number,
       validator: (String value) {
         int calories = int.tryParse(value);
 
-        if (calories == null || calories <= 0) {
-          return 'Calories must be greater than 0';
+        if (calories == null || calories <= 18000000) {
+          return '생년월일을 입력하세요';
         }
 
         return null;
       },
       onSaved: (String value) {
-        _calories = value;
+        _birth = value;
       },
     );
   }
@@ -225,9 +250,9 @@ class RegisterScreenState extends State<RegisterScreen> {
 
                     _formKey.currentState.save();
 
-                    _uuid = '00';
-                    signUp(_name, _phoneNumber, _birth, _uuid);
-
+                    signUp(_name, _phoneNumber, _birth, widget.arguments);
+                    print(_name);
+                    print(widget.arguments);
 //                    print(_name);
 //                    print(_email);
 //                    print(_phoneNumber);

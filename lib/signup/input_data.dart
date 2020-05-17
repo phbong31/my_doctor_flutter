@@ -11,6 +11,7 @@ class InputData with ChangeNotifier {
   String position = '';
   String token = '';
   String profileUrl = '';
+  String uuid = '';
 
   //InputData(this.name, this.position, this.token);
 
@@ -58,6 +59,7 @@ class InputData with ChangeNotifier {
     token = "";
     name = "";
     position = "";
+    uuid = "";
 
     notifyListeners();
   }
@@ -81,6 +83,7 @@ class InputData with ChangeNotifier {
     token = "";
     name = "";
     position = "";
+    uuid = "";
 
     notifyListeners();
   }

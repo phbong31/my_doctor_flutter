@@ -187,7 +187,7 @@ class CameraScreenState extends State<CameraScreen>
           IconButton(
             icon: Icon(
               (_isRecordingMode) ? Icons.camera_alt : Icons.videocam,
-              color: Colors.white,
+              color: Colors.grey,
             ),
             onPressed: () {
               setState(() {
