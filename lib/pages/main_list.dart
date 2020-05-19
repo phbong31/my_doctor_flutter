@@ -96,47 +96,99 @@ class _MainPageState extends State<MainPage> {
     final inputData = Provider.of<InputData>(context);
 //    inputData.updateInfo();
     return Scaffold(
+
         body: Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.0),
+      padding: EdgeInsets.symmetric(horizontal: 0),
       child: CustomScrollView(
         scrollDirection: Axis.vertical,
         slivers: <Widget>[
           SliverAppBar(
-            title: Image(
-              image: AssetImage('assets/images/logo.png'),
-            ),
-            floating: true,
-            backgroundColor: Colors.transparent,
-            flexibleSpace: Container(
-              child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top:Radius.circular(0), bottom: Radius.circular(25.0)),
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.blueAccent,
-                      Colors.purple,
-                    ],
-                  )
-                ),
-                  alignment: Alignment.bottomLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text('${inputData.name} 님!'),
-                        SizedBox(width: 10.0),
-                        GestureDetector(
-                          onTap: () {
-                            NetworkUtils.logoutUser(context);
-                          },
-                          child: CircleAvatar(
-                            radius: 14.0,
-                            backgroundImage: NetworkImage('${inputData.profileUrl}'),
 
-                          ),
-                        ),
-                        SizedBox(width: 20.0)
+            floating: true,
+            expandedHeight: 170,
+            pinned: true,
+            backgroundColor: Colors.lightBlue,
+            flexibleSpace: FlexibleSpaceBar(
+              centerTitle: true,
+              title: Padding(
+                padding: const EdgeInsets.fromLTRB(30, 2, 2, 2),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        Text('봉황세',
+                            style: TextStyle(
+                                fontSize: 18.0, color: Colors.white)),
+                        SizedBox(width: 8.0),
+                        Text('(전주 수병원 정형외과 전문의)',
+                            style: TextStyle(
+                                fontSize: 13.0,
+                                color: Colors.blue[100])),
+                      ],
+                    ),
+
+                  ],
+                ),
+              ),
+//              child: Container(
+//                  decoration: BoxDecoration(
+//                      borderRadius: BorderRadius.vertical(
+//                          top: Radius.circular(0),
+//                          bottom: Radius.circular(25.0)),
+//                      gradient: LinearGradient(
+//                        colors: [
+//                          Colors.blueAccent,
+//                          Colors.purple,
+//                        ],
+//                      )),
+//                  alignment: Alignment.bottomLeft,
+//
+//                  ///// flexibleSpace
+//                  child: ,
+//              ),
+            ),
+
+          ),
+
+          SliverToBoxAdapter(
+            child: Container(
+              margin: EdgeInsets.symmetric(vertical: 16.0),
+              child: Padding(
+                  padding: const EdgeInsets.fromLTRB(30, 4, 10, 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      Text('진료안내',
+                          style:
+                          TextStyle(fontSize: 16.0, color: Colors.yellow)),
+                      Text('예약',
+                          style:
+                          TextStyle(fontSize: 16.0, color: Colors.yellow)),
+                      Text('글쓰기',
+                          style:
+                          TextStyle(fontSize: 16.0, color: Colors.yellow)),
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text('${inputData.name} 님!',
+                                style:
+                                TextStyle(fontSize: 13.0, color: Colors.white)),
+                            SizedBox(width: 7.0),
+                            GestureDetector(
+                              onTap: () {
+                                NetworkUtils.logoutUser(context);
+                              },
+                              child: CircleAvatar(
+                                radius: 18.0,
+                                backgroundImage:
+                                NetworkImage('${inputData.profileUrl}'),
+                              ),
+                            ),
+                            SizedBox(width: 5.0)
 //                      FlatButton(
 //                        onPressed: () {
 //                          NetworkUtils.logoutUser(context);
@@ -144,11 +196,13 @@ class _MainPageState extends State<MainPage> {
 //                        },
 //                        child: Text("로그아웃"),
 //                      ),
-                      ],
-                    ),
-                  )),
+                          ],
+                        ),
+                      )
+                    ],
+                  )
+              ),
             ),
-            expandedHeight: 150,
           ),
 
           // divider
@@ -211,49 +265,4 @@ class _MainPageState extends State<MainPage> {
             parsePhotos(_boardBase[i - 1].photoList), token);
   }
 
-//  Widget ListViewWidget() {
-//    final inputData = Provider.of<InputData>(context);
-//    return Container(
-//        child: ListView.separated(
-//      separatorBuilder: (context, index) => Divider(
-//        color: Colors.brown[50],
-//        height: 24.0,
-//        thickness: 12.0,
-////            indent: 4.0,
-////            endIndent: 4.0,
-//      ),
-//      itemBuilder: (ctx, i) {
-//        if (i == 0) {
-//          return YoutubePlayer(
-//            controller: _controller,
-//            showVideoProgressIndicator: true,
-//            progressIndicatorColor: Colors.amber,
-////                progressColors: ProgressColors(
-////                  playedColor: Colors.amber,
-////                  handleColor: Colors.amberAccent,
-////                ),
-//            onReady: () {
-//              print('Player is ready.');
-//            },
-//          );
-//        }
-////            return _buildItemsForListView(context, i - 1);
-//        User user = User(
-//            _boardBase[i - 1].creatorId,
-//            _boardBase[i - 1].writerName,
-//            _boardBase[i - 1].position,
-//            _boardBase[i - 1].profileUrl);
-//        user.position = _boardBase[i - 1].position;
-//        user.profileUrl = _boardBase[i - 1].profileUrl;
-//        print(_boardBase[i - 1].photoList);
-//        return _boardBase[i - 1].photoList == null
-//            ? PostWidget(_boardBase[i - 1], user, null, inputData.token)
-//            : PostWidget(_boardBase[i - 1], user,
-//                parsePhotos(_boardBase[i - 1].photoList), inputData.token);
-//      },
-//
-//      itemCount: _boardBase.length,
-////          itemBuilder: _buildItemsForListView,
-//    ));
-//  }
 }

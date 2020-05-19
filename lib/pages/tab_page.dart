@@ -7,6 +7,8 @@ import 'package:my_doctor/pages/photo_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
 import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/pages/signup_page.dart';
+import 'package:my_doctor/pages/write_page.dart';
+import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/service/user_service.dart';
 import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/signup/signup_page.dart';
@@ -25,7 +27,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-  List _pages = [HomePage(), MainPage(), CameraPage()];
+  List _pages = [HomePage(), ChannelPage(), CameraPage()];
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class _TabPageState extends State<TabPage> {
 //    print("token_provider(tab_page): " + inputData.token);
 
     return Scaffold(
-        body: Center(child: _pages[_selectedIndex]),
+        body: SafeArea(child: Center(child: _pages[_selectedIndex])),
         bottomNavigationBar: BottomNavigationBar(
             fixedColor: Colors.black,
             onTap: _onItemTapped,

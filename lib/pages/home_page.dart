@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:my_doctor/model/group.dart';
+import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/signup/input_data.dart';
 import 'package:provider/provider.dart';
@@ -73,14 +74,15 @@ class _HomePageState extends State<HomePage> {
               flexibleSpace: Container(
                 child: Container(
                     decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(top:Radius.circular(0), bottom: Radius.circular(20.0)),
+                        borderRadius: BorderRadius.vertical(
+                            top: Radius.circular(0),
+                            bottom: Radius.circular(20.0)),
                         gradient: LinearGradient(
                           colors: [
                             Colors.blue,
                             Colors.blueAccent,
                           ],
-                        )
-                    ),
+                        )),
                     alignment: Alignment.bottomLeft,
                     child: Padding(
                       padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
@@ -95,8 +97,8 @@ class _HomePageState extends State<HomePage> {
                             },
                             child: CircleAvatar(
                               radius: 14.0,
-                              backgroundImage: NetworkImage('${inputData.profileUrl}'),
-
+                              backgroundImage:
+                                  NetworkImage('${inputData.profileUrl}'),
                             ),
                           ),
                           SizedBox(width: 20.0)
@@ -130,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                     scrollDirection: Axis.horizontal,
                     itemCount: _group.length,
                     itemBuilder: (context, index) {
-                      return groupPost(index);
+                      return groupPost(context, index);
                     },
                   ),
                 ),
@@ -162,14 +164,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget groupPost(int i) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4.0),
-      width: 170.0,
-      child: _group[i].groupIconUrl == null
-          ? groupCardNoIcon(i)
-          : groupCardIcon(i),
-    );
+  Widget groupPost(BuildContext context, int i) {
+    return GestureDetector(
+        child: Container(
+          padding: EdgeInsets.symmetric(horizontal: 4.0),
+          width: 170.0,
+          child: _group[i].groupIconUrl == null
+              ? groupCardNoIcon(i)
+              : groupCardIcon(i),
+        ),
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChannelPage()),
+          );
+        });
   }
 
   Widget groupCardIcon(int i) {
@@ -177,14 +186,15 @@ class _HomePageState extends State<HomePage> {
       elevation: 5,
       child: Column(
         children: <Widget>[
-          _group[i].joinCount == 0 ?
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text('가입하기'),
-          ) : Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text('가입중'),
-          ),
+          _group[i].joinCount == 0
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text('가입하기'),
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text('가입중'),
+                ),
           CachedNetworkImage(
             imageUrl: _group[i].groupIconUrl == null
                 ? 'http://hsbong.synology.me:8080/profile/logo.png'
@@ -210,15 +220,15 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
-          _group[i].joinCount == 0 ?
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text('가입하기'),
-          ) : Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Text('가입중'),
-          ),
-
+          _group[i].joinCount == 0
+              ? Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text('가입하기'),
+                )
+              : Container(
+                  padding: EdgeInsets.symmetric(horizontal: 4.0),
+                  child: Text('가입중'),
+                ),
           Center(child: Text(_group[i].groupName)),
         ],
       ),
