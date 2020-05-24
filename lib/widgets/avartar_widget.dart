@@ -9,7 +9,7 @@ class AvatarWidget extends StatelessWidget {
   final bool isShowingUsernameLabel;
   final bool isCurrentUserStory;
 
-  const AvatarWidget({
+  const AvatarWidget ({
     @required this.user,
     this.onTap,
     this.padding = const EdgeInsets.all(8.0),

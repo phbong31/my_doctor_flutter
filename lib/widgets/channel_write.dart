@@ -1,11 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+
+import 'avartar_widget.dart';
 
 //Our MyApp. Extends StatelessWidget
 class ChannelWrite extends StatefulWidget {
@@ -13,18 +16,88 @@ class ChannelWrite extends StatefulWidget {
   _ChannelWriteState createState() => _ChannelWriteState();
 }
 
+class Item {
+  const Item(this.name,this.icon);
+  final String name;
+  final Icon icon;
+}
+
 class _ChannelWriteState extends State<ChannelWrite> {
+
+//  @override
+//  void initState() {
+//    super.initState();
+//  }
+
   @override
   Widget build(BuildContext context) {
     final group = Provider.of<ProviderData>(context);
+    User user = group.getUserFromProvider();
+
+    Item selectedUser;
+    List<Item> users = <Item>[
+      const Item('현재 채널 주치의에게 쓰기',Icon(Icons.android,color:  const Color(0xFF167F67),)),
+      const Item('칭찬/불만 쓰기',Icon(Icons.flag,color:  const Color(0xFF167F67),)),
+      const Item('채널 전체 공개',Icon(Icons.format_indent_decrease,color:  const Color(0xFF167F67),)),
+      const Item('특정인에게 보내기',Icon(Icons.mobile_screen_share,color:  const Color(0xFF167F67),)),
+    ];
+
     return SingleChildScrollView(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Text('글을 입력하세요'),
+          Row(
+            children: <Widget>[
+              SizedBox(
+                width: 10,
+              ),
+              AvatarWidget(user: user, isLarge: true, isShowingUsernameLabel: false),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                    child: Text(
+                      '${group.name}님!',
+                      style:
+                          TextStyle(fontSize: 16, fontStyle: FontStyle.italic),
+                    ),
+                  ),
+                  Container(
+                    child: DropdownButton<Item>(
+                      hint:  Text("누구에게 쓰실래요? : $selectedUser"),
+                      value: selectedUser,
+                      onChanged: (Item Value) {
+                        setState(() {
+                          selectedUser = Value;
+                        });
+                      },
+                      items: users.map((Item user) {
+                        return  DropdownMenuItem<Item>(
+                          value: user,
+                          child: Row(
+                            children: <Widget>[
+                              user.icon,
+                              SizedBox(width: 30,),
+                              Text(
+                                user.name,
+                                style:  TextStyle(color: Colors.black),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  )
+                ],
+              ),
+            ],
           ),
+//          Padding(
+//            padding: const EdgeInsets.all(18.0),
+//            child: Text('글을 입력하세요'),
+//          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: MrMultiLineTextFieldAndButton(
@@ -36,6 +109,7 @@ class _ChannelWriteState extends State<ChannelWrite> {
       ),
     );
   }
+
 }
 
 /// Multi-line text field widget with a submit button
@@ -57,8 +131,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   //`TextEditingController` A controller for an editable text field.
   // Whenever the user modifies a text field with an associated `TextEditingController`,
   //the text field updates value and the controller notifies its listeners.
-  final TextEditingController _multiLineTextFieldcontroller =
-      TextEditingController();
+  final TextEditingController _multiLineTextFieldcontroller = TextEditingController();
   bool _isLoading = false;
 
   _showLoading() {
@@ -100,13 +173,18 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                   maxLines: 10,
                   maxLength: 500,
                   decoration: InputDecoration(
-                    hintText: '글 입력 후 저장하기를 누르세요',
+                    hintText: '글 입력 후 작성완료를 누르세요',
                   ),
 //            onChanged: (str) => print('Multi-line text change: $str'),
 //            onSubmitted: (str) => print('This will not get called when return is pressed'),
                 ),
                 SizedBox(height: 10.0),
-                FlatButton(
+                RaisedButton(
+                  child: Text(
+                    "작성완료",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  color: const Color(0xFF1BC0C5),
                   onPressed: () {
                     print('button');
                     showDialog(
@@ -124,19 +202,25 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                   Navigator.of(context).pop();
                                 },
                               ),
-                              FlatButton(
-                                child: Text("저장"),
+                              RaisedButton(
                                 onPressed: () {
                                   Navigator.of(context).pop();
-                                  write(inputData.token,_multiLineTextFieldcontroller.text,widget.channelId);
+                                  write(
+                                      inputData.token,
+                                      _multiLineTextFieldcontroller.text,
+                                      widget.channelId);
                                 },
-                              ),
+                                child: Text(
+                                  "저장하기",
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                color: const Color(0xFF1BC0C5),
+                              )
                             ],
                           );
                         });
                   },
-                  child: const Text('저장하기'),
-                ),
+                )
               ],
             ),
           );

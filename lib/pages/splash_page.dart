@@ -40,10 +40,10 @@ class SplashScreenState extends State<SplashScreen> {
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
-            image: AssetImage('assets/images/bong.png'),
-            fit: BoxFit.cover
-        ) ,
-      ),
+        image: AssetImage('assets/images/bong.png'),
+        fit: BoxFit.cover
+    ) ,
+    ),
       child: Center(
         child: CircularProgressIndicator(
           valueColor: AlwaysStoppedAnimation<Color>(Colors.redAccent),

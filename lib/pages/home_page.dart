@@ -11,7 +11,7 @@ import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
-
+import 'package:my_doctor/widgets/channel_dialog.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -170,10 +170,11 @@ class _HomePageState extends State<HomePage> {
         // 그룹 선택 이벤트
         onTap: () {
           print('groupId: ${_group[i].id.toString()}');
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ChannelPage(channelId: _group[i].id.toString())),
-          );
+//          Navigator.push(
+//            context,
+//            MaterialPageRoute(builder: (context) => ChannelPage(channelId: _group[i].id.toString())),
+//          );
+          ChannelDialog.channelNotice(context, _group[i].id);
         });
   }
 

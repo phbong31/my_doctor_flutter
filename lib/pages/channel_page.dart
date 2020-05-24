@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/widgets/channel_main.dart';
 import 'package:my_doctor/widgets/channel_write.dart';
+import 'package:my_doctor/widgets/channel_dialog.dart';
 import 'package:provider/provider.dart';
 
 class ChannelPage extends StatefulWidget {
@@ -15,16 +16,9 @@ class ChannelPage extends StatefulWidget {
 }
 
 class _ChannelPageState extends State<ChannelPage> {
-//  String channelId ;
-//  _ChannelPageState(String channelId) {
-//    this.channelId = channelId;
-//  }
-
-  static String i;
 
   int _selectedIndex = 0;
   List _pages = [ChannelMain(), ChannelInfo(),ChannelWrite()];
-
 
   @override
   void initState() {
@@ -52,39 +46,7 @@ class _ChannelPageState extends State<ChannelPage> {
 //                  snap: true,
                   flexibleSpace: GestureDetector(
                     onTap: () {
-                      showGeneralDialog(
-                          context: context,
-                          barrierDismissible: true,
-                          barrierLabel: MaterialLocalizations.of(context)
-                              .modalBarrierDismissLabel,
-                          barrierColor: Colors.black45,
-                          transitionDuration: const Duration(milliseconds: 200),
-                          pageBuilder: (BuildContext buildContext,
-                              Animation animation,
-                              Animation secondaryAnimation) {
-                            return Center(
-                              child: Container(
-                                width: MediaQuery.of(context).size.width *0.8,
-                                height: MediaQuery.of(context).size.height *0.7,
-                                padding: EdgeInsets.all(20),
-                                color: Colors.white,
-                                child: Column(
-                                  children: [
-                                    RaisedButton(
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: Text(
-                                        "Save",
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      color: const Color(0xFF1BC0C5),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            );
-                          });
+                      ChannelDialog.customDialog(context);
                     },
                     child: FlexibleSpaceBar(
                         centerTitle: true,

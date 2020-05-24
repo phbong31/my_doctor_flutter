@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/model/user_info.dart';
 import 'package:my_doctor/service/webservice.dart';
 
@@ -17,6 +18,13 @@ class ProviderData with ChangeNotifier {
   String uuid = '';
 
   String groupId = '';
+
+  User getUserFromProvider () {
+    User user = User(0, this.name, this.position, this.profileUrl);
+    notifyListeners();
+    print('name:$name');
+    return user;
+  }
 
   void setGroupId(String id) {
     groupId = id;
