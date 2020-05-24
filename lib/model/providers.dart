@@ -1,8 +1,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_doctor/model/user_info.dart';
+import 'package:my_doctor/service/webservice.dart';
 
-class InputData with ChangeNotifier {
+import 'board_base.dart';
+
+class ProviderData with ChangeNotifier {
   String name = '';
   String email = '';
   String gender = 'Male';
@@ -12,6 +15,14 @@ class InputData with ChangeNotifier {
   String token = '';
   String profileUrl = '';
   String uuid = '';
+
+  String groupId = '';
+
+  void setGroupId(String id) {
+    groupId = id;
+
+    notifyListeners();
+  }
 
   //InputData(this.name, this.position, this.token);
 
@@ -87,5 +98,6 @@ class InputData with ChangeNotifier {
 
     notifyListeners();
   }
+
 
 }

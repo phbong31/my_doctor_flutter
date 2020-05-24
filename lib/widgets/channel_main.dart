@@ -5,25 +5,30 @@ import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/write_page.dart';
 import 'package:my_doctor/service/webservice.dart';
-import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:my_doctor/model/providers.dart';
 
 class ChannelMain extends StatefulWidget {
+  final String channelId;
+  const ChannelMain({Key key, this.channelId}) : super(key: key);
+
   @override
   _ChannelMainState createState() => _ChannelMainState();
 }
 
 class _ChannelMainState extends State<ChannelMain> {
+
   List<BoardBase> _boardBase = List<BoardBase>();
   YoutubePlayerController _controller;
 
   @override
   void initState() {
     super.initState();
-    _populateNewBoard();
+    final inputData = Provider.of<ProviderData>(context, listen: false);
+    _populateNewBoard(inputData.groupId);
 
     _controller = YoutubePlayerController(
       initialVideoId: 'CSa6Ocyog4U',
@@ -35,8 +40,9 @@ class _ChannelMainState extends State<ChannelMain> {
     );
   }
 
-  void _populateNewBoard() {
-    Webservice().load(BoardBase.all).then((boardBase) => {
+  void _populateNewBoard(String id) {
+    print('channelId:$id');
+    Webservice().loadBoard(BoardBase.all, id).then((boardBase) => {
           setState(() => {_boardBase = boardBase})
         });
   }
@@ -54,7 +60,7 @@ class _ChannelMainState extends State<ChannelMain> {
 
   @override
   Widget build(BuildContext context) {
-    final inputData = Provider.of<InputData>(context, listen: false);
+    final inputData = Provider.of<ProviderData>(context, listen: false);
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 0),

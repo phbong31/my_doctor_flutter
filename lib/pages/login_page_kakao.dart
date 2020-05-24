@@ -8,7 +8,6 @@ import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
-import 'package:my_doctor/signup/signup_page.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 
 class LoginScreen extends StatefulWidget {

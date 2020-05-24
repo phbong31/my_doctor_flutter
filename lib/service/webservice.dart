@@ -7,9 +7,10 @@ import 'package:my_doctor/utils/constants.dart';
 class Resource<T> {
   final String url;
   final String token;
+  final String groupId;
   T Function(Response response) parse;
 
-  Resource({this.url,this.token,this.parse});
+  Resource({this.url,this.token,this.parse,this.groupId});
 }
 
 class Webservice {
@@ -24,23 +25,60 @@ class Webservice {
 
   getToken() {
     getAToken().then((token) {
-      print("!@#!@#!@#!@#!"+token);
+//      print("!@#!@#!@#!@#!"+token);
     });
   }
 
-
-
-  Future<T> load<T>(Resource<T> resource) async {
+  Future<T> loadBoardAll<T>(Resource<T> resource) async {
 
     await getAToken();
-    final response = await http.get(resource.url+'?token='+tokenString, headers: {
+    final response = await http.get(resource.url, headers: {
       'Content-Type': 'application/json',
-      'Accept': 'application/json'
+      'Accept': 'application/json',
+      'authorization' : '$tokenString'
+    });
+    //tokenString = Constants.TOKEN;
+    // print("token:"+tokenString);
+//    print(resource.url+'?token='+tokenString);
+//    print("http:statusCode="+response.statusCode.toString());
+    if(response.statusCode == 200) {
+      return resource.parse(response);
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+
+  Future<T> loadBoard<T>(Resource<T> resource, String groupId) async {
+
+    await getAToken();
+    final response = await http.get(resource.url+'?groupId='+groupId, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'authorization' : '$tokenString'
     });
     //tokenString = Constants.TOKEN;
    // print("token:"+tokenString);
-    print(resource.url+'?token='+tokenString);
-    print("http:statusCode="+response.statusCode.toString());
+//    print(resource.url+'?token='+tokenString);
+//    print("http:statusCode="+response.statusCode.toString());
+    if(response.statusCode == 200) {
+      return resource.parse(response);
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
+
+  Future<T> loadGroup<T>(Resource<T> resource) async {
+
+    await getAToken();
+    final response = await http.get(resource.url, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'authorization' : '$tokenString'
+    });
+    //tokenString = Constants.TOKEN;
+    // print("token:"+tokenString);
+//    print(resource.url+'?token='+tokenString);
+//    print("http:statusCode="+response.statusCode.toString());
     if(response.statusCode == 200) {
       return resource.parse(response);
     } else {

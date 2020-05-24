@@ -10,9 +10,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/service/secure_storage.dart';
 import 'package:my_doctor/service/token_service.dart';
-import 'package:my_doctor/signup/input_data.dart';
-import 'package:my_doctor/signup/input_data.dart';
-import 'package:my_doctor/signup/signup_page.dart';
+import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/utils/auth_utils.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/network_utils.dart';
@@ -126,8 +124,8 @@ class LoginPageState extends State<LoginPage> {
 
     if (responseJson == null) {
       NetworkUtils.showSnackBar(_scaffoldKey, '등록되지 않은 사용자입니다.');
-      Navigator.of(_scaffoldKey.currentContext)
-          .pushNamed(SignUpPage.routeName);
+//      Navigator.of(_scaffoldKey.currentContext)
+//          .pushNamed(RegisterPage.routeName);
       signOutGoogle();
     } else if (responseJson == 'NetworkError') {
       NetworkUtils.showSnackBar(_scaffoldKey, null);

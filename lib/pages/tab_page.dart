@@ -10,11 +10,9 @@ import 'package:my_doctor/pages/signup_page.dart';
 import 'package:my_doctor/pages/write_page.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/service/user_service.dart';
-import 'package:my_doctor/signup/input_data.dart';
-import 'package:my_doctor/signup/signup_page.dart';
+
 import 'package:provider/provider.dart';
 
-import '../board_list.dart';
 import 'camera_page.dart';
 import 'home_page.dart';
 
@@ -27,7 +25,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-  List _pages = [HomePage(), ChannelPage(), CameraPage()];
+  List _pages = [HomePage(), RegisterScreen(), CameraPage()];
 
   @override
   Widget build(BuildContext context) {

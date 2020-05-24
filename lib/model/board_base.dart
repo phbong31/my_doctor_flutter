@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/utils/constants.dart';
 
@@ -25,6 +26,7 @@ class BoardBase {
   final String photoList;
   final String createdTime;
   final String updatedTime;
+  final int boardPatientId;
 
 //  final photos = <Photo>[];
 
@@ -49,7 +51,8 @@ class BoardBase {
     this.userId,
     this.photoList,
     this.createdTime,
-    this.updatedTime});
+    this.updatedTime,
+    this.boardPatientId});
 
 
 
@@ -62,7 +65,7 @@ class BoardBase {
       kImageUrl: json['kImageUrl'],
       patientId: json['patientId'],
       status: json['status'],
-        text: json['text'],
+        text: json['text'].replaceAll("\\n", "\n"),
         type: json['type'],
         replyCount: json['replyCount'],
         userType: json['userType'],
@@ -74,7 +77,8 @@ class BoardBase {
         userId: json['userId'],
         photoList: json['photoList'],
       createdTime: json['createdTime'],
-      updatedTime: json['updatedTIme']
+        updatedTime: json['updatedTIme'],
+        boardPatientId: json['boardPatientId']
     );
   }
 
@@ -83,7 +87,7 @@ class BoardBase {
     return Resource(
         url: Constants.BOARD_LIST_URL,
         parse: (response) {
-
+          print(response.body);
           final result = json.decode(response.body);
           Iterable list = result;
           return list.map((model) => BoardBase.fromJson(model)).toList();

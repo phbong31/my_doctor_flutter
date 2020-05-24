@@ -1,25 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:my_doctor/model/group.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/service/webservice.dart';
-import 'package:my_doctor/signup/input_data.dart';
+import 'package:my_doctor/model/providers.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-
-//import 'package:kakao_flutter_sdk/all.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
-import 'package:my_doctor/signup/input_data.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
-import 'package:my_doctor/service/webservice.dart';
-import 'package:my_doctor/utils/constants.dart';
-import 'package:my_doctor/utils/ui_utils.dart';
-import 'package:provider/provider.dart';
+
 
 class HomePage extends StatefulWidget {
   @override
@@ -36,13 +28,14 @@ class _HomePageState extends State<HomePage> {
     _populateNewBoard();
   }
 
+  //API 연결
   void _populateNewBoard() {
-    Webservice().load(Group.all).then((group) => {
+    Webservice().loadGroup(Group.all).then((group) => {
           setState(() => {_group = group})
         });
-    Webservice().load(BoardBase.all).then((boardBase) => {
-          setState(() => {_boardBase = boardBase})
-        });
+    Webservice().loadBoardAll(BoardBase.all).then((boardBase) => {
+      setState(() => {_boardBase = boardBase})
+    });
   }
 
   //photoList(json) parse to List
@@ -58,7 +51,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final inputData = Provider.of<InputData>(context);
+    final inputData = Provider.of<ProviderData>(context);
 
     return Scaffold(
       body: Container(
@@ -173,10 +166,13 @@ class _HomePageState extends State<HomePage> {
               ? groupCardNoIcon(i)
               : groupCardIcon(i),
         ),
+
+        // 그룹 선택 이벤트
         onTap: () {
+          print('groupId: ${_group[i].id.toString()}');
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ChannelPage()),
+            MaterialPageRoute(builder: (context) => ChannelPage(channelId: _group[i].id.toString())),
           );
         });
   }

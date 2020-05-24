@@ -19,7 +19,7 @@ class BoardListState extends State<BoardList> {
 
   void _populateNewsArticles() {
 
-    Webservice().load(Photo.all).then((newsArticles) => {
+    Webservice().loadGroup(Photo.all).then((newsArticles) => {
       setState(() => {
         _boardList = newsArticles
       })

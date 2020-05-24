@@ -7,7 +7,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
-import 'package:my_doctor/signup/input_data.dart';
+import 'package:my_doctor/model/providers.dart';
+
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:my_doctor/service/webservice.dart';
@@ -41,7 +42,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   void _populateNewBoard() {
-    Webservice().load(BoardBase.all).then((boardBase) => {
+    Webservice().loadBoard(BoardBase.all, "").then((boardBase) => {
           setState(() => {_boardBase = boardBase})
         });
   }
@@ -93,7 +94,7 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    final inputData = Provider.of<InputData>(context);
+    final inputData = Provider.of<ProviderData>(context);
 //    inputData.updateInfo();
     return Scaffold(
 

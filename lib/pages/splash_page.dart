@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:my_doctor/pages/login_page_kakao.dart';
-import 'package:my_doctor/signup/input_data.dart';
+import 'package:my_doctor/model/providers.dart';
 import 'package:provider/provider.dart';
 
 import 'login_page.dart';
@@ -34,7 +34,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final inputData = Provider.of<InputData>(context);
+    final inputData = Provider.of<ProviderData>(context);
     inputData.updateInfo();
 
     return Container(

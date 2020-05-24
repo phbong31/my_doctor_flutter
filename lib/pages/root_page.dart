@@ -5,9 +5,7 @@ import 'package:my_doctor/pages/splash_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/pages/write_page.dart';
 import 'package:my_doctor/pages/channel_page.dart';
-import 'package:my_doctor/signup/input_data.dart';
-import 'package:my_doctor/signup/signup_page.dart';
-
+import 'package:my_doctor/model/providers.dart';
 import 'package:provider/provider.dart';
 
 class RootPage extends StatelessWidget {
@@ -16,7 +14,7 @@ class RootPage extends StatelessWidget {
   Widget build(BuildContext context) {
 
     return ChangeNotifierProvider(
-      create: (_) => InputData(),
+      create: (_) => ProviderData(),
 
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -33,7 +31,7 @@ class RootPage extends StatelessWidget {
           '/': (context) => SplashScreen(),
           TabPage.routeName: (BuildContext context) => TabPage(),
           LoginScreen.routeName: (BuildContext context) => LoginScreen(),
-          SignUpPage.routeName: (BuildContext context) => RegisterScreen(),
+          RegisterScreen.routeName: (BuildContext context) => RegisterScreen(),
           WritePage.routeName: (BuildContext context) => WritePage(),
           ChannelPage.routeName: (BuildContext context) => ChannelPage()
 
