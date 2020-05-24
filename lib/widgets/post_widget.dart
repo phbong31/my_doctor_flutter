@@ -19,8 +19,9 @@ class PostWidget extends StatefulWidget {
   final User userInfo;
   final List<Photo> photos;
   final String token;
+  final String videoLink;
 
-  PostWidget(this.post, this.userInfo, this.photos, this.token);
+  PostWidget(this.post, this.userInfo, this.photos, this.token, this.videoLink);
 
 
   @override

@@ -261,9 +261,9 @@ class _MainPageState extends State<MainPage> {
     user.profileUrl = _boardBase[i - 1].profileUrl;
     print(_boardBase[i - 1].photoList);
     return _boardBase[i - 1].photoList == null
-        ? PostWidget(_boardBase[i - 1], user, null, token)
+        ? PostWidget(_boardBase[i - 1], user, null, token, null)
         : PostWidget(_boardBase[i - 1], user,
-            parsePhotos(_boardBase[i - 1].photoList), token);
+            parsePhotos(_boardBase[i - 1].photoList), token, null);
   }
 
 }

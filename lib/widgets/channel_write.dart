@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/model/providers.dart';
@@ -17,13 +19,13 @@ class ChannelWrite extends StatefulWidget {
 }
 
 class Item {
-  const Item(this.name,this.icon);
+  const Item(this.name, this.icon);
+
   final String name;
   final Icon icon;
 }
 
 class _ChannelWriteState extends State<ChannelWrite> {
-
 //  @override
 //  void initState() {
 //    super.initState();
@@ -36,10 +38,30 @@ class _ChannelWriteState extends State<ChannelWrite> {
 
     Item selectedUser;
     List<Item> users = <Item>[
-      const Item('현재 채널 주치의에게 쓰기',Icon(Icons.android,color:  const Color(0xFF167F67),)),
-      const Item('칭찬/불만 쓰기',Icon(Icons.flag,color:  const Color(0xFF167F67),)),
-      const Item('채널 전체 공개',Icon(Icons.format_indent_decrease,color:  const Color(0xFF167F67),)),
-      const Item('특정인에게 보내기',Icon(Icons.mobile_screen_share,color:  const Color(0xFF167F67),)),
+      const Item(
+          '현재 채널 주치의에게 쓰기',
+          Icon(
+            Icons.person,
+            color: const Color(0xFF167F67),
+          )),
+      const Item(
+          '칭찬/불만 쓰기',
+          Icon(
+            Icons.thumbs_up_down,
+            color: const Color(0xFF167F67),
+          )),
+      const Item(
+          '채널 전체 공개',
+          Icon(
+            Icons.accessibility_new,
+            color: const Color(0xFF167F67),
+          )),
+      const Item(
+          '특정인에게 보내기',
+          Icon(
+            Icons.local_post_office,
+            color: const Color(0xFF167F67),
+          )),
     ];
 
     return SingleChildScrollView(
@@ -52,7 +74,8 @@ class _ChannelWriteState extends State<ChannelWrite> {
               SizedBox(
                 width: 10,
               ),
-              AvatarWidget(user: user, isLarge: true, isShowingUsernameLabel: false),
+              AvatarWidget(
+                  user: user, isLarge: true, isShowingUsernameLabel: false),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
@@ -66,7 +89,7 @@ class _ChannelWriteState extends State<ChannelWrite> {
                   ),
                   Container(
                     child: DropdownButton<Item>(
-                      hint:  Text("누구에게 쓰실래요? : $selectedUser"),
+                      hint: Text("누구에게 쓰실래요? : $selectedUser"),
                       value: selectedUser,
                       onChanged: (Item Value) {
                         setState(() {
@@ -74,15 +97,17 @@ class _ChannelWriteState extends State<ChannelWrite> {
                         });
                       },
                       items: users.map((Item user) {
-                        return  DropdownMenuItem<Item>(
+                        return DropdownMenuItem<Item>(
                           value: user,
                           child: Row(
                             children: <Widget>[
                               user.icon,
-                              SizedBox(width: 30,),
+                              SizedBox(
+                                width: 30,
+                              ),
                               Text(
                                 user.name,
-                                style:  TextStyle(color: Colors.black),
+                                style: TextStyle(color: Colors.black),
                               ),
                             ],
                           ),
@@ -109,7 +134,6 @@ class _ChannelWriteState extends State<ChannelWrite> {
       ),
     );
   }
-
 }
 
 /// Multi-line text field widget with a submit button
@@ -131,8 +155,22 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   //`TextEditingController` A controller for an editable text field.
   // Whenever the user modifies a text field with an associated `TextEditingController`,
   //the text field updates value and the controller notifies its listeners.
-  final TextEditingController _multiLineTextFieldcontroller = TextEditingController();
+  final TextEditingController _multiLineTextFieldcontroller =
+      TextEditingController();
+  final TextEditingController _youtubeLinkController = TextEditingController();
+
   bool _isLoading = false;
+  bool _isLink = false;
+
+  File _image;
+
+  Future getImage() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = image;
+    });
+  }
 
   _showLoading() {
     setState(() {
@@ -173,10 +211,68 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                   maxLines: 10,
                   maxLength: 500,
                   decoration: InputDecoration(
-                    hintText: '글 입력 후 작성완료를 누르세요',
+                    hintText: '여기에 글을 쓴 뒤 \'작성완료\'를 누르세요',
+                    hintStyle: TextStyle(color: Colors.grey)
                   ),
 //            onChanged: (str) => print('Multi-line text change: $str'),
 //            onSubmitted: (str) => print('This will not get called when return is pressed'),
+                ),
+                SizedBox(height: 10.0),
+                //link, photo button
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      _isLink
+                          ? Container()
+                          : IconButton(
+                              icon: Icon(Icons.photo_camera),
+                              iconSize: 30,
+                              color: Colors.blueAccent,
+                              onPressed: () {
+                                getImage();
+                              },
+                            ),
+                      _image == null
+                          ? IconButton(
+                              icon: Icon(Icons.link),
+                              iconSize: 30,
+                              color: Colors.blue[700],
+                              onPressed: () {
+                                setState(() {
+                                  if (_isLink) {
+                                    _isLink = false;
+                                    _youtubeLinkController.text = '';
+                                  } else {
+                                    _isLink = true;
+                                  }
+                                });
+                              },
+                            )
+                          : Container(
+                              width: 100,
+                              height: 100,
+                              child: Image.file(_image),
+                            ),
+                      _isLink
+                          ? Container(
+                              width: 230,
+                              child: TextField(
+                                controller: _youtubeLinkController,
+                                maxLines: 1,
+                                decoration: InputDecoration(
+                                  hintText: 'Youtube link를 입력하세요',
+                                  hintStyle: TextStyle(color: Colors.grey),
+                                ),
+//            onChanged: (str) => print('Multi-line text change: $str'),
+//            onSubmitted: (str) => print('This will not get called when return is pressed'),
+                              ),
+                            )
+                          : Container(
+                              width: 200,
+                            ),
+                    ],
+                  ),
                 ),
                 SizedBox(height: 10.0),
                 RaisedButton(
