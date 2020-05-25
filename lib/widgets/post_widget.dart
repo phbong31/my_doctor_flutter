@@ -99,7 +99,9 @@ class _PostWidgetState extends State<PostWidget> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(widget.post.writerName, style: bold),
-                if (widget.post.position != null) Text(widget.post.position)
+                widget.post.position != null
+                    ? Text(widget.post.position)
+                    : Container()
               ],
             ),
             Spacer(),
@@ -160,10 +162,13 @@ class _PostWidgetState extends State<PostWidget> {
                       onPageChanged: _updateImageIndex,
                     )
                   : Container(),
-              widget.post.youtubeLink != null ? Container(
-                margin: EdgeInsets.only(bottom: 24.0),
-                child: YoutubeWidget(widget.post.youtubeLink),
-              ) : Container(),
+              widget.post.youtubeLink != null &&
+                      widget.post.youtubeLink.length > 5
+                  ? Container(
+                      margin: EdgeInsets.only(bottom: 24.0),
+                      child: YoutubeWidget(widget.post.youtubeLink),
+                    )
+                  : Container(),
 //              HeartOverlayAnimator(
 //                  triggerAnimationStream: _doubleTapImageEvents.stream),
             ],

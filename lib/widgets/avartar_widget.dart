@@ -50,7 +50,8 @@ class AvatarWidget extends StatelessWidget {
         Container(
           height: radius * 2 + 9.0,
           width: radius * 2 + 9.0,
-          decoration: user.position.isEmpty ? null : _gradientBorderDecoration,
+          decoration: user.position == null || user.position.length < 1 ? null
+              : _gradientBorderDecoration,
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
@@ -60,11 +61,14 @@ class AvatarWidget extends StatelessWidget {
                   decoration: _greyBoxShadowDecoration,
                   child: CircleAvatar(
                     radius: radius,
-                    backgroundImage: NetworkImage(user.profileUrl),
+                    backgroundColor: Colors.lightBlue[50],
+                    backgroundImage: user.position == null || user.position.length < 1
+                        ? AssetImage('assets/images/person.png')
+                        : NetworkImage(user.profileUrl)
                   ),
                 ),
               ),
-              if (isCurrentUserStory && user.position.isEmpty)
+              if (isCurrentUserStory && user.position == null)
               // Bottom right circular add icon
                 Positioned(
                   right: 2.0,
@@ -74,7 +78,7 @@ class AvatarWidget extends StatelessWidget {
                     height: 18.0,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: Colors.blue,
+                      color: Colors.yellow,
                       border: Border.all(color: Colors.white),
                     ),
                     child: Icon(Icons.add, size: 16.0, color: Colors.white),

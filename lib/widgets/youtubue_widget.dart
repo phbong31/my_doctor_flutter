@@ -17,7 +17,6 @@ import 'avartar_widget.dart';
 class YoutubeWidget extends StatefulWidget {
 
   final String videoLink;
-
   YoutubeWidget(this.videoLink);
 
   @override
@@ -30,8 +29,10 @@ class _YoutubeWidgetState extends State<YoutubeWidget> {
   @override
   void initState() {
     super.initState();
+    String videoId;
+    videoId = YoutubePlayer.convertUrlToId(widget.videoLink);
        _controller = YoutubePlayerController(
-      initialVideoId: widget.videoLink,
+      initialVideoId: videoId,
       flags: YoutubePlayerFlags(
         mute: false,
         autoPlay: false,

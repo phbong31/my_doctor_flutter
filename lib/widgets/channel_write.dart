@@ -263,7 +263,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                             ),
                       _isLink
                           ? Container(
-                              width: 230,
+                              width: 260,
                               child: TextField(
                                 controller: _youtubeLinkController,
                                 maxLines: 1,
@@ -311,7 +311,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                   write(
                                       inputData.token,
                                       _multiLineTextFieldcontroller.text,
-                                      widget.channelId);
+                                      widget.channelId, _youtubeLinkController.text);
                                 },
                                 child: Text(
                                   "저장하기",
@@ -329,13 +329,14 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           );
   }
 
-  Future<void> write(String token, text, groupId) async {
+  Future<void> write(String token, text, groupId, youtubeLink) async {
     _showLoading();
 
     Map data = {
       'text': text.replaceAll("\n", "\\n"),
       'type': '2',
-      'groupId': groupId
+      'groupId': groupId,
+      'youtubeLink' : youtubeLink,
     };
     var body = json.encode(data);
     Map<String, String> headers = {
