@@ -8,21 +8,19 @@ import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
+import 'package:my_doctor/widgets/youtubue_widget.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
 import 'avartar_widget.dart';
-
 
 class PostWidget extends StatefulWidget {
   final BoardBase post;
   final User userInfo;
   final List<Photo> photos;
   final String token;
-  final String videoLink;
 
-  PostWidget(this.post, this.userInfo, this.photos, this.token, this.videoLink);
-
+  PostWidget(this.post, this.userInfo, this.photos, this.token);
 
   @override
   _PostWidgetState createState() => _PostWidgetState();
@@ -30,10 +28,9 @@ class PostWidget extends StatefulWidget {
 
 class _PostWidgetState extends State<PostWidget> {
   final StreamController<void> _doubleTapImageEvents =
-  StreamController.broadcast();
+      StreamController.broadcast();
   bool _isSaved = false;
   int _currentImageIndex = 0;
-
 
   @override
   void dispose() {
@@ -44,6 +41,7 @@ class _PostWidgetState extends State<PostWidget> {
   void _updateImageIndex(int index) {
     setState(() => _currentImageIndex = index);
   }
+
 //
 //  void _onDoubleTapLikePhoto() {
 //    setState(() => widget.post.addLikeIfUnlikedFor(currentUser));
@@ -90,7 +88,6 @@ class _PostWidgetState extends State<PostWidget> {
 //    List<Photo> photoObjs = photoObjsJson.map((photoJson) => Photo.fromJson(photoJson)).toList();
 //    print(widget.token);
     return Column(
-
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         // User Details
@@ -115,7 +112,8 @@ class _PostWidgetState extends State<PostWidget> {
 
         //text
         Padding(
-          padding: const EdgeInsets.only(left:12.0, top:8.0, right:8.0, bottom:12.0),
+          padding: const EdgeInsets.only(
+              left: 12.0, top: 8.0, right: 8.0, bottom: 12.0),
           child: Column(
             children: <Widget>[
               Text(widget.post.text),
@@ -128,10 +126,9 @@ class _PostWidgetState extends State<PostWidget> {
           child: Stack(
             alignment: Alignment.center,
             children: <Widget>[
-              widget.photos != null ?
-              CarouselSlider(
-
-                items: widget.photos.map((json) {
+              widget.photos != null
+                  ? CarouselSlider(
+                      items: widget.photos.map((json) {
 //                  return CachedNetworkImage(
 //                    imageUrl: Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token+"/",
 //                    fit: BoxFit.fitWidth,
@@ -139,24 +136,33 @@ class _PostWidgetState extends State<PostWidget> {
 //                  );
 //                try {
 //                print(Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token);
-                  return CachedNetworkImage(
-                    imageUrl:Constants.PHOTO_VIEW_URL + json.photoId.toString() + "?token="+widget.token,
-                    fit: BoxFit.fitWidth,
-                    width: MediaQuery.of(context).size.width,
-                    placeholder: (context, url) => CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => Icon(Icons.error),
-                  );
+                        return CachedNetworkImage(
+                          imageUrl: Constants.PHOTO_VIEW_URL +
+                              json.photoId.toString() +
+                              "?token=" +
+                              widget.token,
+                          fit: BoxFit.fitWidth,
+                          width: MediaQuery.of(context).size.width,
+                          placeholder: (context, url) =>
+                              CircularProgressIndicator(),
+                          errorWidget: (context, url, error) =>
+                              Icon(Icons.error),
+                        );
 //                } catch (e) {
 //                  print('ShowImage - _renderImage()] - caught exception $e');
 //                  return Center(
 //                    child: Text('Image Format Can Not Be Rendered'),
 //                  );
 //                }
-
-                }).toList(),
-                viewportFraction: 1.0,
-                enableInfiniteScroll: false,
-                onPageChanged: _updateImageIndex,
+                      }).toList(),
+                      viewportFraction: 1.0,
+                      enableInfiniteScroll: false,
+                      onPageChanged: _updateImageIndex,
+                    )
+                  : Container(),
+              widget.post.youtubeLink != null ? Container(
+                margin: EdgeInsets.only(bottom: 24.0),
+                child: YoutubeWidget(widget.post.youtubeLink),
               ) : Container(),
 //              HeartOverlayAnimator(
 //                  triggerAnimationStream: _doubleTapImageEvents.stream),
@@ -164,7 +170,7 @@ class _PostWidgetState extends State<PostWidget> {
           ),
 //          onDoubleTap: _onDoubleTapLikePhoto,
         ),
-         //Action Bar
+        //Action Bar
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -190,23 +196,23 @@ class _PostWidgetState extends State<PostWidget> {
               onPressed: () => showSnackbar(context, 'Share'),
             ),
             Spacer(),
-            widget.photos != null ?
-              PhotoCarouselIndicator(
-                photoCount: widget.photos.length,
-                activePhotoIndex: _currentImageIndex,
-              ):Container(),
+            widget.photos != null
+                ? PhotoCarouselIndicator(
+                    photoCount: widget.photos.length,
+                    activePhotoIndex: _currentImageIndex,
+                  )
+                : Container(),
             Spacer(),
             Spacer(),
             IconButton(
               padding: EdgeInsets.zero,
               iconSize: 28.0,
               icon:
-              _isSaved ? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
+                  _isSaved ? Icon(Icons.bookmark) : Icon(Icons.bookmark_border),
 //              onPressed: _toggleIsSaved,
             )
           ],
         ),
-
 
         Padding(
           padding: const EdgeInsets.only(left: 8.0, bottom: 16.0),
@@ -262,9 +268,11 @@ class _PostWidgetState extends State<PostWidget> {
 //              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Row(children: <Widget>[
-                  Text("답글 "+widget.post.replyCount.toString()+"개")
-                ],),
+                child: Row(
+                  children: <Widget>[
+                    Text("답글 " + widget.post.replyCount.toString() + "개")
+                  ],
+                ),
               ),
             ],
           ),

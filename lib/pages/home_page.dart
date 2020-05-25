@@ -240,8 +240,8 @@ class _HomePageState extends State<HomePage> {
     user.profileUrl = _boardBase[i].profileUrl;
     print(_boardBase[i].photoList);
     return _boardBase[i].photoList == null
-        ? PostWidget(_boardBase[i], user, null, token, null)
+        ? PostWidget(_boardBase[i], user, null, token)
         : PostWidget(
-            _boardBase[i], user, parsePhotos(_boardBase[i].photoList), token, null);
+            _boardBase[i], user, parsePhotos(_boardBase[i].photoList), token);
   }
 }

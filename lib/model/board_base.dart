@@ -27,6 +27,7 @@ class BoardBase {
   final String createdTime;
   final String updatedTime;
   final int boardPatientId;
+  final String youtubeLink;
 
 //  final photos = <Photo>[];
 
@@ -52,7 +53,8 @@ class BoardBase {
     this.photoList,
     this.createdTime,
     this.updatedTime,
-    this.boardPatientId});
+    this.boardPatientId,
+    this.youtubeLink});
 
 
 
@@ -76,6 +78,7 @@ class BoardBase {
 //        groupName: json['groupName'],
         userId: json['userId'],
         photoList: json['photoList'],
+        youtubeLink: json['youtubeLink'],
       createdTime: json['createdTime'],
         updatedTime: json['updatedTIme'],
         boardPatientId: json['boardPatientId']

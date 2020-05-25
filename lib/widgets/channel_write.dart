@@ -172,6 +172,14 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     });
   }
 
+  Future getImageFromGallery() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+    });
+  }
+
   _showLoading() {
     setState(() {
       _isLoading = true;
@@ -211,9 +219,8 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                   maxLines: 10,
                   maxLength: 500,
                   decoration: InputDecoration(
-                    hintText: '여기에 글을 쓴 뒤 \'작성완료\'를 누르세요',
-                    hintStyle: TextStyle(color: Colors.grey)
-                  ),
+                      hintText: '여기에 글을 쓴 뒤 \'작성완료\'를 누르세요',
+                      hintStyle: TextStyle(color: Colors.grey)),
 //            onChanged: (str) => print('Multi-line text change: $str'),
 //            onSubmitted: (str) => print('This will not get called when return is pressed'),
                 ),
@@ -226,11 +233,11 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                       _isLink
                           ? Container()
                           : IconButton(
-                              icon: Icon(Icons.photo_camera),
+                              icon: Icon(Icons.add_a_photo),
                               iconSize: 30,
                               color: Colors.blueAccent,
                               onPressed: () {
-                                getImage();
+                                getImageFromGallery();
                               },
                             ),
                       _image == null
