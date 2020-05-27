@@ -173,34 +173,12 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   File tmpFile;
   String errMessage = 'Error Uploading Image';
 
-  setStatus(String message) {
-    setState(() {
-      status = message;
-    });
-  }
+//  setStatus(String message) {
+//    setState(() {
+//      status = message;
+//    });
+//  }
 
-  startUpload() {
-    setStatus('Uploading Image...');
-    if (null == tmpFile) {
-      setStatus(errMessage);
-      return;
-    }
-    String fileName = tmpFile.path.split('/').last;
-    upload(fileName);
-  }
-
-  upload(String fileName) {
-    http.post(uploadEndPoint, body: {
-      "image": base64Image,
-      "filename": fileName,
-      "classification": 'app',
-      "uploader": 'app'
-    }).then((result) {
-      setStatus(result.statusCode == 200 ? result.body : errMessage);
-    }).catchError((error) {
-      setStatus(error);
-    });
-  }
 
   Widget showImage() {
     return FutureBuilder<File>(
@@ -210,6 +188,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
             null != snapshot.data) {
           tmpFile = snapshot.data;
           base64Image = base64Encode(snapshot.data.readAsBytesSync());
+
           print(base64Image);
           return Flexible(
             child: Image.file(
@@ -235,13 +214,13 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
 
   Future getImage() async {
     setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.camera);
+      file = ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 40);
     });
   }
 
   Future getImageFromGallery() async {
     setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.gallery);
+      file = ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 40);
     });
   }
 
@@ -391,14 +370,26 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           );
   }
 
+  int photoId;
+
   Future<void> write(String token, text, groupId, youtubeLink) async {
     _showLoading();
 
+    int type = 2;
+    if(file!=null) {
+      photoId = await startUpload();
+      print('write() photoId : $photoId');
+      type = 1;
+    } else {
+      photoId = 0;
+    }
+
     Map data = {
       'text': text.replaceAll("\n", "\\n"),
-      'type': '2',
+      'type': type.toString(),
       'groupId': groupId,
       'youtubeLink' : youtubeLink,
+      'photoId' : photoId.toString()
     };
     var body = json.encode(data);
     Map<String, String> headers = {
@@ -406,7 +397,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
       "authorization": "$token"
     };
     var response =
-        await http.post(Constants.WRITE_URL, headers: headers, body: body);
+        await http.post(Constants.WRITE_URL, headers: headers, body: body).timeout(const Duration(seconds: 2));
 
     if (response.statusCode == 200) {
       print('200');
@@ -439,6 +430,59 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
 
     }
   }
+
+  Future<int> startUpload() async {
+//    setStatus('Uploading Image...');
+    if (null == tmpFile) {
+//      setStatus(errMessage);
+    }
+    String fileName = tmpFile.path.split('/').last;
+
+    await http.post(uploadEndPoint, body: {
+      "image": base64Image,
+      "filename": fileName,
+      "classification": 'app',
+      "uploader": 'app'
+    }).timeout(const Duration(seconds: 30)).then((result) {
+//      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    print(result.statusCode);
+      if (result.statusCode == 200) {
+        var jsonResponse = json.decode(result.body);
+        photoId = jsonResponse["result"];
+        print('upload() photoId : $photoId');
+      } else {
+        photoId = -1;
+      }
+    }).catchError((error) {
+      photoId=-2;
+//      setStatus(error.toString());
+    });
+    return photoId;
+  }
+
+//  int upload(String fileName) {
+//    photoId = 0;
+//    http.post(uploadEndPoint, body: {
+//      "image": base64Image,
+//      "filename": fileName,
+//      "classification": 'app',
+//      "uploader": 'app'
+//    }).then((result) {
+////      setStatus(result.statusCode == 200 ? result.body : errMessage);
+//
+//      if (result.statusCode == 200) {
+//        var jsonResponse = json.decode(result.body);
+//        photoId = jsonResponse["result"];
+//        print('upload() photoId : $photoId');
+//        return photoId;
+//      } else {
+//        return -1;
+//      }
+//    }).catchError((error) {
+////      setStatus(error.toString());
+//    });
+//    return photoId;
+//  }
 
   Widget _loadingScreen() {
     return Container(

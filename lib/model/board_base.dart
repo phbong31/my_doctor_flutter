@@ -67,7 +67,7 @@ class BoardBase {
       kImageUrl: json['kImageUrl'],
       patientId: json['patientId'],
       status: json['status'],
-        text: json['text'].replaceAll("\\n", "\n"),
+        text: json['text'] != null ? json['text'].replaceAll("\\n", "\n") : "",
         type: json['type'],
         replyCount: json['replyCount'],
         userType: json['userType'],
