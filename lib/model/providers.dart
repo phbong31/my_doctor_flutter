@@ -16,11 +16,12 @@ class ProviderData with ChangeNotifier {
   String token = '';
   String profileUrl = '';
   String uuid = '';
+  int id;
 
   String groupId = '';
 
   User getUserFromProvider () {
-    User user = User(0, this.name, this.position, this.profileUrl);
+    User user = User(id, this.name, this.position, this.profileUrl);
     notifyListeners();
     print('name:$name');
     return user;
@@ -37,6 +38,7 @@ class ProviderData with ChangeNotifier {
   final storage = FlutterSecureStorage();
 
   void getUserInfo() async {
+    id = int.parse(await storage.read(key: "id"));
     token = await storage.read(key: "aToken");
     name = await storage.read(key: "name");
     position = await storage.read(key: "position");
@@ -50,6 +52,8 @@ class ProviderData with ChangeNotifier {
   Future<UserData> getUserData() async {
     final storage = FlutterSecureStorage();
     UserData userData = new UserData();
+
+    userData.id = int.parse(await storage.read(key: "id"));
     userData.name = await storage.read(key: "name");
     userData.position = await storage.read(key: "position");
     userData.token = await storage.read(key: "aToken");
@@ -65,6 +69,7 @@ class ProviderData with ChangeNotifier {
 //    );
     final storage = FlutterSecureStorage();
 
+    id = int.parse(await storage.read(key: "id"));
     name = await storage.read(key: "name");
     position = await storage.read(key: "position");
     token = await storage.read(key: "aToken");
@@ -75,6 +80,7 @@ class ProviderData with ChangeNotifier {
   }
 
   void delUserInfo() {
+    id = 0;
     token = "";
     name = "";
     position = "";
@@ -99,6 +105,7 @@ class ProviderData with ChangeNotifier {
     final storage = FlutterSecureStorage();
     await storage.deleteAll();
 
+    id = 0;
     token = "";
     name = "";
     position = "";

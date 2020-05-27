@@ -17,9 +17,11 @@ class UserService {
   static Future<UserData> getUserInfo() async {
     final storage = FlutterSecureStorage();
     UserData userData = new UserData();
+    userData.id = int.parse(await storage.read(key: "id"));
     userData.name = await storage.read(key: "name");
     userData.position = await storage.read(key: "position");
     userData.token = await storage.read(key: "aToken");
+//    userData.id = await storage.read(key: "id");
 
     return userData;
   }

@@ -166,7 +166,6 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
 
   //////////////////////////////////////////////////////////////////////
 
-  static final String uploadEndPoint = Constants.PHOTO_UPLOAD_URL;
   Future<File> file;
   String status = '';
   String base64Image;
@@ -438,19 +437,20 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     }
     String fileName = tmpFile.path.split('/').last;
 
-    await http.post(uploadEndPoint, body: {
+    await http.post(Constants.PHOTO_UPLOAD_URL, body: {
       "image": base64Image,
       "filename": fileName,
       "classification": 'app',
       "uploader": 'app'
     }).timeout(const Duration(seconds: 30)).then((result) {
 //      setStatus(result.statusCode == 200 ? result.body : errMessage);
-    print(result.statusCode);
+
       if (result.statusCode == 200) {
         var jsonResponse = json.decode(result.body);
         photoId = jsonResponse["result"];
-        print('upload() photoId : $photoId');
+//        print('upload() photoId : $photoId');
       } else {
+        print(result.statusCode);
         photoId = -1;
       }
     }).catchError((error) {
@@ -460,29 +460,6 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     return photoId;
   }
 
-//  int upload(String fileName) {
-//    photoId = 0;
-//    http.post(uploadEndPoint, body: {
-//      "image": base64Image,
-//      "filename": fileName,
-//      "classification": 'app',
-//      "uploader": 'app'
-//    }).then((result) {
-////      setStatus(result.statusCode == 200 ? result.body : errMessage);
-//
-//      if (result.statusCode == 200) {
-//        var jsonResponse = json.decode(result.body);
-//        photoId = jsonResponse["result"];
-//        print('upload() photoId : $photoId');
-//        return photoId;
-//      } else {
-//        return -1;
-//      }
-//    }).catchError((error) {
-////      setStatus(error.toString());
-//    });
-//    return photoId;
-//  }
 
   Widget _loadingScreen() {
     return Container(

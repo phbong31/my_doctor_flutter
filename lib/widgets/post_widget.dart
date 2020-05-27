@@ -5,12 +5,14 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
+import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
 import 'package:my_doctor/widgets/youtubue_widget.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:provider/provider.dart';
 
 import 'avartar_widget.dart';
 
@@ -32,6 +34,15 @@ class _PostWidgetState extends State<PostWidget> {
   bool _isSaved = false;
   int _currentImageIndex = 0;
 
+  User user;
+
+  @override
+  void initState() {
+    super.initState();
+    final providerData = Provider.of<ProviderData>(context, listen: false);
+    user = providerData.getUserFromProvider();
+
+  }
   @override
   void dispose() {
     _doubleTapImageEvents.close();
@@ -92,11 +103,47 @@ class _PostWidgetState extends State<PostWidget> {
     SignOut
   ];
 
+
   void choiceAction(String choice){
     if(choice == Subscribe){
       print('Settings');
     }else if(choice == Settings){
-      print('Subscribe');
+      print('삭제하기 :${widget.post.id}');
+      print(widget.post.creatorId);
+      print(user.id);
+      if(widget.post.creatorId == user.id) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                title: Text('글을 삭제하시겠습니까?'),
+//                            content: Text('테스트'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("취소"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+
+                    },
+                    child: Text(
+                      "삭제하기",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: const Color(0xFF1BC0C5),
+                  )
+                ],
+              );
+            });
+      }
+
+
     }else if(choice == SignOut){
       print('SignOut');
     }
@@ -105,6 +152,7 @@ class _PostWidgetState extends State<PostWidget> {
 
   @override
   Widget build(BuildContext context) {
+
 //    var photoObjsJson = jsonDecode(widget.post.photoList)['photos'] as List;
 //    List<Photo> photoObjs = photoObjsJson.map((photoJson) => Photo.fromJson(photoJson)).toList();
 //    print(widget.token);
