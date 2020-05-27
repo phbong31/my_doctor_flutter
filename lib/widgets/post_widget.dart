@@ -82,6 +82,27 @@ class _PostWidgetState extends State<PostWidget> {
 //    );
 //  }
 
+  static const String Subscribe = '공개등급변경';
+  static const String Settings = '삭제하기';
+  static const String SignOut = '신고하기';
+
+  static const List<String> choices = <String>[
+    Subscribe,
+    Settings,
+    SignOut
+  ];
+
+  void choiceAction(String choice){
+    if(choice == Subscribe){
+      print('Settings');
+    }else if(choice == Settings){
+      print('Subscribe');
+    }else if(choice == SignOut){
+      print('SignOut');
+    }
+  }
+
+
   @override
   Widget build(BuildContext context) {
 //    var photoObjsJson = jsonDecode(widget.post.photoList)['photos'] as List;
@@ -105,9 +126,20 @@ class _PostWidgetState extends State<PostWidget> {
               ],
             ),
             Spacer(),
-            IconButton(
-              icon: Icon(Icons.more_vert),
-              onPressed: () => showSnackbar(context, 'More'),
+//            IconButton(
+////              icon: Icon(Icons.more_vert),
+////              onPressed: () => showSnackbar(context, 'More'),
+////            )
+            PopupMenuButton<String>(
+              onSelected: choiceAction,
+              itemBuilder: (BuildContext context) {
+                return choices.map((String choice) {
+                  return PopupMenuItem<String>(
+                    value: choice,
+                    child: Text(choice),
+                  );
+                }).toList();
+              },
             )
           ],
         ),
@@ -286,6 +318,7 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 }
+
 
 class PhotoCarouselIndicator extends StatelessWidget {
   final int photoCount;

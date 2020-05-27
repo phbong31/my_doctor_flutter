@@ -162,21 +162,86 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   bool _isLoading = false;
   bool _isLink = false;
 
-  File _image;
+//  File _image;
+
+  //////////////////////////////////////////////////////////////////////
+
+  static final String uploadEndPoint = Constants.PHOTO_UPLOAD_URL;
+  Future<File> file;
+  String status = '';
+  String base64Image;
+  File tmpFile;
+  String errMessage = 'Error Uploading Image';
+
+  setStatus(String message) {
+    setState(() {
+      status = message;
+    });
+  }
+
+  startUpload() {
+    setStatus('Uploading Image...');
+    if (null == tmpFile) {
+      setStatus(errMessage);
+      return;
+    }
+    String fileName = tmpFile.path.split('/').last;
+    upload(fileName);
+  }
+
+  upload(String fileName) {
+    http.post(uploadEndPoint, body: {
+      "image": base64Image,
+      "filename": fileName,
+      "classification": 'app',
+      "uploader": 'app'
+    }).then((result) {
+      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    }).catchError((error) {
+      setStatus(error);
+    });
+  }
+
+  Widget showImage() {
+    return FutureBuilder<File>(
+      future: file,
+      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
+        if (snapshot.connectionState == ConnectionState.done &&
+            null != snapshot.data) {
+          tmpFile = snapshot.data;
+          base64Image = base64Encode(snapshot.data.readAsBytesSync());
+          print(base64Image);
+          return Flexible(
+            child: Image.file(
+              snapshot.data,
+              fit: BoxFit.fill,
+            ),
+          );
+        } else if (null != snapshot.error) {
+          return const Text(
+            'Error Picking Image',
+            textAlign: TextAlign.center,
+          );
+        } else {
+          return const Text(
+            'No Image Selected',
+            textAlign: TextAlign.center,
+          );
+        }
+      },
+    );
+  }
+  //////////////////////////////////////////////////////////////////////
 
   Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.camera);
-
     setState(() {
-      _image = image;
+      file = ImagePicker.pickImage(source: ImageSource.camera);
     });
   }
 
   Future getImageFromGallery() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
-
     setState(() {
-      _image = image;
+      file = ImagePicker.pickImage(source: ImageSource.gallery);
     });
   }
 
@@ -240,7 +305,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                 getImageFromGallery();
                               },
                             ),
-                      _image == null
+                      file == null
                           ? IconButton(
                               icon: Icon(Icons.link),
                               iconSize: 30,
@@ -256,11 +321,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                 });
                               },
                             )
-                          : Container(
-                              width: 100,
-                              height: 100,
-                              child: Image.file(_image),
-                            ),
+                          : showImage(),
                       _isLink
                           ? Container(
                               width: 260,
@@ -312,6 +373,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                       inputData.token,
                                       _multiLineTextFieldcontroller.text,
                                       widget.channelId, _youtubeLinkController.text);
+                                  startUpload();
                                 },
                                 child: Text(
                                   "저장하기",
