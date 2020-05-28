@@ -79,7 +79,7 @@ class BoardBase {
         userId: json['userId'],
         photoList: json['photoList'],
         youtubeLink: json['youtubeLink'],
-      createdTime: json['createdTime'],
+       createdTime: json['createdTime'],
         updatedTime: json['updatedTIme'],
         boardPatientId: json['boardPatientId']
     );

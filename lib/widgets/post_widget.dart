@@ -13,8 +13,9 @@ import 'package:my_doctor/widgets/youtubue_widget.dart';
 import 'package:outline_material_icons/outline_material_icons.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import 'avartar_widget.dart';
+import 'package:my_doctor/pages/channel_page.dart';
 
 class PostWidget extends StatefulWidget {
   final BoardBase post;
@@ -33,21 +34,14 @@ class _PostWidgetState extends State<PostWidget> {
       StreamController.broadcast();
   bool _isSaved = false;
   int _currentImageIndex = 0;
-
   User user;
 
-  @override
-  void initState() {
-    super.initState();
-    final providerData = Provider.of<ProviderData>(context, listen: false);
-    user = providerData.getUserFromProvider();
 
-  }
-  @override
-  void dispose() {
-    _doubleTapImageEvents.close();
-    super.dispose();
-  }
+//  @override
+//  void dispose() {
+//    _doubleTapImageEvents.close();
+//    super.dispose();
+//  }
 
   void _updateImageIndex(int index) {
     setState(() => _currentImageIndex = index);
@@ -130,7 +124,8 @@ class _PostWidgetState extends State<PostWidget> {
                   RaisedButton(
                     onPressed: () {
                       Navigator.of(context).pop();
-
+                      delBoard(widget.token, widget.post.id);
+                      //delBoard.jsp
                     },
                     child: Text(
                       "삭제하기",
@@ -143,19 +138,79 @@ class _PostWidgetState extends State<PostWidget> {
             });
       }
 
-
     }else if(choice == SignOut){
       print('SignOut');
     }
   }
 
+  Future<void> delBoard(String token, boardId) async {
+//  _showLoading();
+print(token);
+print(boardId);
+    Map<String, String> headers = {
+//      "Content-type": "application/json",
+      "authorization": "$token"
+    };
+    var response = await http.post(Constants.DELETE_BOARD_URL, headers: headers, body: {
+      "boardId" : boardId.toString()
+    }).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      print('200');
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse["result"]);
+      int result = jsonResponse["result"];
+
+      if (jsonResponse != null && result > 0) {
+//      _hideLoading();
+        print('delete completed');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChannelPage(
+                channelId: widget.post.groupId.toString(),
+              )),
+        );
+//        Scaffold.of(context).showSnackBar(SnackBar(content: Text('글이 저장되었습니다.'),));
+      } else if (result == -1) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('삭제 권한이 없습니다'),
+        ));
+      }
+    } else {
+//    _hideLoading();
+      print('삭제 실패 - 토큰 권한 및 파라미터 확인 요함');
+      print(response.body);
+      //실패시
+
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
 
-//    var photoObjsJson = jsonDecode(widget.post.photoList)['photos'] as List;
-//    List<Photo> photoObjs = photoObjsJson.map((photoJson) => Photo.fromJson(photoJson)).toList();
-//    print(widget.token);
+    //글 올린 시간 계산
+    var today = DateTime.now();
+    var createdDate = DateTime.parse(widget.post.createdTime);
+    final mins = today.difference(createdDate).inMinutes;
+    final hours = today.difference(createdDate).inHours;
+    final days = today.difference(createdDate).inDays;
+    String difference = '';
+
+    if (mins < 1) {
+      difference = '방금';
+    } else if (mins < 60) {
+      difference = '$mins분';
+    } else if (mins >= 60 && hours < 24) {
+      difference = '$hours시간';
+    } else if (hours >= 24 && hours < 1440) {
+      difference = '$days일';
+    } else if (days >= 60) {
+      double diff = days/30;
+      difference = '${diff.round()}개월';
+    }
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -174,10 +229,11 @@ class _PostWidgetState extends State<PostWidget> {
               ],
             ),
             Spacer(),
-//            IconButton(
-////              icon: Icon(Icons.more_vert),
-////              onPressed: () => showSnackbar(context, 'More'),
-////            )
+
+            Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text('$difference 전', style: TextStyle(fontSize: 13, color: Colors.grey),),
+          ),
             PopupMenuButton<String>(
               onSelected: choiceAction,
               itemBuilder: (BuildContext context) {
@@ -226,7 +282,7 @@ class _PostWidgetState extends State<PostWidget> {
                           fit: BoxFit.fitWidth,
                           width: MediaQuery.of(context).size.width,
                           placeholder: (context, url) =>
-                              CircularProgressIndicator(),
+                              Center(child: SizedBox(width: 30, height: 30, child: CircularProgressIndicator())),
                           errorWidget: (context, url, error) =>
                               Icon(Icons.error),
                         );
@@ -366,6 +422,8 @@ class _PostWidgetState extends State<PostWidget> {
     );
   }
 }
+
+
 
 
 class PhotoCarouselIndicator extends StatelessWidget {

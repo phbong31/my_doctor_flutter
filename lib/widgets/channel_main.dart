@@ -23,12 +23,14 @@ class _ChannelMainState extends State<ChannelMain> {
 
   List<BoardBase> _boardBase = List<BoardBase>();
   YoutubePlayerController _controller;
+  String _groupIdProvided ='';
 
   @override
   void initState() {
     super.initState();
     final inputData = Provider.of<ProviderData>(context, listen: false);
     _populateNewBoard(inputData.groupId);
+    _groupIdProvided = inputData.groupId;
 
     _controller = YoutubePlayerController(
       initialVideoId: 'CSa6Ocyog4U',
@@ -38,6 +40,12 @@ class _ChannelMainState extends State<ChannelMain> {
         captionLanguage: 'kr',
       ),
     );
+  }
+
+  Future<void> _getData() async {
+    setState(() {
+      _populateNewBoard(_groupIdProvided);
+    });
   }
 
   void _populateNewBoard(String id) {
@@ -62,25 +70,28 @@ class _ChannelMainState extends State<ChannelMain> {
   Widget build(BuildContext context) {
     final inputData = Provider.of<ProviderData>(context, listen: false);
 
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 0),
-      child: CustomScrollView(
-        scrollDirection: Axis.vertical,
-        slivers: <Widget>[
-          SliverToBoxAdapter(
-              child: Padding(
-                  padding: EdgeInsets.fromLTRB(10, 20, 0, 5),
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: <Widget>[
-                            Text('${inputData.name} 님 반갑습니다!',
-                                style: TextStyle(
-                                    fontSize: 15.0, color: Colors.black38)),
+    return _boardBase.length != 0
+    ? RefreshIndicator(
+      onRefresh: _getData,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 0),
+        child: CustomScrollView(
+          scrollDirection: Axis.vertical,
+          slivers: <Widget>[
+            SliverToBoxAdapter(
+                child: Padding(
+                    padding: EdgeInsets.fromLTRB(10, 20, 0, 5),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: <Widget>[
+                              Text('${inputData.name} 님 반갑습니다!',
+                                  style: TextStyle(
+                                      fontSize: 15.0, color: Colors.black38)),
 
 //                      FlatButton(
 //                        onPressed: () {
@@ -89,33 +100,33 @@ class _ChannelMainState extends State<ChannelMain> {
 //                        },
 //                        child: Text("로그아웃"),
 //                      ),
-                          ],
-                        ),
-                        SizedBox(height: 5),
-                        Text('주치의와 소통하는 ${inputData.name} 님의 전용 공간입니다',
-                            style: TextStyle(
-                                fontSize: 15.0, color: Colors.black54)),
-                        SizedBox(height: 5),
-                        Text('이 곳에서 쓴 글은 주치의에게만 보입니다.',
-                            style: TextStyle(
-                                fontSize: 15.0, color: Colors.red[700])),
-                      ],
-                    ),
-                  ))),
+                            ],
+                          ),
+                          SizedBox(height: 5),
+                          Text('주치의와 소통하는 ${inputData.name} 님의 전용 공간입니다',
+                              style: TextStyle(
+                                  fontSize: 15.0, color: Colors.black54)),
+                          SizedBox(height: 5),
+                          Text('이 곳에서 쓴 글은 주치의에게만 보입니다.',
+                              style: TextStyle(
+                                  fontSize: 15.0, color: Colors.red[700])),
+                        ],
+                      ),
+                    ))),
 
-          // divider
-          SliverToBoxAdapter(
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 16.0),
-              height: 2.0,
-              decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                colors: [Colors.white, Colors.grey[300], Colors.white],
-                begin: Alignment.centerLeft,
-                end: Alignment.centerRight,
-              )),
+            // divider
+            SliverToBoxAdapter(
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 16.0),
+                height: 2.0,
+                decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                  colors: [Colors.white, Colors.grey[300], Colors.white],
+                  begin: Alignment.centerLeft,
+                  end: Alignment.centerRight,
+                )),
+              ),
             ),
-          ),
 
 //          SliverList(
 //            delegate:
@@ -132,22 +143,24 @@ class _ChannelMainState extends State<ChannelMain> {
 //            }, childCount: _boardBase.length),
 //          ),
 
-          //게시글
-          SliverPadding(
-            padding: EdgeInsets.all(3.0),
-            sliver: SliverList(
-              delegate:
-                  SliverChildBuilderDelegate((BuildContext context, int idx) {
-                return Container(
-                    margin: EdgeInsets.only(bottom: 1.0),
-                    child: Card(
-                        elevation: 2, child: MainPost(idx, inputData.token)));
-              }, childCount: _boardBase.length),
+            //게시글
+            SliverPadding(
+              padding: EdgeInsets.all(3.0),
+              sliver: SliverList(
+                delegate:
+                    SliverChildBuilderDelegate((BuildContext context, int idx) {
+                  return Container(
+                      margin: EdgeInsets.only(bottom: 1.0),
+                      child: Card(
+                          elevation: 2, child: MainPost(idx, inputData.token)));
+                }, childCount: _boardBase.length),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
-    );
+    )
+        : Center(child: CircularProgressIndicator());
   }
 
   Widget YouTubePost() {
@@ -170,7 +183,7 @@ class _ChannelMainState extends State<ChannelMain> {
         _boardBase[i].position, _boardBase[i].profileUrl);
     user.position = _boardBase[i].position;
     user.profileUrl = _boardBase[i].profileUrl;
-    print(_boardBase[i].photoList);
+//    print(_boardBase[i].photoList);
     return _boardBase[i].photoList == null
         ? PostWidget(_boardBase[i], user, null, token)
         : PostWidget(

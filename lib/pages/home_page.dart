@@ -28,14 +28,20 @@ class _HomePageState extends State<HomePage> {
     _populateNewBoard();
   }
 
+  Future<void> _getData() async {
+    setState(() {
+      _populateNewBoard();
+    });
+  }
+
   //API 연결
   void _populateNewBoard() {
     Webservice().loadGroup(Group.all).then((group) => {
           setState(() => {_group = group})
         });
     Webservice().loadBoardAll(BoardBase.all).then((boardBase) => {
-      setState(() => {_boardBase = boardBase})
-    });
+          setState(() => {_boardBase = boardBase})
+        });
   }
 
   //photoList(json) parse to List
@@ -56,46 +62,48 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: CustomScrollView(
-          slivers: <Widget>[
-            SliverAppBar(
-              title: Image(
-                image: AssetImage('assets/images/logo.png'),
-              ),
-              floating: true,
-              backgroundColor: Colors.transparent,
-
-              flexibleSpace: Container(
-                child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(0),
-                            bottom: Radius.circular(20.0)),
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.blue,
-                            Colors.blueAccent,
-                          ],
-                        )),
-                    alignment: Alignment.bottomLeft,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: <Widget>[
-                          Text('${inputData.name} 님!'),
-                          SizedBox(width: 10.0),
-                          GestureDetector(
-                            onTap: () {
-                              NetworkUtils.logoutUser(context);
-                            },
-                            child: CircleAvatar(
-                              radius: 14.0,
-                              backgroundImage:
-                                  NetworkImage('${inputData.profileUrl}'),
+        child: _boardBase.length != 0
+        ? RefreshIndicator(
+          onRefresh: _getData,
+          child: CustomScrollView(
+            slivers: <Widget>[
+              SliverAppBar(
+                title: Image(
+                  image: AssetImage('assets/images/logo.png'),
+                ),
+                floating: true,
+                backgroundColor: Colors.transparent,
+                flexibleSpace: Container(
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(0),
+                              bottom: Radius.circular(20.0)),
+                          gradient: LinearGradient(
+                            colors: [
+                              Colors.blue,
+                              Colors.blueAccent,
+                            ],
+                          )),
+                      alignment: Alignment.bottomLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text('${inputData.name} 님!'),
+                            SizedBox(width: 10.0),
+                            GestureDetector(
+                              onTap: () {
+                                NetworkUtils.logoutUser(context);
+                              },
+                              child: CircleAvatar(
+                                radius: 14.0,
+                                backgroundImage:
+                                    NetworkImage('${inputData.profileUrl}'),
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 20.0)
+                            SizedBox(width: 20.0)
 //                      FlatButton(
 //                        onPressed: () {
 //                          NetworkUtils.logoutUser(context);
@@ -103,57 +111,60 @@ class _HomePageState extends State<HomePage> {
 //                        },
 //                        child: Text("로그아웃"),
 //                      ),
-                        ],
-                      ),
-                    )),
+                          ],
+                        ),
+                      )),
+                ),
+                expandedHeight: 100,
               ),
-              expandedHeight: 100,
-            ),
 
-            SliverToBoxAdapter(
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: EdgeInsets.fromLTRB(20, 20, 0, 5),
+                child: Text('전체 그룹 목록'),
+              )),
+
+              //그룹 카드 리스트
+              SliverToBoxAdapter(
                 child: Padding(
-              padding: EdgeInsets.fromLTRB(20, 20, 0, 5),
-              child: Text('전체 그룹 목록'),
-            )),
-
-            //그룹 카드 리스트
-            SliverToBoxAdapter(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Container(
-                  height: 170.0,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: _group.length,
-                    itemBuilder: (context, index) {
-                      return groupPost(context, index);
-                    },
+                  padding: const EdgeInsets.all(12.0),
+                  child: Container(
+                    height: 170.0,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: _group.length,
+                      itemBuilder: (context, index) {
+                        return groupPost(context, index);
+                      },
+                    ),
                   ),
                 ),
               ),
-            ),
 
-            SliverToBoxAdapter(
-                child: Padding(
-              padding: EdgeInsets.fromLTRB(10, 30, 0, 5),
-              child: Text('최신 글'),
-            )),
+              SliverToBoxAdapter(
+                  child: Padding(
+                padding: EdgeInsets.fromLTRB(10, 30, 0, 5),
+                child: Text('최신 글'),
+              )),
 
-            //게시글
-            SliverPadding(
-              padding: EdgeInsets.all(3.0),
-              sliver: SliverList(
-                delegate:
-                    SliverChildBuilderDelegate((BuildContext context, int idx) {
-                  return Container(
-                      margin: EdgeInsets.only(bottom: 1.0),
-                      child: Card(
-                          elevation: 2, child: mainPost(idx, inputData.token)));
-                }, childCount: _boardBase.length),
+              //게시글
+              SliverPadding(
+                padding: EdgeInsets.all(3.0),
+                sliver: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                      (BuildContext context, int idx) {
+                    return Container(
+                        margin: EdgeInsets.only(bottom: 1.0),
+                        child: Card(
+                            elevation: 2,
+                            child: mainPost(idx, inputData.token)));
+                  }, childCount: _boardBase.length),
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+        )
+        : Center(child: CircularProgressIndicator()),
       ),
     );
   }
@@ -238,7 +249,7 @@ class _HomePageState extends State<HomePage> {
         _boardBase[i].position, _boardBase[i].profileUrl);
     user.position = _boardBase[i].position;
     user.profileUrl = _boardBase[i].profileUrl;
-    print(_boardBase[i].photoList);
+//    print(_boardBase[i].photoList);
     return _boardBase[i].photoList == null
         ? PostWidget(_boardBase[i], user, null, token)
         : PostWidget(
