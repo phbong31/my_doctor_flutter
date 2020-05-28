@@ -34,7 +34,7 @@ class _PostWidgetState extends State<PostWidget> {
       StreamController.broadcast();
   bool _isSaved = false;
   int _currentImageIndex = 0;
-  User user;
+//  User user;
 
 
 //  @override
@@ -103,9 +103,10 @@ class _PostWidgetState extends State<PostWidget> {
       print('Settings');
     }else if(choice == Settings){
       print('삭제하기 :${widget.post.id}');
-      print(widget.post.creatorId);
-      print(user.id);
-      if(widget.post.creatorId == user.id) {
+//      print(widget.post.creatorId);
+//      print(widget.userInfo.id);
+
+      if(widget.post.creatorId == widget.userInfo.id) {
         showDialog(
             context: context,
             builder: (BuildContext context) {

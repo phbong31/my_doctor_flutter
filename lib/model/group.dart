@@ -63,16 +63,22 @@ class Group {
   }
 
   static Resource<List<Group>> get all {
-//    final storage = FlutterSecureStorage();
-  //  String tokenString = "";
-
-//    Future<String> getAToken() async {
-//      return await storage.read(key: "aToken");
-//      //   print("Webservice.getAToken():"+tokenString);
-//    }
 
     return Resource(
-        url: Constants.GROUP_LIST_URL,
+        url: Constants.GROUP_LIST_URL + "?param=all",
+
+        parse: (response) {
+          print(response.body.toString());
+          final result = json.decode(response.body);
+          Iterable list = result;
+          return list.map((model) => Group.fromJson(model)).toList();
+        }
+    );
+  }
+  static Resource<List<Group>> get my {
+
+    return Resource(
+        url: Constants.GROUP_LIST_URL + "?param=my",
 
         parse: (response) {
           print(response.body.toString());
