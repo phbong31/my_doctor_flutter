@@ -19,7 +19,7 @@ class GroupPage extends StatefulWidget {
 }
 
 class _GroupPageState extends State<GroupPage> {
-  List<BoardBase> _boardBase = List<BoardBase>();
+//  List<BoardBase> _boardBase = List<BoardBase>();
   List<Group> _group = List<Group>();
 
   @override
@@ -39,9 +39,9 @@ class _GroupPageState extends State<GroupPage> {
     Webservice().loadGroup(Group.my).then((group) => {
       setState(() => {_group = group})
     });
-    Webservice().loadBoardAll(BoardBase.all).then((boardBase) => {
-      setState(() => {_boardBase = boardBase})
-    });
+//    Webservice().loadBoardAll(BoardBase.all).then((boardBase) => {
+//      setState(() => {_boardBase = boardBase})
+//    });
   }
 
   //photoList(json) parse to List
@@ -62,7 +62,7 @@ class _GroupPageState extends State<GroupPage> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(horizontal: 8.0),
-        child: _boardBase.length != 0
+        child: _group.length != 0
             ? RefreshIndicator(
           onRefresh: _getData,
           child: CustomScrollView(
@@ -121,7 +121,7 @@ class _GroupPageState extends State<GroupPage> {
               SliverToBoxAdapter(
                   child: Padding(
                     padding: EdgeInsets.fromLTRB(20, 20, 0, 5),
-                    child: Text('전체 그룹 목록'),
+                    child: Text('내 그룹 목록'),
                   )),
 
               //그룹 카드 리스트
@@ -129,9 +129,11 @@ class _GroupPageState extends State<GroupPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(12.0),
                   child: Container(
-                    height: 170.0,
+                    height: 350,
+
                     child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
+
+                      scrollDirection: Axis.vertical,
                       itemCount: _group.length,
                       itemBuilder: (context, index) {
                         return groupPost(context, index);
@@ -141,26 +143,27 @@ class _GroupPageState extends State<GroupPage> {
                 ),
               ),
 
-              SliverToBoxAdapter(
-                  child: Padding(
-                    padding: EdgeInsets.fromLTRB(10, 30, 0, 5),
-                    child: Text('최신 글'),
-                  )),
+//              SliverToBoxAdapter(
+//                  child: Padding(
+//                    padding: EdgeInsets.fromLTRB(10, 30, 0, 5),
+//                    child: Text('최신 글'),
+//                  )),
 
               //게시글
-              SliverPadding(
-                padding: EdgeInsets.all(3.0),
-                sliver: SliverList(
-                  delegate: SliverChildBuilderDelegate(
-                          (BuildContext context, int idx) {
-                        return Container(
-                            margin: EdgeInsets.only(bottom: 1.0),
-                            child: Card(
-                                elevation: 2,
-                                child: mainPost(idx, inputData.token)));
-                      }, childCount: _boardBase.length),
-                ),
-              ),
+//              SliverPadding(
+//                padding: EdgeInsets.all(3.0),
+//                sliver: SliverList(
+//                  delegate: SliverChildBuilderDelegate(
+//                          (BuildContext context, int idx) {
+//                        return Container(
+//                            margin: EdgeInsets.only(bottom: 1.0),
+//                            child: Card(
+//                                elevation: 2,
+//                                child: mainPost(idx, inputData.token)));
+//                      }, childCount: _boardBase.length),
+//                ),
+//              ),
+
             ],
           ),
         )
@@ -244,15 +247,15 @@ class _GroupPageState extends State<GroupPage> {
     );
   }
 
-  Widget mainPost(int i, String token) {
-    User user = User(_boardBase[i].creatorId, _boardBase[i].writerName,
-        _boardBase[i].position, _boardBase[i].profileUrl);
-    user.position = _boardBase[i].position;
-    user.profileUrl = _boardBase[i].profileUrl;
-//    print(_boardBase[i].photoList);
-    return _boardBase[i].photoList == null
-        ? PostWidget(_boardBase[i], user, null, token)
-        : PostWidget(
-        _boardBase[i], user, parsePhotos(_boardBase[i].photoList), token);
-  }
+//  Widget mainPost(int i, String token) {
+//    User user = User(_boardBase[i].creatorId, _boardBase[i].writerName,
+//        _boardBase[i].position, _boardBase[i].profileUrl);
+//    user.position = _boardBase[i].position;
+//    user.profileUrl = _boardBase[i].profileUrl;
+////    print(_boardBase[i].photoList);
+//    return _boardBase[i].photoList == null
+//        ? PostWidget(_boardBase[i], user, null, token)
+//        : PostWidget(
+//        _boardBase[i], user, parsePhotos(_boardBase[i].photoList), token);
+//  }
 }
