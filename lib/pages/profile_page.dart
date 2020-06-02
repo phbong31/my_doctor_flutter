@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:my_doctor/model/profile.dart';
+import 'package:my_doctor/model/user.dart';
 
 class UserProfilePage extends StatefulWidget {
   UserProfilePage({Key key}) : super(key: key);
@@ -9,11 +9,11 @@ class UserProfilePage extends StatefulWidget {
 }
 
 class _UserProfilePageState extends State<UserProfilePage> {
-  Profile profile;
+  User profile;
 
   @override
   void initState() {
-    profile = AppData.profiles[0];
+    profile = Provider.getUserFromProvider();
     super.initState();
   }
 

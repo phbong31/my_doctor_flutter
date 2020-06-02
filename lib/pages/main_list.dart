@@ -255,8 +255,8 @@ class _MainPageState extends State<MainPage> {
   }
 
   Widget MainPost(int i, String token) {
-    User user = User(_boardBase[i - 1].creatorId, _boardBase[i - 1].writerName,
-        _boardBase[i - 1].position, _boardBase[i - 1].profileUrl);
+    User user = User(id:_boardBase[i - 1].creatorId, name:_boardBase[i - 1].writerName,
+        position:_boardBase[i - 1].position, profileUrl:_boardBase[i - 1].profileUrl);
     user.position = _boardBase[i - 1].position;
     user.profileUrl = _boardBase[i - 1].profileUrl;
     print(_boardBase[i - 1].photoList);

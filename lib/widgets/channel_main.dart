@@ -179,8 +179,8 @@ class _ChannelMainState extends State<ChannelMain> {
   }
 
   Widget MainPost(int i, String token) {
-    User user = User(_boardBase[i].creatorId, _boardBase[i].writerName,
-        _boardBase[i].position, _boardBase[i].profileUrl);
+    User user = User(id:_boardBase[i].creatorId, name:_boardBase[i].writerName,
+        position:_boardBase[i].position, profileUrl:_boardBase[i].profileUrl);
     user.position = _boardBase[i].position;
     user.profileUrl = _boardBase[i].profileUrl;
 //    print(_boardBase[i].photoList);

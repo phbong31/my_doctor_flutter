@@ -21,7 +21,7 @@ class ProviderData with ChangeNotifier {
   String groupId = '';
 
   User getUserFromProvider () {
-    User user = User(id, this.name, this.position, this.profileUrl);
+    User user = User(id:id, name:this.name, position:this.position, profileUrl:this.profileUrl);
     notifyListeners();
     print('name:$name');
     return user;
@@ -37,7 +37,7 @@ class ProviderData with ChangeNotifier {
 
   final storage = FlutterSecureStorage();
 
-  void getUserInfo() async {
+  Future<void> getUserInfo() async {
     id = int.parse(await storage.read(key: "id"));
     token = await storage.read(key: "aToken");
     name = await storage.read(key: "name");
