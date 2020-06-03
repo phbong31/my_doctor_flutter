@@ -5,8 +5,12 @@ import 'package:my_doctor/pages/splash_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
 import 'package:my_doctor/pages/write_page.dart';
 import 'package:my_doctor/pages/channel_page.dart';
+import 'package:my_doctor/pages/profile_page.dart';
+
 import 'package:my_doctor/model/providers.dart';
 import 'package:provider/provider.dart';
+
+import 'group_page.dart';
 
 class RootPage extends StatelessWidget {
 
@@ -33,7 +37,9 @@ class RootPage extends StatelessWidget {
           LoginScreen.routeName: (BuildContext context) => LoginScreen(),
           RegisterScreen.routeName: (BuildContext context) => RegisterScreen(),
           WritePage.routeName: (BuildContext context) => WritePage(),
-          ChannelPage.routeName: (BuildContext context) => ChannelPage()
+          ChannelPage.routeName: (BuildContext context) => ChannelPage(),
+          ProfilePage.routeName: (BuildContext context) => ProfilePage(),
+          GroupPage.routeName: (BuildContext context) => GroupPage()
 
         },
       ),

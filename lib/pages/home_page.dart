@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:my_doctor/model/group.dart';
 import 'package:my_doctor/pages/channel_page.dart';
+import 'package:my_doctor/pages/profile_page.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/model/providers.dart';
 import 'package:provider/provider.dart';
@@ -88,30 +89,26 @@ class _HomePageState extends State<HomePage> {
                             alignment: Alignment.bottomLeft,
                             child: Padding(
                               padding: const EdgeInsets.fromLTRB(4, 4, 4, 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: <Widget>[
-                                  Text('${inputData.name} 님!'),
-                                  SizedBox(width: 10.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      NetworkUtils.logoutUser(context);
-                                    },
-                                    child: CircleAvatar(
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => ProfilePage()));
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: <Widget>[
+                                    Text('${inputData.name} 님!'),
+                                    SizedBox(width: 10.0),
+                                    CircleAvatar(
                                       radius: 14.0,
                                       backgroundImage: NetworkImage(
                                           '${inputData.profileUrl}'),
                                     ),
-                                  ),
-                                  SizedBox(width: 20.0)
-//                      FlatButton(
-//                        onPressed: () {
-//                          NetworkUtils.logoutUser(context);
-////                    Navigator.pushNamed(context, "YourRoute");
-//                        },
-//                        child: Text("로그아웃"),
-//                      ),
-                                ],
+                                    SizedBox(width: 20.0)
+                                  ],
+                                ),
                               ),
                             )),
                       ),

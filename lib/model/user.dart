@@ -1,3 +1,5 @@
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
 class User {
   int id;
   String name;
@@ -24,4 +26,12 @@ class User {
       this.mDate, this.userLevel, this.role, this.profileUrl, this.kImageUrl,
       this.position, this.token});
 
+  static Future<User> getUserInfo() async {
+    final storage = FlutterSecureStorage();
+    return User(id:int.parse(await storage.read(key: "id")),
+        name: await storage.read(key: "name"),
+        position: await storage.read(key: "position"),
+        profileUrl: await storage.read(key: "profileUrl"));
+  }
 }
+
