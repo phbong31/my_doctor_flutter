@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
       state = AppState.free;
     });
   }
-  
+
   @override
   Widget build(BuildContext context) {
     final inputData = Provider.of<ProviderData>(context);
