@@ -1,15 +1,19 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_doctor/model/providers.dart';
+import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
 import 'package:provider/provider.dart';
+import 'package:http/http.dart' as http;
 
 class ProfilePage extends StatefulWidget {
   static final String routeName = 'profile_page';
+
 //  ProfilePage({Key key}) : super(key: key);
 
   @override
@@ -32,37 +36,38 @@ class _ProfilePageState extends State<ProfilePage> {
     state = AppState.free;
   }
 
-  Future<Null> _pickImage() async {
-    imageFile = await ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+  Future<Null> _pickImage(String token) async {
+    imageFile = await ImagePicker.pickImage(
+        source: ImageSource.gallery, imageQuality: 40);
     if (imageFile != null) {
-      await _cropImage();
+      await _cropImage(token);
 //      setState(() {
 //        state = AppState.picked;
 //      });
     }
   }
 
-  Future<Null> _cropImage() async {
+  Future<Null> _cropImage(String token) async {
     File croppedFile = await ImageCropper.cropImage(
         sourcePath: imageFile.path,
         aspectRatioPresets: Platform.isAndroid
             ? [
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio16x9
-        ]
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio16x9
+              ]
             : [
-          CropAspectRatioPreset.original,
-          CropAspectRatioPreset.square,
-          CropAspectRatioPreset.ratio3x2,
-          CropAspectRatioPreset.ratio4x3,
-          CropAspectRatioPreset.ratio5x3,
-          CropAspectRatioPreset.ratio5x4,
-          CropAspectRatioPreset.ratio7x5,
-          CropAspectRatioPreset.ratio16x9
-        ],
+                CropAspectRatioPreset.original,
+                CropAspectRatioPreset.square,
+                CropAspectRatioPreset.ratio3x2,
+                CropAspectRatioPreset.ratio4x3,
+                CropAspectRatioPreset.ratio5x3,
+                CropAspectRatioPreset.ratio5x4,
+                CropAspectRatioPreset.ratio7x5,
+                CropAspectRatioPreset.ratio16x9
+              ],
         androidUiSettings: AndroidUiSettings(
             toolbarTitle: 'Cropper',
             toolbarColor: Colors.deepOrange,
@@ -73,25 +78,23 @@ class _ProfilePageState extends State<ProfilePage> {
           title: 'Cropper',
         ));
     if (croppedFile != null) {
-      await _pickImageSelect(context, croppedFile);
-
+      await _pickImageSelect(context, croppedFile, token);
     }
   }
 
-  Future _pickImageSelect(BuildContext context, File image) {
+  Future _pickImageSelect(BuildContext context, File image, String token) {
     return showGeneralDialog(
         context: context,
         barrierDismissible: true,
-        barrierLabel: MaterialLocalizations.of(context)
-            .modalBarrierDismissLabel,
+        barrierLabel:
+            MaterialLocalizations.of(context).modalBarrierDismissLabel,
         barrierColor: Colors.black45,
         transitionDuration: const Duration(milliseconds: 200),
-        pageBuilder: (BuildContext buildContext,
-            Animation animation,
+        pageBuilder: (BuildContext buildContext, Animation animation,
             Animation secondaryAnimation) {
           return Center(
             child: Container(
-              width: MediaQuery.of(context).size.width *0.8,
+              width: MediaQuery.of(context).size.width * 0.8,
               height: 500,
               padding: EdgeInsets.all(20),
               color: Colors.white,
@@ -103,8 +106,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(200),
                       image: DecorationImage(
-                          image: FileImage(image),
-                          fit: BoxFit.cover),
+                          image: FileImage(image), fit: BoxFit.cover),
                     ),
                   ),
                   RaisedButton(
@@ -113,6 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       setState(() {
                         state = AppState.cropped;
                       });
+                      _startUpload(image, token);
                       Navigator.of(context).pop();
                     },
                     child: Text(
@@ -122,12 +125,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     color: const Color(0xFF1BC0C5),
                   ),
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       RaisedButton(
                         onPressed: () {
                           _clearImage();
                           Navigator.of(context).pop();
-                          _pickImage();
+                          _pickImage(token);
                         },
                         child: Text(
                           "다른 사진으로",
@@ -135,7 +139,9 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                         color: const Color(0xFF1BC0C5),
                       ),
-                      SizedBox(width: 20,),
+                      SizedBox(
+                        width: 20,
+                      ),
                       RaisedButton(
                         onPressed: () {
                           _clearImage();
@@ -154,6 +160,39 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
           );
         });
+  }
+
+  int photoId;
+
+  Future<int> _startUpload(File image, String token) async {
+    String base64Image = base64Encode(image.readAsBytesSync());
+    String fileName = image.path.split('/').last;
+
+    Map<String, String> headers = {
+      "Content-type": "application/json",
+      "authorization": "$token"
+    };
+
+    await http
+        .post(Constants.PROFILE_UPLOAD_URL,
+            headers: headers,
+            body: {"image": base64Image, "filename": fileName})
+        .timeout(const Duration(seconds: 30))
+        .then((result) {
+//      setStatus(result.statusCode == 200 ? result.body : errMessage);
+          if (result.statusCode == 200) {
+            var jsonResponse = json.decode(result.body);
+            photoId = jsonResponse["result"];
+//        print('upload() photoId : $photoId');
+          } else {
+            print(result.statusCode);
+            photoId = -1;
+          }
+        })
+        .catchError((error) {
+          photoId = -2;
+        });
+    return photoId;
   }
 
   void _clearImage() {
@@ -204,7 +243,9 @@ class _ProfilePageState extends State<ProfilePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(200),
                     image: DecorationImage(
-                        image: imageFile != null ? FileImage(imageFile) : NetworkImage('${inputData.profileUrl}'),
+                        image: imageFile != null
+                            ? FileImage(imageFile)
+                            : NetworkImage('${inputData.profileUrl}'),
                         fit: BoxFit.cover),
                   ),
                 ),
@@ -213,7 +254,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     icon: Icon(Icons.photo_camera),
                     onPressed: () {
 //                      if (state == AppState.free)
-                        _pickImage();
+                      _pickImage('${inputData.token}');
 //                      else if (state == AppState.picked)
 //                        _cropImage();
 //                      else if (state == AppState.cropped) _clearImage();
@@ -244,7 +285,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     child: Text('로그아웃'),
                     onPressed: () {
                       NetworkUtils.logoutUser(context);
-                    } ,
+                    },
                   ),
                 ),
 //          Container(
@@ -288,7 +329,5 @@ class _ProfilePageState extends State<ProfilePage> {
         ],
       ),
     );
-
-
   }
 }
