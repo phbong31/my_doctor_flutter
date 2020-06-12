@@ -115,7 +115,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       setState(() {
                         state = AppState.cropped;
                       });
-                      _startUpload(image, token);
+                      _startUpload(imageFile, token);
                       Navigator.of(context).pop();
                     },
                     child: Text(
@@ -169,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
     String fileName = image.path.split('/').last;
 
     Map<String, String> headers = {
-      "Content-type": "application/json",
+//      "Content-type": "application/json",
       "authorization": "$token"
     };
 
@@ -186,12 +186,15 @@ class _ProfilePageState extends State<ProfilePage> {
 //        print('upload() photoId : $photoId');
           } else {
             print(result.statusCode);
+            print(result.body);
             photoId = -1;
           }
         })
         .catchError((error) {
+          print(error.toString());
           photoId = -2;
         });
+    print('photoId:$photoId');
     return photoId;
   }
 
