@@ -166,8 +166,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<int> _startUpload(File image, String token) async {
     String base64Image = base64Encode(image.readAsBytesSync());
-    String fileName = image.path.split('/').last;
-
+//    String fileName = image.path.split('/').last;
+    String fileExt = image.path.split('.').last;
+    print("fileExt: ${fileExt}");
     Map<String, String> headers = {
 //      "Content-type": "application/json",
       "authorization": "$token"
@@ -176,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
     await http
         .post(Constants.PROFILE_UPLOAD_URL,
             headers: headers,
-            body: {"image": base64Image, "filename": fileName})
+            body: {"image": base64Image, "fileExt": fileExt})
         .timeout(const Duration(seconds: 30))
         .then((result) {
 //      setStatus(result.statusCode == 200 ? result.body : errMessage);
