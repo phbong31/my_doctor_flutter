@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_doctor/model/user.dart';
+import 'package:my_doctor/utils/sign_in.dart';
 
 class AvatarWidget extends StatelessWidget {
   final User user;
@@ -65,6 +66,7 @@ class AvatarWidget extends StatelessWidget {
                     backgroundImage: user.profileUrl == null || user.profileUrl.length < 1
                         ? AssetImage('assets/images/person.png')
                         : NetworkImage(user.profileUrl)
+
                   ),
                 ),
               ),
