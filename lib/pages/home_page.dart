@@ -255,7 +255,7 @@ class _HomePageState extends State<HomePage> {
 
   Widget mainPost(int i, String token) {
     User user = User(id:_boardBase[i].creatorId, name:_boardBase[i].writerName,
-        position:_boardBase[i].position, profileUrl:_boardBase[i].profilePhotoId!=null?Constants.PHOTO_VIEW_URL+_boardBase[i].profilePhotoId.toString()+'?token='+token:null);
+        position:_boardBase[i].position, profileUrl:_boardBase[i].profilePhotoId!=0?Constants.PHOTO_VIEW_URL+_boardBase[i].profilePhotoId.toString()+'?token='+token:null);
 //    user.position = _boardBase[i].position;
 //    user.profileUrl = _boardBase[i].profileUrl;
 //    print(_boardBase[i].photoList);

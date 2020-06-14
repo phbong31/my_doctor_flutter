@@ -62,7 +62,7 @@ class AvatarWidget extends StatelessWidget {
                   child: CircleAvatar(
                     radius: radius,
                     backgroundColor: Colors.lightBlue[50],
-                    backgroundImage: user.position == null || user.position.length < 1
+                    backgroundImage: user.profileUrl == null || user.profileUrl.length < 1
                         ? AssetImage('assets/images/person.png')
                         : NetworkImage(user.profileUrl)
                   ),
