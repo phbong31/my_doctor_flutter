@@ -213,13 +213,13 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
 
   Future getImage() async {
     setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 40);
+      file = ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 30);
     });
   }
 
   Future getImageFromGallery() async {
     setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 40);
+      file = ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 30);
     });
   }
 

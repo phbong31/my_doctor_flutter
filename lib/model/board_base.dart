@@ -10,6 +10,7 @@ class BoardBase {
   final String writerName;
   final int writerUserId;
   final String profileUrl;
+  final int profilePhotoId;
   final String kImageUrl;
   final int patientId;
   final int status;
@@ -37,6 +38,7 @@ class BoardBase {
     this.writerName,
     this.writerUserId,
     this.profileUrl,
+    this.profilePhotoId,
     this.kImageUrl,
     this.patientId,
     this.status,
@@ -64,6 +66,7 @@ class BoardBase {
       creatorId: json['creatorId'],
       writerName: json['writerName'],
       profileUrl: json['profileUrl'],
+      profilePhotoId: json['profilePhotoId'],
       kImageUrl: json['kImageUrl'],
       patientId: json['patientId'],
       status: json['status'],

@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/model/user_info.dart';
 import 'package:my_doctor/service/webservice.dart';
+import 'package:my_doctor/utils/constants.dart';
 
 import 'board_base.dart';
 
@@ -27,6 +28,12 @@ class ProviderData with ChangeNotifier {
     return user;
   }
 
+  void setProfileUrl() async {
+    profileUrl = Constants.PHOTO_VIEW_URL + await storage.read(key: "photoId") + "?token="+ token;
+    notifyListeners();
+
+  }
+
   void setGroupId(String id) {
     groupId = id;
 
@@ -42,7 +49,7 @@ class ProviderData with ChangeNotifier {
     token = await storage.read(key: "aToken");
     name = await storage.read(key: "name");
     position = await storage.read(key: "position");
-    profileUrl = await storage.read(key: "profileUrl");
+    profileUrl = Constants.PHOTO_VIEW_URL + await storage.read(key: "photoId") + "?token="+ token;
 
 //    print("token:" + token);
 //    print("name:" + name);
@@ -57,7 +64,7 @@ class ProviderData with ChangeNotifier {
     userData.name = await storage.read(key: "name");
     userData.position = await storage.read(key: "position");
     userData.token = await storage.read(key: "aToken");
-    userData.profileUrl = await storage.read(key: "profileUrl");
+    userData.profileUrl = Constants.PHOTO_VIEW_URL + await storage.read(key: "photoId") + "?token="+ userData.token;
     print("...");
     return Future.delayed(
         Duration(seconds: 3), () => userData);
@@ -73,7 +80,7 @@ class ProviderData with ChangeNotifier {
     name = await storage.read(key: "name");
     position = await storage.read(key: "position");
     token = await storage.read(key: "aToken");
-    profileUrl = await storage.read(key: "profileUrl");
+    profileUrl = Constants.PHOTO_VIEW_URL + await storage.read(key: "photoId") + "?token="+ await storage.read(key: "aToken");
 
 //    print("udateInfo : notifyListeners");
 //    notifyListeners();

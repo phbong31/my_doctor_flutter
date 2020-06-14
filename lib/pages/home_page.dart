@@ -6,6 +6,7 @@ import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/pages/profile_page.dart';
 import 'package:my_doctor/service/webservice.dart';
 import 'package:my_doctor/model/providers.dart';
+import 'package:my_doctor/utils/constants.dart';
 import 'package:provider/provider.dart';
 import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
@@ -254,9 +255,9 @@ class _HomePageState extends State<HomePage> {
 
   Widget mainPost(int i, String token) {
     User user = User(id:_boardBase[i].creatorId, name:_boardBase[i].writerName,
-        position:_boardBase[i].position, profileUrl:_boardBase[i].profileUrl);
-    user.position = _boardBase[i].position;
-    user.profileUrl = _boardBase[i].profileUrl;
+        position:_boardBase[i].position, profileUrl:_boardBase[i].profilePhotoId!=null?Constants.PHOTO_VIEW_URL+_boardBase[i].profilePhotoId.toString()+'?token='+token:null);
+//    user.position = _boardBase[i].position;
+//    user.profileUrl = _boardBase[i].profileUrl;
 //    print(_boardBase[i].photoList);
     return _boardBase[i].photoList == null
         ? PostWidget(_boardBase[i], user, null, token)

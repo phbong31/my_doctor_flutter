@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:my_doctor/model/providers.dart';
@@ -116,6 +117,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         state = AppState.cropped;
                       });
                       _startUpload(imageFile, token);
+
                       Navigator.of(context).pop();
                     },
                     child: Text(
@@ -164,6 +166,14 @@ class _ProfilePageState extends State<ProfilePage> {
 
   int photoId;
 
+  void _setPhotoUrl(String id) async {
+    final storage = FlutterSecureStorage();
+    await storage.write(key: 'photoId', value: id);
+
+    final inputData = Provider.of<ProviderData>(context, listen: false);
+    inputData.setProfileUrl();
+  }
+
   Future<int> _startUpload(File image, String token) async {
     String base64Image = base64Encode(image.readAsBytesSync());
 //    String fileName = image.path.split('/').last;
@@ -184,10 +194,13 @@ class _ProfilePageState extends State<ProfilePage> {
           if (result.statusCode == 200) {
             var jsonResponse = json.decode(result.body);
             photoId = jsonResponse["result"];
+            _setPhotoUrl(photoId.toString());
+
 //        print('upload() photoId : $photoId');
           } else {
             print(result.statusCode);
-            print(result.body);
+//            print(result.body);
+            printWrapped(result.body);
             photoId = -1;
           }
         })
@@ -197,6 +210,11 @@ class _ProfilePageState extends State<ProfilePage> {
         });
     print('photoId:$photoId');
     return photoId;
+  }
+
+  void printWrapped(String text) {
+    final pattern = RegExp('.{1,800}'); // 800 is the size of each chunk
+    pattern.allMatches(text).forEach((match) => print(match.group(0)));
   }
 
   void _clearImage() {
@@ -209,7 +227,8 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     final inputData = Provider.of<ProviderData>(context);
-
+//    inputData.setProfileUrl();
+//    print("profileUrl: ${inputData.profileUrl}");
     return Scaffold(
       appBar: AppBar(title: Text('계정 정보')),
       body: Column(

@@ -5,6 +5,7 @@ import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/write_page.dart';
 import 'package:my_doctor/service/webservice.dart';
+import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/network_utils.dart';
 import 'package:my_doctor/widgets/post_widget.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
@@ -180,9 +181,9 @@ class _ChannelMainState extends State<ChannelMain> {
 
   Widget MainPost(int i, String token) {
     User user = User(id:_boardBase[i].creatorId, name:_boardBase[i].writerName,
-        position:_boardBase[i].position, profileUrl:_boardBase[i].profileUrl);
-    user.position = _boardBase[i].position;
-    user.profileUrl = _boardBase[i].profileUrl;
+        position:_boardBase[i].position, profileUrl:_boardBase[i].profilePhotoId!=null?Constants.PHOTO_VIEW_URL+_boardBase[i].profilePhotoId.toString()+'?token='+token:null);
+//    user.position = _boardBase[i].position;
+//    user.profileUrl = _boardBase[i].profileUrl;
 //    print(_boardBase[i].photoList);
     return _boardBase[i].photoList == null
         ? PostWidget(_boardBase[i], user, null, token)
