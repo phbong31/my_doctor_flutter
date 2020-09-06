@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:my_doctor/pages/login_page_kakao.dart';
+import 'package:my_doctor/pages/patient_page.dart';
 import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/pages/splash_page.dart';
 import 'package:my_doctor/pages/tab_page.dart';
@@ -39,7 +40,9 @@ class RootPage extends StatelessWidget {
           WritePage.routeName: (BuildContext context) => WritePage(),
           ChannelPage.routeName: (BuildContext context) => ChannelPage(),
           ProfilePage.routeName: (BuildContext context) => ProfilePage(),
-          GroupPage.routeName: (BuildContext context) => GroupPage()
+          GroupPage.routeName: (BuildContext context) => GroupPage(),
+          PatientPage.routeName: (BuildContext context) => PatientPage()
+
 
         },
       ),

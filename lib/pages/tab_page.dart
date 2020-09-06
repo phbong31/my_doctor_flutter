@@ -8,6 +8,7 @@ import 'package:my_doctor/pages/profile_page.dart';
 import 'package:my_doctor/pages/register_page.dart';
 import 'package:my_doctor/pages/signup_page.dart';
 import 'package:my_doctor/pages/group_page.dart';
+import 'package:my_doctor/pages/patient_page.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/service/user_service.dart';
 
@@ -25,7 +26,7 @@ class TabPage extends StatefulWidget {
 
 class _TabPageState extends State<TabPage> {
   int _selectedIndex = 0;
-  List _pages = [HomePage(), GroupPage(), ProfilePage()];
+  List _pages = [HomePage(), GroupPage(), PatientPage(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -46,6 +47,8 @@ class _TabPageState extends State<TabPage> {
               BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('홈')),
               BottomNavigationBarItem(
                   icon: Icon(Icons.group), title: Text('내그룹')),
+              BottomNavigationBarItem(
+                  icon: Icon(Icons.local_hospital), title: Text('환자정보')),
               BottomNavigationBarItem(
                   icon: Icon(Icons.account_circle), title: Text('내계정')),
             ]),
