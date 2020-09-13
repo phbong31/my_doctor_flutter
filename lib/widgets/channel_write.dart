@@ -1,14 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
+import 'package:path/path.dart';
 
 import 'avartar_widget.dart';
 
@@ -172,56 +176,154 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   File tmpFile;
   String errMessage = 'Error Uploading Image';
 
-//  setStatus(String message) {
-//    setState(() {
-//      status = message;
-//    });
-//  }
 
+  List<Widget> fileListThumb;
+  List<File> fileList = new List<File>();
+  List<Asset> images = List<Asset>();
+  String _error = 'No Error Dectected';
 
-  Widget showImage() {
-    return FutureBuilder<File>(
-      future: file,
-      builder: (BuildContext context, AsyncSnapshot<File> snapshot) {
-        if (snapshot.connectionState == ConnectionState.done &&
-            null != snapshot.data) {
-          tmpFile = snapshot.data;
-          base64Image = base64Encode(snapshot.data.readAsBytesSync());
-
-          print(base64Image);
-          return Flexible(
-            child: Image.file(
-              snapshot.data,
-              fit: BoxFit.fill,
-            ),
-          );
-        } else if (null != snapshot.error) {
-          return const Text(
-            'Error Picking Image',
-            textAlign: TextAlign.center,
-          );
-        } else {
-          return const Text(
-            'No Image Selected',
-            textAlign: TextAlign.center,
-          );
-        }
-      },
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      shrinkWrap: true,
+      children: List.generate(images.length, (index) {
+        Asset asset = images[index];
+        return AssetThumb(
+          asset: asset,
+          width: 100,
+          height: 100,
+        );
+      }),
     );
   }
-  //////////////////////////////////////////////////////////////////////
 
-  Future getImage() async {
+  Future<void> loadAssets() async {
+    List<Asset> resultList = List<Asset>();
+    String error = 'No Error Dectected';
+
+    try {
+      resultList = await MultiImagePicker.pickImages(
+        maxImages: 10,
+        enableCamera: true,
+        selectedAssets: images,
+        cupertinoOptions: CupertinoOptions(takePhotoIcon: "chat"),
+        materialOptions: MaterialOptions(
+          actionBarColor: "#abcdef",
+          actionBarTitle: "사진 선택하기",
+          allViewTitle: "전체 사진",
+          useDetailsView: false,
+          selectCircleStrokeColor: "#000000",
+        ),
+      );
+    } on Exception catch (e) {
+      error = e.toString();
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    if (!mounted) return;
+
     setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.camera, imageQuality: 30);
+      images = resultList;
+      _error = error;
     });
   }
 
-  Future getImageFromGallery() async {
-    setState(() {
-      file = ImagePicker.pickImage(source: ImageSource.gallery, imageQuality: 30);
+  List<Map> toBase64(List<Asset> fileList){
+    List<Map> s = new List<Map>();
+    if(fileList.length>0)
+
+      fileList.forEach((element){
+        Map a = {
+          'fileName': element.name,
+          'encoded' : base64Encode(Uint8List.view(element.getByteData())),
+          'classification': 'app',
+          'uploader': 'app'
+        };
+        s.add(a);
+      });
+    return s;
+  }
+
+  Future<bool> httpSend(Map params) async
+  {
+    String endpoint = 'yourphpscript.php';
+    return await http.post(endpoint, body: params)
+        .then((response){
+      print(response.body);
+      if(response.statusCode==201)
+      {
+        Map<String, dynamic> body = jsonDecode(response.body);
+        if(body['status']=='OK')
+          return true;
+      }
+      else
+        return false;
     });
   }
+
+
+
+  // Widget showThumbNail(BuildContext context)
+  // {
+  //   if(fileListThumb == null)
+  //     fileListThumb = [
+  //       InkWell(
+  //         onTap: pickFiles,
+  //         child: Container(
+  //             child : Icon(Icons.add)
+  //         ),
+  //       )
+  //     ];
+  //   final Map params = new Map();
+  //   return Scaffold(
+  //
+  //     body: Center(
+  //         child: Padding(
+  //           padding: EdgeInsets.all(5),
+  //           child: GridView.count(
+  //             crossAxisCount: 4,
+  //             children: fileListThumb,
+  //           ),
+  //         )
+  //     ),
+  //     floatingActionButton: FloatingActionButton(
+  //       onPressed: () async{
+  //         List<Map> attch = toBase64(fileList);
+  //         params["attachment"] = jsonEncode(attch);
+  //         httpSend(params).then((sukses){
+  //           if(sukses==true){
+  //             Flushbar(
+  //               message: "success :)",
+  //               icon: Icon(
+  //                 Icons.check,
+  //                 size: 28.0,
+  //                 color: Colors.blue[300],
+  //               ),
+  //               duration: Duration(seconds: 3),
+  //               leftBarIndicatorColor: Colors.blue[300],
+  //             ).show(context);
+  //           }
+  //           else
+  //             Flushbar(
+  //               message: "fail :(",
+  //               icon: Icon(
+  //                 Icons.error_outline,
+  //                 size: 28.0,
+  //                 color: Colors.blue[300],
+  //               ),
+  //               duration: Duration(seconds: 3),
+  //               leftBarIndicatorColor: Colors.red[300],
+  //             ).show(context);
+  //         });
+  //       },
+  //       tooltip: 'Upload File',
+  //       child: const Icon(Icons.cloud_upload),
+  //     ),
+  //   );
+  // }
+
 
   _showLoading() {
     setState(() {
@@ -245,6 +347,11 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   @override
   Widget build(BuildContext context) {
     final inputData = Provider.of<ProviderData>(context, listen: false);
+    // print("images:");
+    // if(images.isNotEmpty) {
+    //   print(images[0].name);
+    // }
+
     return _isLoading
         ? _loadingScreen()
         : Container(
@@ -269,6 +376,9 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                 ),
                 SizedBox(height: 10.0),
                 //link, photo button
+                Center(
+                  child: images.isEmpty ? Container() : Container(child:buildGridView()),
+                ),
                 Container(
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -280,10 +390,10 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                               iconSize: 30,
                               color: Colors.blueAccent,
                               onPressed: () {
-                                getImageFromGallery();
+                                loadAssets();
                               },
                             ),
-                      file == null
+                      images.isEmpty
                           ? IconButton(
                               icon: Icon(Icons.link),
                               iconSize: 30,
@@ -299,7 +409,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                 });
                               },
                             )
-                          : showImage(),
+                          : Container(),
                       _isLink
                           ? Container(
                               width: 260,
@@ -350,7 +460,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                   write(
                                       inputData.token,
                                       _multiLineTextFieldcontroller.text,
-                                      widget.channelId, _youtubeLinkController.text);
+                                      widget.channelId, _youtubeLinkController.text, context);
                                   startUpload();
                                 },
                                 child: Text(
@@ -369,15 +479,16 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           );
   }
 
+  List<int> photoIds;
   int photoId;
 
-  Future<void> write(String token, text, groupId, youtubeLink) async {
+  Future<void> write(String token, text, groupId, youtubeLink, context) async {
     _showLoading();
 
     int type = 2;
-    if(file!=null) {
-      photoId = await startUpload();
-      print('write() photoId : $photoId');
+    if(images.isNotEmpty) {
+      photoIds = await startUpload();
+      print('write() photoId : ${photoIds[0]}');
       type = 1;
     } else {
       photoId = 0;
@@ -388,7 +499,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
       'type': type.toString(),
       'groupId': groupId,
       'youtubeLink' : youtubeLink,
-      'photoId' : photoId.toString()
+      'photoId' : photoIds.toString()   //to do
     };
     var body = json.encode(data);
     Map<String, String> headers = {
@@ -430,34 +541,29 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     }
   }
 
-  Future<int> startUpload() async {
-//    setStatus('Uploading Image...');
-    if (null == tmpFile) {
-//      setStatus(errMessage);
-    }
-    String fileName = tmpFile.path.split('/').last;
+  Future<List<int>> startUpload() async {
 
-    await http.post(Constants.PHOTO_UPLOAD_URL, body: {
-      "image": base64Image,
-      "filename": fileName,
-      "classification": 'app',
-      "uploader": 'app'
-    }).timeout(const Duration(seconds: 30)).then((result) {
-//      setStatus(result.statusCode == 200 ? result.body : errMessage);
+    final Map params = new Map();
+    // String fileName = tmpFile.path.split('/').last;
+
+    List<Map> attch = toBase64(fileList);
+    params["attachment"] = jsonEncode(attch);
+    print(params.toString());
+    await http.post(Constants.PHOTO_UPLOAD_URL, body: params).timeout(const Duration(seconds: 30)).then((result) {
 
       if (result.statusCode == 200) {
         var jsonResponse = json.decode(result.body);
-        photoId = jsonResponse["result"];
+        photoIds = jsonResponse["result"].toList();
 //        print('upload() photoId : $photoId');
       } else {
         print(result.statusCode);
-        photoId = -1;
+        photoIds[0] = -1;
       }
     }).catchError((error) {
-      photoId=-2;
+      photoIds[0] = -2;
 //      setStatus(error.toString());
     });
-    return photoId;
+    return photoIds;
   }
 
 
