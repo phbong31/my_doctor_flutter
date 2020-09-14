@@ -234,8 +234,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
   Future<List<Map>> toBase64(List<Asset> fileList) async {
     List<Map> s = new List<Map>();
     if(fileList.length>0)
-
-      fileList.forEach((element) async {
+    await Future.wait(fileList.map((element) async {
         ByteData photoByteData = await element.getByteData();
         Uint8List photoUint8List = photoByteData.buffer.asUint8List(photoByteData.offsetInBytes, photoByteData.lengthInBytes);
         List<int> photoListInt = photoUint8List.cast<int>();
@@ -245,9 +244,8 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           'classification': 'app',
           'uploader': 'app'
         };
-        print(a.toString());
         s.add(a);
-      });
+      }));
     return s;
   }
 
@@ -466,7 +464,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                       inputData.token,
                                       _multiLineTextFieldcontroller.text,
                                       widget.channelId, _youtubeLinkController.text, context);
-                                  startUpload();
+                                 // startUpload();
                                 },
                                 child: Text(
                                   "저장하기",
@@ -484,7 +482,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           );
   }
 
-  List<int> photoIds;
+  List<int> photoIds = [];
   int photoId;
 
   Future<void> write(String token, text, groupId, youtubeLink, context) async {
@@ -493,7 +491,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     int type = 2;
     if(images.isNotEmpty) {
       photoIds = await startUpload();
-      print('write() photoId : ${photoIds[0]}');
+      // print('write() photoId : ${photoIds[0]}');
       type = 1;
     } else {
       photoId = 0;
@@ -551,25 +549,30 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     final Map params = new Map();
     // String fileName = tmpFile.path.split('/').last;
 
-    List<Map> attch = await toBase64(images);
-    params["attachment"] = jsonEncode(attch);
-    print("images print : ${images.length}");
-    print("attch print : ${attch.toString()}");
-    print("json print : ${params.toString()}");
+    await toBase64(images).then((attch) {
+      params["attachment"] = jsonEncode(attch);
+      // print("images print : ${images.length}");
+      // print("attch print : ${attch.toString()}");
+      // print("attch leng : ${attch.length}");
+      print("json print : ${params.toString()}");
+    });
+
     await http.post(Constants.PHOTO_UPLOAD_URL, body: params).timeout(const Duration(seconds: 30)).then((result) {
 
       if (result.statusCode == 200) {
+        print(result.body);
         var jsonResponse = json.decode(result.body);
-        photoIds = jsonResponse["result"].toList();
+        photoIds = jsonResponse["result"].toList();   //iterable
 //        print('upload() photoId : $photoId');
       } else {
         print(result.statusCode);
-        photoIds[0] = -1;
+        // photoIds[0] = -1;
       }
     }).catchError((error) {
-      photoIds[0] = -2;
+      // photoIds[0] = -2;
 //      setStatus(error.toString());
     });
+
     return photoIds;
   }
 
