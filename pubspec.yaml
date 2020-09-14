@@ -50,8 +50,6 @@ dependencies:
   validators:
   image_cropper: ^1.2.0
   material_design_icons_flutter: ^4.0.5045
-  flushbar: ^1.10.4
-  file_picker: ^1.12.0
   multi_image_picker: ^4.7.13
 
 dev_dependencies:

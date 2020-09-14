@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -13,6 +12,7 @@ import 'package:my_doctor/utils/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:path/path.dart';
+import 'package:flutter/services.dart';
 
 import 'avartar_widget.dart';
 
@@ -230,38 +230,43 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     });
   }
 
-  List<Map> toBase64(List<Asset> fileList){
+  // to do : future로 변환??
+  Future<List<Map>> toBase64(List<Asset> fileList) async {
     List<Map> s = new List<Map>();
     if(fileList.length>0)
 
-      fileList.forEach((element){
+      fileList.forEach((element) async {
+        ByteData photoByteData = await element.getByteData();
+        Uint8List photoUint8List = photoByteData.buffer.asUint8List(photoByteData.offsetInBytes, photoByteData.lengthInBytes);
+        List<int> photoListInt = photoUint8List.cast<int>();
         Map a = {
           'fileName': element.name,
-          'encoded' : base64Encode(Uint8List.view(element.getByteData())),
+          'encoded' : base64Encode(photoListInt),
           'classification': 'app',
           'uploader': 'app'
         };
+        print(a.toString());
         s.add(a);
       });
     return s;
   }
 
-  Future<bool> httpSend(Map params) async
-  {
-    String endpoint = 'yourphpscript.php';
-    return await http.post(endpoint, body: params)
-        .then((response){
-      print(response.body);
-      if(response.statusCode==201)
-      {
-        Map<String, dynamic> body = jsonDecode(response.body);
-        if(body['status']=='OK')
-          return true;
-      }
-      else
-        return false;
-    });
-  }
+//  Future<bool> httpSend(Map params) async
+//  {
+//    String endpoint = 'yourphpscript.php';
+//    return await http.post(endpoint, body: params)
+//        .then((response){
+//      print(response.body);
+//      if(response.statusCode==201)
+//      {
+//        Map<String, dynamic> body = jsonDecode(response.body);
+//        if(body['status']=='OK')
+//          return true;
+//      }
+//      else
+//        return false;
+//    });
+//  }
 
 
 
@@ -546,9 +551,11 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     final Map params = new Map();
     // String fileName = tmpFile.path.split('/').last;
 
-    List<Map> attch = toBase64(fileList);
+    List<Map> attch = await toBase64(images);
     params["attachment"] = jsonEncode(attch);
-    print(params.toString());
+    print("images print : ${images.length}");
+    print("attch print : ${attch.toString()}");
+    print("json print : ${params.toString()}");
     await http.post(Constants.PHOTO_UPLOAD_URL, body: params).timeout(const Duration(seconds: 30)).then((result) {
 
       if (result.statusCode == 200) {
