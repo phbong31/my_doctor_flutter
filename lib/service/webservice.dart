@@ -75,10 +75,7 @@ class Webservice {
       'Accept': 'application/json',
       'authorization' : '$tokenString'
     });
-    //tokenString = Constants.TOKEN;
-    // print("token:"+tokenString);
-//    print(resource.url+'?token='+tokenString);
-//    print("http:statusCode="+response.statusCode.toString());
+
     if(response.statusCode == 200) {
       return resource.parse(response);
     } else {
@@ -86,4 +83,19 @@ class Webservice {
     }
   }
 
+  Future<T> loadComment<T>(Resource<T> resource, String boardId) async {
+
+    await getAToken();
+    final response = await http.get(resource.url+'?boardId='+boardId, headers: {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'authorization' : '$tokenString'
+    });
+
+    if(response.statusCode == 200) {
+      return resource.parse(response);
+    } else {
+      throw Exception('Failed to load data!');
+    }
+  }
 }

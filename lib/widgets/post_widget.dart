@@ -7,6 +7,7 @@ import 'package:my_doctor/model/board_base.dart';
 import 'package:my_doctor/model/photo.dart';
 import 'package:my_doctor/model/providers.dart';
 import 'package:my_doctor/model/user.dart';
+import 'package:my_doctor/pages/comment_page.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:my_doctor/utils/ui_utils.dart';
 import 'package:my_doctor/widgets/youtubue_widget.dart';
@@ -412,7 +413,11 @@ print(boardId);
                 padding: const EdgeInsets.all(8.0),
                 child: Row(
                   children: <Widget>[
-                    Text("답글 " + widget.post.replyCount.toString() + "개")
+                    GestureDetector(onTap: () {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => CommentPage(boardId: widget.post.id.toString(),)));
+                    },
+                    child: Text("답글 " + widget.post.replyCount.toString() + "개"),)
                   ],
                 ),
               ),

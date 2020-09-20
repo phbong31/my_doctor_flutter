@@ -8,6 +8,7 @@ import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:my_doctor/model/user.dart';
 import 'package:my_doctor/pages/channel_page.dart';
 import 'package:my_doctor/model/providers.dart';
+import 'package:my_doctor/pages/root_page.dart';
 import 'package:my_doctor/utils/constants.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -30,10 +31,10 @@ class Item {
 }
 
 class _ChannelWriteState extends State<ChannelWrite> {
-//  @override
-//  void initState() {
-//    super.initState();
-//  }
+ // @override
+ // void initState() {
+ //   super.initState();
+ // }
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +236,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     List<Map> s = new List<Map>();
     if(fileList.length>0)
     await Future.wait(fileList.map((element) async {
-        ByteData photoByteData = await element.getByteData();
+        ByteData photoByteData = await element.getByteData(quality: 30);
         Uint8List photoUint8List = photoByteData.buffer.asUint8List(photoByteData.offsetInBytes, photoByteData.lengthInBytes);
         List<int> photoListInt = photoUint8List.cast<int>();
         Map a = {
@@ -394,6 +395,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                               color: Colors.blueAccent,
                               onPressed: () {
                                 loadAssets();
+
                               },
                             ),
                       images.isEmpty
@@ -458,13 +460,26 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
                                 },
                               ),
                               RaisedButton(
-                                onPressed: () {
+                                onPressed: () async {
                                   Navigator.of(context).pop();
-                                  write(
+                                  await write(
                                       inputData.token,
                                       _multiLineTextFieldcontroller.text,
-                                      widget.channelId, _youtubeLinkController.text, context);
+                                      widget.channelId, _youtubeLinkController.text)
+                                      .whenComplete((){
+                                    print('write() Complete');
+                                    //showSnackbarGlobal('작성완료!');
+
+                                  });
                                  // startUpload();
+
+                                  Navigator.pushReplacement(
+                                    navigatorKey.currentState.overlay.context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChannelPage(
+                                          channelId: widget.channelId,
+                                        )),
+                                  );
                                 },
                                 child: Text(
                                   "저장하기",
@@ -482,19 +497,19 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
           );
   }
 
-  List<int> photoIds = [];
+  List<dynamic> photoIds = [];
   int photoId;
 
-  Future<void> write(String token, text, groupId, youtubeLink, context) async {
+  Future<void> write(String token, text, groupId, youtubeLink) async {
     _showLoading();
 
     int type = 2;
     if(images.isNotEmpty) {
       photoIds = await startUpload();
-      // print('write() photoId : ${photoIds[0]}');
+      print('write() photoId : ${photoIds.toString()}');
       type = 1;
     } else {
-      photoId = 0;
+      photoIds = null;
     }
 
     Map data = {
@@ -509,8 +524,9 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
       "Content-type": "application/json",
       "authorization": "$token"
     };
+    print(body);
     var response =
-        await http.post(Constants.WRITE_URL, headers: headers, body: body).timeout(const Duration(seconds: 2));
+        await http.post(Constants.WRITE_URL, headers: headers, body: body).timeout(const Duration(seconds: 5));
 
     if (response.statusCode == 200) {
       print('200');
@@ -522,18 +538,18 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
       if (jsonResponse != null && result > 0) {
         _hideLoading();
         print('write completed');
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => ChannelPage(
-                    channelId: groupId,
-                  )),
-        );
-//        Scaffold.of(context).showSnackBar(SnackBar(content: Text('글이 저장되었습니다.'),));
+        // Navigator.pushReplacement(
+        //   context,
+        //   MaterialPageRoute(
+        //       builder: (context) => ChannelPage(
+        //             channelId: groupId,
+        //           )),
+        // );
+       // Scaffold.of(context).showSnackBar(SnackBar(content: Text('글이 저장되었습니다.'),));
       } else if (result == -1) {
-        Scaffold.of(context).showSnackBar(SnackBar(
-          content: Text('글 쓰기 권한이 없습니다'),
-        ));
+        // Scaffold.of(context).showSnackBar(SnackBar(
+        //   content: Text('글 쓰기 권한이 없습니다'),
+        // ));
       }
     } else {
       _hideLoading();
@@ -544,26 +560,33 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
     }
   }
 
-  Future<List<int>> startUpload() async {
+  Future<List<dynamic>> startUpload() async {
 
     final Map params = new Map();
     // String fileName = tmpFile.path.split('/').last;
+    List<dynamic> idList = new List<dynamic>();
 
     await toBase64(images).then((attch) {
       params["attachment"] = jsonEncode(attch);
       // print("images print : ${images.length}");
       // print("attch print : ${attch.toString()}");
       // print("attch leng : ${attch.length}");
-      print("json print : ${params.toString()}");
+      //print("json print : ${params.toString()}");
     });
 
-    await http.post(Constants.PHOTO_UPLOAD_URL, body: params).timeout(const Duration(seconds: 30)).then((result) {
+    await http.post(Constants.PHOTOs_UPLOAD_URL, body: params).timeout(const Duration(seconds: 40)).then((result) {
 
       if (result.statusCode == 200) {
         print(result.body);
-        var jsonResponse = json.decode(result.body);
-        photoIds = jsonResponse["result"].toList();   //iterable
-//        print('upload() photoId : $photoId');
+        try {
+         // var jsonResponse = json.decode(result.body);
+          //photoIds = jsonResponse["result"].toList();   //iterable
+
+          idList = jsonDecode(result.body);
+        //  print('upload() photoIds : $idList');
+        } catch (e) {
+          print(e.toString());
+        }
       } else {
         print(result.statusCode);
         // photoIds[0] = -1;
@@ -573,7 +596,7 @@ class _TextFieldAndButtonState extends State<MrMultiLineTextFieldAndButton> {
 //      setStatus(error.toString());
     });
 
-    return photoIds;
+    return idList;
   }
 
 

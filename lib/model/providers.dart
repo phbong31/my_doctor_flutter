@@ -37,7 +37,7 @@ class ProviderData with ChangeNotifier {
   void setGroupId(String id) {
     groupId = id;
 
-    notifyListeners();
+    // notifyListeners();
   }
 
   //InputData(this.name, this.position, this.token);

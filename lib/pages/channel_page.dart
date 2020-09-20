@@ -5,6 +5,8 @@ import 'package:my_doctor/widgets/channel_write.dart';
 import 'package:my_doctor/widgets/channel_dialog.dart';
 import 'package:provider/provider.dart';
 
+// final globalScaffoldKey = GlobalKey<ScaffoldState>();
+
 class ChannelPage extends StatefulWidget {
   static final String routeName = 'channel_page';
   final String channelId;
@@ -33,6 +35,7 @@ class _ChannelPageState extends State<ChannelPage> {
     inputData.setGroupId(widget.channelId);
 
     return Scaffold(
+      // key: globalScaffoldKey,
       body: DefaultTabController(
         length: 3,
         child: NestedScrollView(
@@ -103,6 +106,11 @@ class _ChannelPageState extends State<ChannelPage> {
     });
   }
 }
+// void showSnackbarGlobal(String message) {
+//   var currentScaffold = globalScaffoldKey.currentState;
+//   currentScaffold.hideCurrentSnackBar(); // If there is a snackbar visible, hide it before the new one is shown.
+//   currentScaffold.showSnackBar(SnackBar(content: Text(message)));
+// }
 
 class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
   _SliverAppBarDelegate(this._tabBar);

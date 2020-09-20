@@ -13,6 +13,8 @@ import 'package:provider/provider.dart';
 
 import 'group_page.dart';
 
+final GlobalKey<NavigatorState> navigatorKey = new GlobalKey<NavigatorState>();
+
 class RootPage extends StatelessWidget {
 
   @override
@@ -22,6 +24,7 @@ class RootPage extends StatelessWidget {
       create: (_) => ProviderData(),
 
       child: MaterialApp(
+        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Authentication Flow',
         theme: ThemeData(
@@ -29,7 +32,7 @@ class RootPage extends StatelessWidget {
             textSelectionColor: Colors.blue.shade500,
             buttonColor: Colors.blue.shade500,
             accentColor: Colors.blueAccent,
-            bottomAppBarColor: Colors.white),
+            bottomAppBarColor: Colors.blue),
 //      home: LoginPage(),
         initialRoute: '/',
         routes: {

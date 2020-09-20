@@ -50,7 +50,7 @@ class _TabPageState extends State<TabPage> {
               BottomNavigationBarItem(
                   icon: Icon(Icons.local_hospital), title: Text('환자정보')),
               BottomNavigationBarItem(
-                  icon: Icon(Icons.account_circle), title: Text('내계정')),
+                  icon: Icon(Icons.account_circle), title: Text('내계정'))
             ]),
       );
   }
