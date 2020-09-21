@@ -415,7 +415,7 @@ print(boardId);
                   children: <Widget>[
                     GestureDetector(onTap: () {
                       Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => CommentPage(boardId: widget.post.id.toString(),)));
+                          builder: (context) => CommentPage(boardId: widget.post.id.toString(), boardOwnerId: widget.post.creatorId.toString())));
                     },
                     child: Text("답글 " + widget.post.replyCount.toString() + "개"),)
                   ],

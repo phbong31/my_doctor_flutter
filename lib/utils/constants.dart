@@ -3,6 +3,7 @@ class Constants {
   static final String BOARD_LIST2_URL = 'http://hsbong.synology.me:8080/PatientPhoto/api/list';
   static final String BOARD_LIST_URL = 'http://hsbong.synology.me:8080/pps/board/boardList.jsp';
   static final String COMMENT_LIST_URL = 'http://hsbong.synology.me:8080/pps/board/commentList.jsp';
+  static final String COMMENT_POST_URL = 'http://hsbong.synology.me:8080/pps/board/insertComment.jsp';
 
   static final String GROUP_LIST_URL = 'http://hsbong.synology.me:8080/pps/group/groupList.jsp';
   static final String GROUP_LIST_URL2 = 'http://hsbong.synology.me:8080/PatientPhoto/api/groupListAll';
