@@ -49,6 +49,9 @@ class _CommentPageState extends State<CommentPage> {
           ),
           Expanded(
             child: TextField(
+              minLines: 2,
+              maxLength: 300,
+              maxLines: 4,
               controller: textController,
               textCapitalization: TextCapitalization.sentences,
               onChanged: (value) {},
@@ -116,6 +119,108 @@ class _CommentPageState extends State<CommentPage> {
     } else {
      // _hideLoading();
       print('write failed');
+      print(response.body);
+      //실패시
+    }
+  }
+
+  static const String Subscribe = '공개등급변경';
+  static const String Settings = '삭제하기';
+  static const String SignOut = '신고하기';
+
+  static const List<String> choices = <String>[
+    Subscribe,
+    Settings,
+    SignOut
+  ];
+
+
+  void choiceAction(String choice, userId, writerId, commentId, token){
+    if(choice == Subscribe){
+      print('Settings');
+    }else if(choice == Settings){
+      print('삭제하기 :${commentId}');
+//      print(widget.post.creatorId);
+//      print(widget.userInfo.id);
+
+      if(writerId == userId) {
+        showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0)),
+                title: Text('글을 삭제하시겠습니까?'),
+//                            content: Text('테스트'),
+                actions: <Widget>[
+                  FlatButton(
+                    child: new Text("취소"),
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  RaisedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      delComment(token, commentId);
+                      //delBoard.jsp
+                    },
+                    child: Text(
+                      "삭제하기",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                    color: const Color(0xFF1BC0C5),
+                  )
+                ],
+              );
+            });
+      }
+
+    }else if(choice == SignOut){
+      print('SignOut');
+    }
+  }
+
+  Future<void> delComment(String token, commentId) async {
+//  _showLoading();
+    //print(token);
+    print(commentId);
+    Map<String, String> headers = {
+//      "Content-type": "application/json",
+      "authorization": "$token"
+    };
+    var response = await http.post(
+        Constants.DELETE_COMMENT_URL, headers: headers, body: {
+      "commentId": commentId.toString()
+    }).timeout(const Duration(seconds: 5));
+
+    if (response.statusCode == 200) {
+      print('200');
+      print(response.body);
+      var jsonResponse = json.decode(response.body);
+      print(jsonResponse["result"]);
+      int result = jsonResponse["result"];
+
+      if (jsonResponse != null && result > 0) {
+//      _hideLoading();
+        print('delete completed');
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  CommentPage(
+                    boardId: widget.boardId.toString(),
+                  )),
+        );
+//        Scaffold.of(context).showSnackBar(SnackBar(content: Text('글이 저장되었습니다.'),));
+      } else if (result == -1) {
+        Scaffold.of(context).showSnackBar(SnackBar(
+          content: Text('삭제 권한이 없습니다'),
+        ));
+      }
+    } else {
+//    _hideLoading();
+      print('삭제 실패 - 토큰 권한 및 파라미터 확인 요함');
       print(response.body);
       //실패시
     }
@@ -234,6 +339,17 @@ class _CommentPageState extends State<CommentPage> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
+                  PopupMenuButton<String>(
+                    onSelected: choiceAction,
+                    itemBuilder: (BuildContext context) {
+                      return choices.map((String choice) {
+                        return PopupMenuItem<String>(
+                          value: choice,
+                          child: Text(choice),
+                        );
+                      }).toList();
+                    },
+                  )
                 ],
               ),
               SizedBox(height: 8.0),
