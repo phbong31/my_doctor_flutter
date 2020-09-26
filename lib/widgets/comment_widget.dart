@@ -44,10 +44,10 @@ class _CommentWidgetState extends State<CommentWidget> {
       print('Settings');
     }else if(choice == Settings){
       print('삭제하기 :${widget.comment.id}');
-//      print(widget.post.creatorId);
-//      print(widget.userInfo.id);
+      print(widget.comment.writerId);
+      print(widget.userId);
 
-      if(widget.comment.writerId == widget.userId) {
+      if(widget.comment.writerId.toString() == widget.userId.toString()) {
         showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -79,6 +79,8 @@ class _CommentWidgetState extends State<CommentWidget> {
                 ],
               );
             });
+      } else {
+        print('작성자가 아닙니다');
       }
 
     }else if(choice == SignOut){
@@ -92,7 +94,7 @@ class _CommentWidgetState extends State<CommentWidget> {
     print(commentId);
     Map<String, String> headers = {
 //      "Content-type": "application/json",
-      "authorization": "$token"
+      "authorization": token
     };
     var response = await http.post(
         Constants.DELETE_COMMENT_URL, headers: headers, body: {
@@ -189,14 +191,7 @@ class _CommentWidgetState extends State<CommentWidget> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  Text(
-                    " ("+widget.comment.position+")  ",
-                    style: TextStyle(
-                      color: Colors.blueGrey,
-                      fontSize: 12.0,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+
                   Text(
                     widget.comment.createdTime,
                     style: TextStyle(
@@ -219,6 +214,16 @@ class _CommentWidgetState extends State<CommentWidget> {
                 ],
               ),
               SizedBox(height: 8.0),
+              Text(
+                " ("+widget.comment.position+")  ",
+                style: TextStyle(
+                  color: Colors.blueGrey,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              SizedBox(height: 8.0),
+
               Text(
                 widget.comment.text,
                 style: TextStyle(
