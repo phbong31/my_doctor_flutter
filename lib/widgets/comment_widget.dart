@@ -54,7 +54,7 @@ class _CommentWidgetState extends State<CommentWidget> {
               return AlertDialog(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0)),
-                title: Text('글을 삭제하시겠습니까?'),
+                title: Text('답글을 삭제하시겠습니까?'),
 //                            content: Text('테스트'),
                 actions: <Widget>[
                   FlatButton(
@@ -191,15 +191,15 @@ class _CommentWidgetState extends State<CommentWidget> {
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-
                   Text(
-                    widget.comment.createdTime,
+                    " ("+widget.comment.position+")  ",
                     style: TextStyle(
                       color: Colors.blueGrey,
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.w500,
+                      fontSize: 12.0,
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
+
                   PopupMenuButton<String>(
                     onSelected: choiceAction,
                     itemBuilder: (BuildContext context) {
@@ -213,15 +213,16 @@ class _CommentWidgetState extends State<CommentWidget> {
                   )
                 ],
               ),
-              SizedBox(height: 8.0),
+              SizedBox(height: 3.0),
               Text(
-                " ("+widget.comment.position+")  ",
+                widget.comment.createdTime,
                 style: TextStyle(
                   color: Colors.blueGrey,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w400,
+                  fontSize: 10.0,
+                  fontWeight: FontWeight.w500,
                 ),
               ),
+
               SizedBox(height: 8.0),
 
               Text(
