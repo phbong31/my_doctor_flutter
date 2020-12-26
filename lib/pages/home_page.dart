@@ -178,6 +178,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  //그룹 카드 목록 위젯
   Widget groupPost(BuildContext context, int i) {
     return GestureDetector(
         child: Container(

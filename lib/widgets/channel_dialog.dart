@@ -21,33 +21,39 @@ class ChannelDialog extends StatelessWidget {
         pageBuilder: (BuildContext buildContext, Animation animation,
             Animation secondaryAnimation) {
           return Center(
-            child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/bong.png'),
-                    fit: BoxFit.cover),
-              ),
-              width: MediaQuery.of(context).size.width * 0.85,
-              height: MediaQuery.of(context).size.height * 0.75,
-              padding: EdgeInsets.all(20),
+            child: Row(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/images/bong.png'),
+                        fit: BoxFit.cover),
+                  ),
+                  width: MediaQuery.of(context).size.width * 0.85,
+                  height: MediaQuery.of(context).size.height * 0.75,
+                  padding: EdgeInsets.all(20),
 //                                color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "확인",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    color: const Color(0xFF1BC0C5),
-                  )
-                ],
-              ),
-            ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      RaisedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          "확인",
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        color: const Color(0xFF1BC0C5),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            )
           );
+
+
         });
   }
 
@@ -56,45 +62,50 @@ class ChannelDialog extends StatelessWidget {
         context: context,
         barrierDismissible: true,
         barrierLabel:
-            MaterialLocalizations.of(context).modalBarrierDismissLabel,
-        barrierColor: Colors.black45,
-        transitionDuration: const Duration(milliseconds: 200),
+        MaterialLocalizations
+            .of(context)
+            .modalBarrierDismissLabel,
+       barrierColor: Colors.black45,
+        transitionDuration: const Duration(milliseconds: 400),
         pageBuilder: (BuildContext buildContext, Animation animation,
             Animation secondaryAnimation) {
-          return Center(
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                BorderRadius.circular(10.0)), //this right here
             child: Container(
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/images/bong.png'),
-                    fit: BoxFit.cover),
-              ),
               width: MediaQuery.of(context).size.width * 0.85,
               height: MediaQuery.of(context).size.height * 0.75,
-              padding: EdgeInsets.all(20),
-//                                color: Colors.white,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  RaisedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) =>
-                                ChannelPage(channelId: groupId.toString())),
-                      );
-                    },
-                    child: Text(
-                      "채널에 입장하기",
-                      style: TextStyle(color: Colors.white),
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text("Group text"),
+                    Image.asset('assets/images/bong.png'),
+                    RaisedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ChannelPage(channelId: groupId.toString())),
+                        );
+                      },
+                      child: Text(
+                        "채널에 입장하기",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      color: const Color(0xFF1BC0C5),
                     ),
-                    color: const Color(0xFF1BC0C5),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           );
+
+
         });
   }
 }
